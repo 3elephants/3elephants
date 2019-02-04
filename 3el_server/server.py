@@ -26,7 +26,7 @@ class RatingProviderServicer(three_el_pb2_grpc.RatingProviderServicer):
 
 
     def GetProductClass(self, request, context):
-
+        print("hit")
         #query
         cursorCosm = cosmListings.find(
             {'$text': {'$search': request.name}},
@@ -81,7 +81,7 @@ class RatingProviderServicer(three_el_pb2_grpc.RatingProviderServicer):
                 maxScore =  numWords * 9 #TODO: make score max calculation more accurate
                 # if pType == ProductType.COSMETICS:
                 #     maxScore = 5
-                print(maxScore)
+
                 factor = 0.5
                 totalPossible = 0
                 weightedSum = 0
@@ -94,7 +94,7 @@ class RatingProviderServicer(three_el_pb2_grpc.RatingProviderServicer):
                     factor *= factor
 
                 if totalPossible == 0:
-                    print("threshold")
+
                     return 0.5 #we assume there is not enough data if no data point is above the threshold for a match
 
                 weightedAverage = weightedSum / totalPossible
@@ -110,6 +110,7 @@ class RatingProviderServicer(three_el_pb2_grpc.RatingProviderServicer):
             finalScore = getScore(cursorFood, ProductType.FOOD)
         elif numberReturnedCosm > 0:
             finalScore = getScore(cursorCosm, ProductType.COSMETICS)
+
 
         # return logic
         if finalScore > 0.8:
