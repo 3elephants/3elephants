@@ -1,11 +1,13 @@
 var newText = "eco-friendly"
-function getResultsFromAPI()
+function getResultsFromAPI(var searchTerm)
 {
-	$.get("http://localhost:5000/GetProductClass?name=Soap for Goodness Sakes", function(data, status){
+	//Note: Call to backend service here
+	encodedSearchTerm = encodeURI(searchTerm);
+	$.get("http://localhost:5000/GetProductClass?name=" + encodedSearchTerm, function(data, status){
 			var result  = JSON.parse(data)
 
-			var productGreenRating = result.classification
-			console.log(productGreenRating)
+			var productGreenRating = result.classification;
+			console.log(productGreenRating);
 			var newText = "    Eco Friendly ";
 			if(productGreenRating == 0)
 				newText = "    Eco Friendly ";
@@ -18,7 +20,7 @@ function getResultsFromAPI()
 			$("#productTitle").text( $("#productTitle").text() + newText )
 
 	  });
-	//Note: Call to backend service here
+	
 	var txt = '{"rating": 0}'
 	var obj = JSON.parse(txt);
 
@@ -26,5 +28,5 @@ function getResultsFromAPI()
 	return result;
 }
 
-var productGreenRating = getResultsFromAPI(); //probably url encode product info
-$("#productTitle").text( $("#productTitle").text() + newText )
+var searchTerm = "Soap for Goodness Sakes";
+var productGreenRating = getResultsFromAPI(searchTerm); //probably url encode product info
