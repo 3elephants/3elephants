@@ -3,8 +3,7 @@
   "dependencies": {
     "google-protobuf": "^3.6.1",
     "grpc-web": "^0.4.0",
-    "terser": "^3.14.1",
-    "webpack-encoding-plugin": "^0.2.1"
+    "terser": "^3.14.1"
   },
   "devDependencies": {
     "browserify": "^16.2.2",
