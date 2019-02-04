@@ -29,4 +29,5 @@ function getResultsFromAPI(var searchTerm)
 }
 
 var searchTerm = "Soap for Goodness Sakes";
+searchTerm = $("#productTitle").text();
 var productGreenRating = getResultsFromAPI(searchTerm); //probably url encode product info
