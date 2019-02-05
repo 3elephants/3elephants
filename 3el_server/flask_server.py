@@ -84,14 +84,15 @@ def GetProductClass():
             factor = 0.5
             totalPossible = 0
             weightedSum = 0
+            count = 5
             for startItem in cursor:
-                if startItem["score"] / maxScore < 0.6:
+                if count == 0:
                     break
 
                 weightedSum += factor * getUnitRating(pType, startItem)
                 totalPossible += factor
                 factor *= factor
-
+                count -=1
             if totalPossible == 0:
 
                 return 0.5 #we assume there is not enough data if no data point is above the threshold for a match
