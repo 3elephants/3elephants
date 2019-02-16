@@ -25,7 +25,7 @@ cosmListings = db["cosmListings"]
 @app.route('/GetProductClass')
 def GetProductClass():
     name = request.args.get('name')
-    print("hit")
+
     #query
     cursorCosm = cosmListings.find(
         {'$text': {'$search': name}},
@@ -42,7 +42,7 @@ def GetProductClass():
 
     numberReturnedCosm = 0 if not cursorCosm else cursorCosm.count()
     numberReturnedFood = 0 if not cursorFood else cursorFood.count()
-
+    print(numberReturnedCosm, numberReturnedFood)
 
 
     #functions
