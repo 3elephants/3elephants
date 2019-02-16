@@ -2,23 +2,26 @@
 function getResultsFromAPI(searchTerm)
 {
 	//Note: Call to backend service here
+	console.log(searchTerm);
 	encodedSearchTerm = searchTerm;
 	$.get("http://localhost:5000/GetProductClass?name=" + encodedSearchTerm, function(data, status){
-			var result  = JSON.parse(data)
+
+			var result  = JSON.parse(data);
 			var newText = "";
 
 			var productGreenRating = result.classification;
-			console.log(productGreenRating);
-			var newText = "    Eco Friendly ";
+
+			var	newText = "    <span style='color:blue'> No rating </span> ";
 			if(productGreenRating == 0)
-				newText = "    Eco Friendly ";
+				newText = "  <span style='color:green'> Eco Friendly </span> ";
 			else if(productGreenRating == 1)
-				newText = "    Not Eco Friendly ";
+				newText = "   <span style='color:red'> Not Eco Friendly </span>";
 			else if(productGreenRating == 2)
-				newText = "    No rating ";
+				newText = "    <span style='color:blue'> No rating </span> ";
 			else
 				newText = "API return value is not valid in myscript.js";
-			$("#productTitle").text( $("#productTitle").text() + newText )
+			
+			$("#productTitle").html( $("#productTitle").text() + newText );
 
 	  });
 
@@ -32,5 +35,5 @@ function getResultsFromAPI(searchTerm)
 var searchTerm = "Soap for Goodness Sakes";
 searchTerm = $("#productTitle").text();
 searchTerm = searchTerm.trim();
-console.log(searchTerm);
+
 var productGreenRating = getResultsFromAPI(searchTerm); //probably url encode product info
