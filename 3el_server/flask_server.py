@@ -6,7 +6,6 @@ app = Flask(__name__)
 from pymongo import MongoClient
 
 
-_ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 client = MongoClient('localhost', 27017)
 db = client['3elephants']
@@ -17,8 +16,16 @@ cosmListings = db["cosmListings"]
 @app.route('/GetProductClass')
 def GetProductClass():
     name = request.args.get('name')
-    return firstPrototypeCall(name, cosmListings, foodListings)
+    params = {
+        "name":name,
+        "cosmListings":cosmListings,
+        "foodListings":foodListings
+    }
+    return evalLogic(firstPrototypeCall, params)
 
+
+def evalLogic(logic, params):
+    return logic(params)
 
 if __name__ == '__main__':
     app.run()
