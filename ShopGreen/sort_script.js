@@ -1,11 +1,10 @@
 //This function gets the
 function getAllTheSortScores() {
-
   var products = [];
-
-
-  for (i = 0; i < 10; i++) {
-    //console.log("Iterating over list item: " + b[i].innerHTML)
+  for (i = 0; i < list.children.length; i++) {
+    if (b[i] == null) {
+			break;
+		}
     var title = b[i].getElementsByClassName("s-access-title")[0];
 
     title = title.innerHTML.trim();
@@ -37,7 +36,7 @@ function getAllTheSortScores() {
 //Using the cached sort scores, this function should order the list by ecofriendliness
 // But maybe it should be for only the first 10 elements
 function sortList(sortOrder) {
-	
+
   var s = sortOrder.reduce((accumulator, orig_pos) => accumulator + b[orig_pos].outerHTML, "");
   list.innerHTML = s;
 }
