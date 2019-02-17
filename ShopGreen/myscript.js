@@ -19,7 +19,7 @@ function getResultsFromAPI(searchTerm)
 				newText = "    <span style='color:blue'> No rating </span> ";
 			else
 				newText = "API return value is not valid in myscript.js";
-			
+
 			$("#productTitle").html( $("#productTitle").text() + newText );
 
 	  });
@@ -41,7 +41,8 @@ var productGreenRating = getResultsFromAPI(searchTerm); //probably url encode pr
 
 //Part 2: Give the product design description to the Flask server
 var productDescription = "This is just a product description";
-productDescription = $("#productDescription p").get(0).text();
+
+
 
 realProductDescription = productDescription.trim();
 console.log(realProductDescription);

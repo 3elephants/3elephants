@@ -1,6 +1,5 @@
-from flask import Flask, request
+from flask import Flask, request, json
 from lib.function_calls import *
-import json
 app = Flask(__name__)
 
 
@@ -24,26 +23,29 @@ def GetProductClass():
     }
     return evalLogic(firstPrototypeCall, params)
 
-@app.route('/GetSearchResultsPageCache')
+@app.route('/GetSearchResultsPageCache', methods=['POST'])
 def GetSearchResultsPageCache():
-    names = request.args.get('jsonString')
-    decoded = json.loads(names)
-    scores = []
+    requestInfo = request
+    products = requestInfo.json
 
-    for x in decoded['products']:
+    scores = []
+    #
+    for idx, name in enumerate(products):
         params = {
-            "name":x,
+            "name":name,
             "cosmListings":cosmListings,
             "foodListings":foodListings
         }
-        temp = evalLogic(firstPrototypeCall, params)
-        print(temp)
-        scores.append(temp)
+        result = json.loads(evalLogic(firstPrototypeCall, params))
+        result["orig_pos"] = idx
+        scores.append(result)
+    scores.sort(key=lambda x: -1 * x["score"])
 
-    # Converts scores Python array to a json string
-    json_scores = json.dumps(scores) # Dumps means "dump string"
 
-    return json_scores
+    #
+    # # Converts scores Python array to a json string
+    return json.dumps(scores) # Dumps means "dump string"
+
 
 def evalLogic(logic, params):
     return logic(params)
