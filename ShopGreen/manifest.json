@@ -1,13 +1,13 @@
 {
-  "manifest_version": 2,
-  "name": "ShopGreen",
-  "description": "This is our environmentally friendly shopping project",
-  "version": "1.0.0",
-  "content_scripts": [{
-      "matches": ["http://www.amazon.com/*", "https://www.amazon.com/*"],
-      "js": ["jquery.js", "myscript.js"]
-    }],
-  "permissions": ["http://localhost:5000/*"]
+	"manifest_version": 2,
+	"name": "ShopGreen",
+	"description": "This is our environmentally friendly shopping project",
+	"version": "1.0.0",
+	"content_scripts": [{
+		"matches": ["http://www.amazon.com/*", "https://www.amazon.com/*", "https://www.amazon.com/*"],
+		"js": ["jquery.js", "myscript.js", "sort_script.js"]
+	}],
+	"permissions": ["http://localhost:5000/*"]
 
 
 
