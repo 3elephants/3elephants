@@ -1,5 +1,6 @@
 from flask import Flask, request
 from lib.function_calls import *
+import json
 app = Flask(__name__)
 
 
@@ -23,6 +24,26 @@ def GetProductClass():
     }
     return evalLogic(firstPrototypeCall, params)
 
+@app.route('/GetSearchResultsPageCache')
+def GetSearchResultsPageCache():
+    names = request.args.get('jsonString')
+    decoded = json.loads(names)
+    scores = []
+
+    for x in decoded['products']:
+        params = {
+            "name":x,
+            "cosmListings":cosmListings,
+            "foodListings":foodListings
+        }
+        temp = evalLogic(firstPrototypeCall, params)
+        print(temp)
+        scores.append(temp)
+
+    # Converts scores Python array to a json string
+    json_scores = json.dumps(scores) # Dumps means "dump string"
+
+    return json_scores
 
 def evalLogic(logic, params):
     return logic(params)
