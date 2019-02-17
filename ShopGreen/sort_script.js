@@ -3,12 +3,12 @@ function getAllTheSortScores() {
 	var listOfScores = 3;
 	var jsonString = { products: [] };
 	
-	var list = document.getElementById("s-results-list-atf");
-	b = list.getElementsByTagName("LI");
+	var list = document.getElementById("#s-results-list-atf");
+	b = list.getElementsByTagName("#a-link-normal s-access-detail-page s-color-twister-title-link a-text-normal");
 	
 	for (i = 0; i < 10; i++) {
-		  console.log("Iterating over list item: " + b[i].innerHTML)
-		  jsonString.push(b[i].innerHTML);
+		  console.log("Iterating over list item: " + b[i].title)
+		  jsonString.products.push(b[i].title);
 	}
 	
 	// Here is where you call the API route with the "jsonString" variable
@@ -27,7 +27,7 @@ function sortList(shouldSort,scores) {
 	//This is an implementation of simple bubble sort
 	if(shouldSort) {
 	  var list, i, switching, b, shouldSwitch;
-	  list = document.getElementById("s-results-list-atf");
+	  list = document.getElementById("#s-results-list-atf");
 	  switching = true;
 	  /* Make a loop that will continue until
 	  no switching has been done: */
@@ -35,7 +35,7 @@ function sortList(shouldSort,scores) {
 	  	console.log("One iteration of Bubble Sort just ran");
 		// Start by saying: no switching is done:
 		switching = false;
-		b = list.getElementsByTagName("LI");
+		b = list.getElementsByClassName("a-link-normal s-access-detail-page s-color-twister-title-link a-text-normal");
 		// Loop through all list items:
 		for (i = 0; i < b.length - 1; i++) {
 		  // Start by saying there should be no switching:

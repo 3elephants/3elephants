@@ -7,21 +7,23 @@ app = Flask(__name__)
 from pymongo import MongoClient
 
 
-
+print("Opening MongoClient")
 client = MongoClient('localhost', 27017)
 db = client['3elephants']
 foodListings = db["foodListings"]
 cosmListings = db["cosmListings"]
-
+print("Set database links")
 
 @app.route('/GetProductClass')
 def GetProductClass():
+    print("a")
     name = request.args.get('name')
     params = {
         "name":name,
         "cosmListings":cosmListings,
         "foodListings":foodListings
     }
+    print("b")
     return evalLogic(firstPrototypeCall, params)
 
 @app.route('/GetSearchResultsPageCache')

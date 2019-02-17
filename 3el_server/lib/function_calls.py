@@ -8,7 +8,7 @@ class ProductType(Enum):
     COSMETICS = 2
 
 def firstPrototypeCall(params):
-
+    print("Starting request")
     #set variables
     name = params["name"]
     cosmListings = params["cosmListings"]
@@ -22,7 +22,7 @@ def firstPrototypeCall(params):
     cursorFood = foodListings.find(
         {'$text': {'$search': name}},
         {'score': {'$meta': 'textScore'}})
-
+    print("Continuing Request")
 
     # Sort by 'score' field.
     cursorCosm.sort([('score', {'$meta': 'textScore'})])
@@ -31,7 +31,7 @@ def firstPrototypeCall(params):
     numberReturnedCosm = 0 if not cursorCosm else cursorCosm.count()
     numberReturnedFood = 0 if not cursorFood else cursorFood.count()
     print(numberReturnedCosm, numberReturnedFood)
-
+    print("Completed Request")
 
     #functions
 
