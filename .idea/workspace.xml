@@ -11,7 +11,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="flask_server.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="flask_server.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/3el_server/flask_server.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="424">
@@ -26,8 +26,18 @@
       <file leaf-file-name="sort_script.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ShopGreen/sort_script.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="38" column="12" lean-forward="true" selection-start-line="38" selection-start-column="12" selection-end-line="38" selection-end-column="12" />
+            <state relative-caret-position="390">
+              <caret line="26" column="6" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="myscript.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ShopGreen/myscript.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="566">
+              <caret line="63" column="34" lean-forward="false" selection-start-line="63" selection-start-column="34" selection-end-line="63" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -46,8 +56,8 @@
       <file leaf-file-name="function_calls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/3el_server/lib/function_calls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-677">
-              <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+            <state relative-caret-position="482">
+              <caret line="110" column="66" lean-forward="true" selection-start-line="17" selection-start-column="0" selection-end-line="110" selection-end-column="66" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -136,10 +146,11 @@
         <option value="$PROJECT_DIR$/dummy_js_client/client.js" />
         <option value="$PROJECT_DIR$/3el_server/requirements.txt" />
         <option value="$PROJECT_DIR$/3el_server/function_calls.py" />
-        <option value="$PROJECT_DIR$/3el_server/lib/function_calls.py" />
         <option value="$PROJECT_DIR$/3el_server/setup.py" />
         <option value="$PROJECT_DIR$/ShopGreen/sort_script.js" />
         <option value="$PROJECT_DIR$/3el_server/flask_server.py" />
+        <option value="$PROJECT_DIR$/3el_server/lib/function_calls.py" />
+        <option value="$PROJECT_DIR$/ShopGreen/myscript.js" />
       </list>
     </option>
   </component>
@@ -319,7 +330,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/3el_server/setup.py" />
     <entry file="file://$PROJECT_DIR$/3el_server/client.py" />
     <entry file="file://$PROJECT_DIR$/3el_server/three_el_pb2_grpc.py" />
     <entry file="file://$PROJECT_DIR$/data_downloading/db_store.py">
@@ -423,29 +433,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ShopGreen/sort_script.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="38" column="12" lean-forward="true" selection-start-line="38" selection-start-column="12" selection-end-line="38" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/3el_server/setup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="22" lean-forward="false" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/3el_server/lib/function_calls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-677">
-          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -456,6 +448,32 @@
           <folding>
             <element signature="e#0#38#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/3el_server/lib/function_calls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="482">
+          <caret line="110" column="66" lean-forward="true" selection-start-line="17" selection-start-column="0" selection-end-line="110" selection-end-column="66" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ShopGreen/sort_script.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="26" column="6" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ShopGreen/myscript.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="566">
+          <caret line="63" column="34" lean-forward="false" selection-start-line="63" selection-start-column="34" selection-end-line="63" selection-end-column="34" />
+          <folding />
         </state>
       </provider>
     </entry>

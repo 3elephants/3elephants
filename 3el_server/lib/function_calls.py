@@ -15,6 +15,7 @@ def firstPrototypeCall(params):
     foodListings = params ["foodListings"]
 
     #query
+
     cursorCosm = cosmListings.find(
         {'$text': {'$search': name}},
         {'score': {'$meta': 'textScore'}})
@@ -22,6 +23,7 @@ def firstPrototypeCall(params):
     cursorFood = foodListings.find(
         {'$text': {'$search': name}},
         {'score': {'$meta': 'textScore'}})
+
 
 
     # Sort by 'score' field.

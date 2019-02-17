@@ -40,11 +40,13 @@ var productGreenRating = getResultsFromAPI(searchTerm); //probably url encode pr
 
 
 //Part 2: Give the product design description to the Flask server
+//*Please note that the product description's entire HTML is being retrieved, not just keywords.
+//So the algorithm has to be designed in a way that this will not dilute the score.
 var productDescription = "This is just a product description";
+productDescription = $("#a-section launchpad-text-left-justify").html();
 
-
-
-realProductDescription = productDescription.trim();
+//No trimming necessary because of how jQuery html method works
+realProductDescription = productDescription;
 console.log(realProductDescription);
 giveAPITheProductDescription( realProductDescription );
 
