@@ -7,7 +7,12 @@ class ProductType(Enum):
     FOOD = 1
     COSMETICS = 2
 
-def firstPrototypeCall(name, cosmListings, foodListings):
+def firstPrototypeCall(params):
+
+    #set variables
+    name = params["name"]
+    cosmListings = params["cosmListings"]
+    foodListings = params ["foodListings"]
 
     #query
     cursorCosm = cosmListings.find(
