@@ -5,7 +5,8 @@
 	"version": "1.0.0",
 	"content_scripts": [{
 		"matches": ["http://www.amazon.com/*", "https://www.amazon.com/*", "https://www.amazon.com/*"],
-		"js": ["jquery.js", "myscript.js", "sort_script.js"]
+		"js": ["jquery.js", "myscript.js", "sort_script.js"],
+		"run_at": "document_start"
 	}],
 	"permissions": ["http://localhost:5000/*"]
 

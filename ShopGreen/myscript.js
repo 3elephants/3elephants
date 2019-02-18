@@ -1,3 +1,4 @@
+console.log("hello")
 function getResultsFromAPI(searchTerm)
 {
 	//Note: Call to backend service here
@@ -30,13 +31,36 @@ function getResultsFromAPI(searchTerm)
 	var result = obj.rating;
 	return result;
 }
+var MY_SELECTOR = "productTitle"; // Could be any selector
+var observer = new MutationObserver(function(mutations){
+  for (var i=0; i < mutations.length; i++){
+    for (var j=0; j < mutations[i].addedNodes.length; j++){
+      // We're iterating through _all_ the elements as the parser parses them,
+      // deciding if they're the one we're looking for.
+			var node =  mutations[i].addedNodes[j];
+			
+      if ((node.nodeType == Node.ELEMENT_NODE) &&
+						(node.id == MY_SELECTOR)){
 
-//Part 1: Add the eco friendly rating
-var searchTerm = "Soap for Goodness Sakes";
-searchTerm = $("#productTitle").text();
-searchTerm = searchTerm.trim();
 
-var productGreenRating = getResultsFromAPI(searchTerm); //probably url encode product info
+				var searchTerm = "Soap for Goodness Sakes";
+				searchTerm = $("#productTitle").text();
+				searchTerm = searchTerm.trim();
+
+				var productGreenRating = getResultsFromAPI(searchTerm); //probably url encode product info
+
+        // We found our element, we're done:
+        observer.disconnect();
+      };
+    }
+  }
+});
+
+observer.observe(document.documentElement, {
+  childList: true,
+  subtree: true
+});
+
 
 
 //Part 2: Give the product design description to the Flask server
