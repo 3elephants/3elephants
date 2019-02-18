@@ -1,5 +1,4 @@
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from util_functions import *
 from collections import Counter
 from enum import Enum
 from flask import json
@@ -51,12 +50,8 @@ def firstPrototypeCall(params):
         else:
             return scoreToNumber(param["scores"]["overall"])
 
-    #TODO: remove punctuation
-    def cleanQuery(query):
-        stop_words = set(stopwords.words('english'))
-        word_tokens = word_tokenize(query)
 
-        return [w for w in word_tokens if not w in stop_words]
+
 
     #gets the score based on food collection query
     # for use only when len(query results) > 0
@@ -64,27 +59,26 @@ def firstPrototypeCall(params):
         startItem = cursor[0]
         startName = startItem["name"]
 
-        if startItem["name"] == name:
+        if startName == name:
             return getUnitRating(pType, startItem)
         else:
             numWords = len(Counter(cleanQuery(name)))
 
-            maxScore =  numWords * 9 #TODO: make score max calculation more accurate
-            # if pType == ProductType.COSMETICS:
-            #     maxScore = 5
-
-            factor = 0.5
+            thresholdScore =  (numWords * 8)/(3 - 1.5/numWords) #if half to all words show up once in all fields we should include it
+                                                                                                        #more words means that if less of them match it is still accurate
+                                                                                                        # because more matches
             totalPossible = 0
             weightedSum = 0
-            count = 5
+            count = 0
             for startItem in cursor:
-                if count == 0:
+                if count > 30 or startItem["score"] < thresholdScore: #if we have 30 items (assumed to be enough to describe any distribution or remaining results irrelevant break)
                     break
-
+                factor = startItem["score"]
                 weightedSum += factor * getUnitRating(pType, startItem)
                 totalPossible += factor
-                factor *= factor
-                count -=1
+                count+=1
+
+
             if totalPossible == 0:
 
                 return 0.5 #we assume there is not enough data if no data point is above the threshold for a match
