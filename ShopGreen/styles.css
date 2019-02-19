@@ -1,0 +1,114 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(chrome-extension://__MSG_@@hnckinnmkjjfiepbljnhnoklpdmbegll/assets/iconfont/MaterialIcons-Regular.eot);
+  /* For IE6-8 */
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url(chrome-extension://__MSG_@@hnckinnmkjjfiepbljnhnoklpdmbegll/assets/iconfont/MaterialIcons-Regular.woff2) format('woff2'), url(chrome-extension://__MSG_@@hnckinnmkjjfiepbljnhnoklpdmbegll/assets/iconfont/MaterialIcons-Regular.woff) format('woff'), url(chrome-extension://__MSG_@@hnckinnmkjjfiepbljnhnoklpdmbegll/assets/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.no_data_available {
+  font-size: 14px;
+  color: #F79DA8;
+  font-weight: 200;
+  letter-spacing: 0;
+  font-style: italic;
+}
+
+#t_el_label {
+  position: relative;
+  display: inline-block;
+}
+
+#t_el_label:hover .tooltiptext {
+  visibility: visible;
+  transition: opacity 0.1s;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: black;
+  /* Rectangle 4: */
+  background: #FFFFFF;
+  border: 1px solid #C3C3C3;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.30);
+  text-align: left;
+  border-radius: 2px;
+  padding: 20px 10px;
+  position: absolute;
+  font-size: 14px;
+  font-weight: lighter;
+  z-index: 1;
+  top: 150%;
+  left: 50%;
+  margin-left: -60px;
+  color: #8C8C8C;
+}
+
+.icon {
+  height: 10px;
+}
+
+.icon-colors {
+  color: #8C8C8C;
+  transition: opacity 0.1s;
+}
+
+.icon-colors:hover {
+  color: #C3C3C3;
+  cursor: pointer;
+}
+
+#t_el_label:hover {
+  cursor: pointer;
+}
+
+#t_el_label:hover .icon-colors {
+  color: #C3C3C3;
+  cursor: pointer;
+}
+
+.tooltiptextemphasis {
+  color: #646466;
+}
+
+.tooltiptext::after {
+  /* Rectangle 4: */
+  background: #FFFFFF;
+  border: 1px solid #C3C3C3;
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  /* At the top of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-color: transparent transparent #C3C3C3 transparent;
+}
+
+
+/*material icons support for info icon*/
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
