@@ -1,10 +1,18 @@
-console.log("hello")
+
 
 function getResultsFromAPI(searchTerm) {
   //Note: Call to backend service here
 
+	var regex = RegExp("^(http[s]?://)?([\\w.-]+)(:[0-9]+)?/([\\w-%]+/)?(dp|gp/product|exec/obidos/asin)/(\\w+/)?(\\w{10})(.*)?$");
+	m = window.location.href.match(regex);
+
   encodedSearchTerm = searchTerm;
-  $.get("http://localhost:5000/GetProductClass?name=" + encodedSearchTerm, function(data, status) {
+
+	var serverUrl = "http://localhost:5000/GetProductClass?name=" + encodedSearchTerm;
+	if (m.length > 7){
+		serverUrl += "&asin=" + m[7];
+	}
+  $.get(serverUrl, function(data, status) {
     console.log(data);
     var result = JSON.parse(data);
     var newText = "";
@@ -122,8 +130,8 @@ productDescription = $("#a-section launchpad-text-left-justify").html();
 
 //No trimming necessary because of how jQuery html method works
 realProductDescription = productDescription;
-console.log(realProductDescription);
-giveAPITheProductDescription(realProductDescription);
+// console.log(realProductDescription);
+// giveAPITheProductDescription(realProductDescription);
 
 
 //Part 3: Get the Customer question and answers
@@ -135,5 +143,5 @@ allAnswers = $("#allAnswers").each(function(index) {
 });
 
 console.log("Part 3 is almost done");
-giveAPITheCustomerAnswers(allText);
+// giveAPITheCustomerAnswers(allText);
 console.log("Part 3 is now done");

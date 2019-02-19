@@ -16,11 +16,14 @@ cosmListings = db["cosmListings"]
 @app.route('/GetProductClass')
 def GetProductClass():
     name = request.args.get('name')
+    asin = request.args.get('asin')
     params = {
         "name":name,
         "cosmListings":cosmListings,
         "foodListings":foodListings
     }
+    if asin!=None:
+        params["asin"] = asin
     return evalLogic(firstPrototypeCall, params)
 
 @app.route('/GetSearchResultsPageCache', methods=['POST'])
