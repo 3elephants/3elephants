@@ -5,7 +5,9 @@
 
 
 $(function() {
+
 	function getAllTheSortScores(list, b) {
+
 	  var products = [];
 	  for (i = 0; i < list.children.length; i++) {
 	    if (b[i] == null) {
@@ -17,9 +19,14 @@ $(function() {
 			if (title == null) {
 				title =  b[i].getElementsByClassName("a-size-base-plus a-color-base a-text-normal")[0]; //for different layout
 			}
-	    title = title.innerHTML.trim();
-	    products.push(title)
+			
+			if(title != undefined) {
+				title = title.innerHTML.trim();
+	    	products.push(title);
+			}
+
 	  }
+
 
 	  // Here is where you call the API route with the "jsonString" variable
 	  $.ajax({
@@ -57,5 +64,6 @@ $(function() {
 		list = document.getElementsByClassName("s-result-list")[0]; //for different layout
 	}
   b = list.children;
+
   getAllTheSortScores(list, b);
 });

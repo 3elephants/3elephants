@@ -9,19 +9,57 @@ class ProductType(Enum):
 def firstPrototypeCall(params):
 
     #set variables
-    name = params["name"]
+    name = params.get("name")
+    asin = params.get("asin")
     cosmListings = params["cosmListings"]
     foodListings = params ["foodListings"]
 
+    # functions
+
+    # convert cosmetics class name to class 3 Elephants score
+    def classToNumber(cLabel):
+        return 1 if cLabel == 'Y' else 0
+
+    # convert ewg food score to 3 Elephants score
+    def scoreToNumber(score):
+        if (score < 1):
+            score = 1
+        if (score > 10):
+            score = 10
+        return 1 - (score - 1) / 9
+
+    def extractCosmRatingInfo(cosmInfo):
+        dataQualityMap = {"None": 1, "Limited": 2, "Fair": 3, "Good": 4, "Robust": 5}
+        score, dataQuality = cosmInfo.split("_")
+
+        return dataQualityMap[dataQuality], scoreToNumber(int(score))
+
+    def getUnitRating(pType, param):
+        if pType == ProductType.COSMETICS:
+
+            return extractCosmRatingInfo(param["score"])
+        else:
+            return None, scoreToNumber(param["scores"]["overall"])
+
+
+
     #query
+
+    if asin != None:
+        asinCursor = foodListings.find({"asin_list": asin}) #if we find the asin in the database
+        if asinCursor.count() > 0:
+            return getUnitRating(ProductType.FOOD, asinCursor[0])
+
+    cursorFood = foodListings.find(
+        {'$text': {'$search': name}},
+        {'search_score': {'$meta': 'textScore'}})
+
 
     cursorCosm = cosmListings.find(
         {'$text': {'$search': name}},
         {'search_score': {'$meta': 'textScore'}})
 
-    cursorFood = foodListings.find(
-        {'$text': {'$search': name}},
-        {'search_score': {'$meta': 'textScore'}})
+
 
 
 
@@ -33,34 +71,6 @@ def firstPrototypeCall(params):
     numberReturnedFood = 0 if not cursorFood else cursorFood.count()
 
 
-
-    #functions
-
-    #convert cosmetics class name to class 3 Elephants score
-    def classToNumber(cLabel):
-        return 1 if cLabel == 'Y' else 0
-
-    #convert ewg food score to 3 Elephants score
-    def scoreToNumber(score):
-        if (score < 1):
-            score = 1
-        if (score > 10):
-            score = 10
-        return 1 - (score - 1)/9
-
-    def extractCosmRatingInfo(cosmInfo):
-        dataQualityMap = {"None": 1, "Limited":2, "Fair":3, "Good":4, "Robust":5}
-        score, dataQuality = cosmInfo.split("_")
-
-
-
-        return dataQualityMap[dataQuality], scoreToNumber(int(score))
-    def getUnitRating(pType, param):
-        if pType == ProductType.COSMETICS:
-
-            return extractCosmRatingInfo(param["score"])
-        else:
-            return None, scoreToNumber(param["scores"]["overall"])
 
 
 
@@ -77,7 +87,7 @@ def firstPrototypeCall(params):
         else:
             numWords = len(Counter(cleanQuery(name)))
 
-            thresholdScore =  (numWords * 8)/(3 - 1.5/numWords) #if half to all words show up once in all fields we should include it
+            thresholdScore =  (numWords * 8)/(2.5 - 1.5/numWords) #if half to all words show up once in all fields we should include it
                                                                                                         #more words means that if less of them match it is still accurate
                                                                                                         # because more matches
             totalPossible = 0
@@ -129,7 +139,7 @@ def firstPrototypeCall(params):
     # return logic
     if finalScore > 0.8:
         return json.dumps({'has_results': hasResults, 'data_quality':dQ, 'score':finalScore, 'classification':0})
-    elif finalScore < 0.45:
+    elif finalScore < 0.5:
         return json.dumps({'has_results': hasResults, 'data_quality':dQ, 'score':finalScore,'classification':1})
 
 
