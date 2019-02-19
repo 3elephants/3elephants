@@ -17,21 +17,21 @@ def firstPrototypeCall(params):
 
     cursorCosm = cosmListings.find(
         {'$text': {'$search': name}},
-        {'score': {'$meta': 'textScore'}})
+        {'search_score': {'$meta': 'textScore'}})
 
     cursorFood = foodListings.find(
         {'$text': {'$search': name}},
-        {'score': {'$meta': 'textScore'}})
+        {'search_score': {'$meta': 'textScore'}})
 
 
 
     # Sort by 'score' field.
-    cursorCosm.sort([('score', {'$meta': 'textScore'})])
-    cursorFood.sort([('score', {'$meta': 'textScore'})])
+    cursorCosm.sort([('search_score', {'$meta': 'textScore'})])
+    cursorFood.sort([('search_score', {'$meta': 'textScore'})])
 
     numberReturnedCosm = 0 if not cursorCosm else cursorCosm.count()
     numberReturnedFood = 0 if not cursorFood else cursorFood.count()
-    print(numberReturnedCosm, numberReturnedFood)
+
 
 
     #functions
@@ -42,13 +42,26 @@ def firstPrototypeCall(params):
 
     #convert ewg food score to 3 Elephants score
     def scoreToNumber(score):
+        if (score < 1):
+            score = 1
+        if (score > 10):
+            score = 10
         return 1 - (score - 1)/9
 
+    def extractCosmRatingInfo(cosmInfo):
+        dataQualityMap = {"None": 1, "Limited":2, "Fair":3, "Good":4, "Robust":5}
+        score, dataQuality = cosmInfo.split("_")
+
+
+
+        return dataQualityMap[dataQuality], scoreToNumber(int(score))
     def getUnitRating(pType, param):
         if pType == ProductType.COSMETICS:
-            return classToNumber(param["ewg_verified"])
+
+            return extractCosmRatingInfo(param["score"])
         else:
-            return scoreToNumber(param["scores"]["overall"])
+            return None, scoreToNumber(param["scores"]["overall"])
+
 
 
 
@@ -69,40 +82,55 @@ def firstPrototypeCall(params):
                                                                                                         # because more matches
             totalPossible = 0
             weightedSum = 0
+            weightedSumDataQ = 0
+            totalPossibleDataQ = 0
             count = 0
             for startItem in cursor:
-                if count > 30 or startItem["score"] < thresholdScore: #if we have 30 items (assumed to be enough to describe any distribution or remaining results irrelevant break)
+                if count > 30 or startItem["search_score"] < thresholdScore: #if we have 30 items (assumed to be enough to describe any distribution or remaining results irrelevant break)
                     break
-                factor = startItem["score"]
-                weightedSum += factor * getUnitRating(pType, startItem)
+                factor = startItem["search_score"]
+                dataQuality, rating = getUnitRating(pType, startItem)
+
+                weightedSum += factor * rating
+                if dataQuality != None:
+                    weightedSumDataQ += factor * dataQuality
+                    totalPossibleDataQ += factor
                 totalPossible += factor
                 count+=1
 
 
             if totalPossible == 0:
 
-                return 0.5 #we assume there is not enough data if no data point is above the threshold for a match
+                return False, None, 0.6 #we assume there is not enough data if no data point is above the threshold for a match
 
             weightedAverage = weightedSum / totalPossible
-            return weightedAverage
+
+            weightedAverageDataQ  = None
+            if totalPossibleDataQ != 0:
+                weightedAverageDataQ = weightedSumDataQ/totalPossibleDataQ
+            return True, weightedAverageDataQ, weightedAverage
 
 
     #run logic
-    finalScore = 0.5
+    finalScore = 0.6
+    dQ = None
+    hasResults = False
     if numberReturnedCosm != 0 and numberReturnedFood!=0:
-        finalScore = getScore(cursorFood, ProductType.FOOD) if cursorFood[0]["score"] > cursorCosm[0]["score"] else \
+
+        hasResults ,dQ,  finalScore = getScore(cursorFood, ProductType.FOOD) if cursorFood[0]["search_score"] > cursorCosm[0]["search_score"] else \
             getScore(cursorCosm, ProductType.COSMETICS)
     elif numberReturnedFood > 0:
-        finalScore = getScore(cursorFood, ProductType.FOOD)
+        hasResults, dQ, finalScore = getScore(cursorFood, ProductType.FOOD)
     elif numberReturnedCosm > 0:
-        finalScore = getScore(cursorCosm, ProductType.COSMETICS)
+        hasResults, dQ, finalScore = getScore(cursorCosm, ProductType.COSMETICS)
 
-    print(finalScore)
+    if dQ == None:
+        dQ = 0
     # return logic
     if finalScore > 0.8:
-        return json.dumps({'score':finalScore, 'classification':0})
-    elif finalScore < 0.2:
-        return json.dumps({'score':finalScore,'classification':1})
+        return json.dumps({'has_results': hasResults, 'data_quality':dQ, 'score':finalScore, 'classification':0})
+    elif finalScore < 0.45:
+        return json.dumps({'has_results': hasResults, 'data_quality':dQ, 'score':finalScore,'classification':1})
 
 
-    return json.dumps({'score':finalScore, 'classification':2})
+    return json.dumps({'has_results':hasResults,'data_quality':dQ, 'score':finalScore, 'classification':2})

@@ -6,8 +6,12 @@
 	"content_scripts": [{
 		"matches": ["http://www.amazon.com/*", "https://www.amazon.com/*", "https://www.amazon.com/*"],
 		"js": ["jquery.js", "myscript.js", "sort_script.js"],
+		"css":  ["styles.css"],
 		"run_at": "document_start"
 	}],
+	"web_accessible_resources": [
+		"assets/iconfont/*"
+	],
 	"permissions": ["http://localhost:5000/*"]
 
 
