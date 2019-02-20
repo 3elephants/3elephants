@@ -82,7 +82,7 @@ def firstPrototypeCall(params):
 
     #gets the score based on food collection query
     # for use only when len(query results) > 0
-    def getScore(cursor, pType):
+    def getScore(cursor, pType, thresholdScore=0):
         startItem = cursor[0]
         startName = startItem["name"]
 
@@ -90,8 +90,8 @@ def firstPrototypeCall(params):
             return getUnitRating(pType, startItem)
         else:
             numWords = len(Counter(cleanQuery(name)))
-            thresholdScore = 0
-            print(betaMode)
+
+
             if betaMode:
                 thresholdScore =  (numWords * 8)/(2.5 - 1.5/numWords) #if half to all words show up once in all fields we should include it
                                                                                            #more words means that if less of them match it is still accurate

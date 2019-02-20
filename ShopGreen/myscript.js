@@ -135,23 +135,23 @@ observer.observe(document.documentElement, {
 //Part 2: Give the product design description to the Flask server
 //*Please note that the product description's entire HTML is being retrieved, not just keywords.
 //So the algorithm has to be designed in a way that this will not dilute the score.
-var productDescription = "This is just a product description";
-productDescription = $("#a-section launchpad-text-left-justify").html();
+// var productDescription = "This is just a product description";
+// productDescription = $("#a-section launchpad-text-left-justify").html();
 
 //No trimming necessary because of how jQuery html method works
-realProductDescription = productDescription;
+// realProductDescription = productDescription;
 // console.log(realProductDescription);
 // giveAPITheProductDescription(realProductDescription);
 
 
 //Part 3: Get the Customer question and answers
-var allAnswers = "This is going to be an array of customer answers";
-var allText = "This is the allText variable";
-allAnswers = $("#allAnswers").each(function(index) {
-  console.log(index + ": " + $(this).text());
-  allText = allText + " " + $(this).text();
-});
-
-console.log("Part 3 is almost done");
-// giveAPITheCustomerAnswers(allText);
-console.log("Part 3 is now done");
+// var allAnswers = "This is going to be an array of customer answers";
+// var allText = "This is the allText variable";
+// allAnswers = $("#allAnswers").each(function(index) {
+//   console.log(index + ": " + $(this).text());
+//   allText = allText + " " + $(this).text();
+// });
+//
+// console.log("Part 3 is almost done");
+// // giveAPITheCustomerAnswers(allText);
+// console.log("Part 3 is now done");
