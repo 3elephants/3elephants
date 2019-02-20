@@ -2,6 +2,7 @@ from util_functions import *
 from collections import Counter
 from enum import Enum
 from flask import json
+
 class ProductType(Enum):
     FOOD = 1
     COSMETICS = 2

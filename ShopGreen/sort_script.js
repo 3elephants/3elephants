@@ -21,6 +21,7 @@ $(function() {
       }
 
     }
+// document.getElementsByTagName("body")[0].innerHTML +='<div id="loading"> <div id="loading-image"class="loader"></div></div>';
 
 
     // Here is where you call the API route with the "jsonString" variable
@@ -51,6 +52,7 @@ $(function() {
 
     var s = sortOrder.reduce((accumulator, orig_pos) => accumulator + b[orig_pos].outerHTML, "");
     list.innerHTML = s;
+		// $("#loading").css("display","none");
   }
   chrome.storage.sync.get({
     betaMode: false,
