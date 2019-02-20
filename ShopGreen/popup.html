@@ -1,35 +1,31 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html class="js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths gumby-no-touch">
+
 <head>
   <meta charset="utf-8">
-  <title>ShopGreen Application Page</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css">
-  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" 
-  rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" 
-  crossorigin="anonymous">
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
+  <div class="prettycontainer">
+    <form>
+      <fieldset>
+        <legend data-i18n="extName">3 Elephants</legend>
+        <ul>
+          <li class="field"><label class="checkbox checked" for="beta-mode">
+                        <input type="checkbox" id="beta-mode"><span><i class="icon-check"></i></span>
+                        <div style="display:inline">Beta Mode (Disclaimer: less information reliability)</div>
+                    </label></li>
+          <li class="field"><label class="checkbox checked" for="sort-results">
+                        <input type="checkbox" id="sort-results"><span><i class="icon-check"></i></span>
+                        <div style="display:inline">Sort Search Results by Environmental Impact</div>
+                    </label></li>
 
-	<div class="modal-header">
-  		<h1 class="logo">
-  			<img src="images/ShopGreen-logo.png" alt="Shop Green" class="logo-icon" > Shop Green
-  			<span class="version">(1.0.0)</span>
-  		</h1>
-  	</div>
-  	
-  	<div class="modal-content">
-  		<p>Easily access the Shop Green app</p>
-  	</div>
-  	
-  	<div class="modal-icons">
-  		<div class="flex-container">
-  			<p> Facebook </p>
-  			<p> LinkedIn </p>
-  			<p> Github </p>
-  		</div>
-  	</div>
-  	
-  	<script src="popup.js"> </script>
+        </ul>
+      </fieldset>
+    </form>
+
+  </div>
+  <script src="popup.js"></script>
 </body>
-</html>
 
+</html>

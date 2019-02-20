@@ -1,6 +1,6 @@
 
 
-function getResultsFromAPI(searchTerm) {
+function getResultsFromAPI(searchTerm, betaMode) {
   //Note: Call to backend service here
 
 	var regex = RegExp("^(http[s]?://)?([\\w.-]+)(:[0-9]+)?/([\\w-%]+/)?(dp|gp/product|exec/obidos/asin)/(\\w+/)?(\\w{10})(.*)?$");
@@ -8,7 +8,7 @@ function getResultsFromAPI(searchTerm) {
 
   encodedSearchTerm = searchTerm;
 
-	var serverUrl = "http://localhost:5000/GetProductClass?name=" + encodedSearchTerm;
+	var serverUrl = "http://localhost:5000/GetProductClass?name=" + encodedSearchTerm +  "&mode="+betaMode;
 	if (m.length > 7){
 		serverUrl += "&asin=" + m[7];
 	}
@@ -18,6 +18,9 @@ function getResultsFromAPI(searchTerm) {
     var newText = "";
 
     var productGreenRating = result.classification;
+		if (!betaMode && productGreenRating!=0) { //disable most features on beta mode
+			return;
+		}
     if (result.has_results == false || (result.data_quality != 0 && result.data_quality < 2)) {
 
       var newText = " <span class=\"no_data_available\">**We do not have enough data to give a green score.</span> "
@@ -41,6 +44,8 @@ function getResultsFromAPI(searchTerm) {
 			};
       tooltipHTML += "On a 5 star greenness rating scale, our sources give the product a of <span class=\"tooltiptextemphasis\">"
 			+ Number.parseFloat(calculateScore(result.score)).toFixed(1);
+
+
 			tooltipHTML += "</span>. ";
 
 			//data quality
@@ -57,7 +62,7 @@ function getResultsFromAPI(searchTerm) {
 
 
       }
-
+			tooltipHTML += "<br><br> <a  target=\"_blank\" style=\"font-style: italic;\" href=\"https://3elephants.github.io/website/description.html\">See More Information on How We Rate Products</a> "
       tooltipHTML += "</span>"
       labelObject.append(tooltipHTML);
     }
@@ -105,8 +110,14 @@ var observer = new MutationObserver(function(mutations) {
         var searchTerm = "Soap for Goodness Sakes";
         searchTerm = $("#productTitle").text();
         searchTerm = searchTerm.trim();
+				chrome.storage.sync.get({
+			    betaMode: false,
+			    toSort: false
+			  }, function(items) {
 
-        var productGreenRating = getResultsFromAPI(searchTerm); //probably url encode product info
+					getResultsFromAPI(searchTerm, items.betaMode); //probably url encode product info
+
+			  });
 
         // We found our element, we're done:
         observer.disconnect();

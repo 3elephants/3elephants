@@ -11,9 +11,13 @@ def firstPrototypeCall(params):
     #set variables
     name = params.get("name")
     asin = params.get("asin")
+    betaMode = params.get("betaMode")
     cosmListings = params["cosmListings"]
     foodListings = params ["foodListings"]
+    thresholdEcoAccuracy = 0.8
 
+    if betaMode:
+        thresholdEcoAccuracy = 0.9
     # functions
 
     # convert cosmetics class name to class 3 Elephants score
@@ -86,10 +90,14 @@ def firstPrototypeCall(params):
             return getUnitRating(pType, startItem)
         else:
             numWords = len(Counter(cleanQuery(name)))
-
-            thresholdScore =  (numWords * 8)/(2.5 - 1.5/numWords) #if half to all words show up once in all fields we should include it
-                                                                                                        #more words means that if less of them match it is still accurate
-                                                                                                        # because more matches
+            thresholdScore = 0
+            print(betaMode)
+            if betaMode:
+                thresholdScore =  (numWords * 8)/(2.5 - 1.5/numWords) #if half to all words show up once in all fields we should include it
+                                                                                           #more words means that if less of them match it is still accurate
+                                                                                                     # because more matches
+            else:
+                thresholdScore = (numWords * 8)/(2.3 - 1.3/numWords)
             totalPossible = 0
             weightedSum = 0
             weightedSumDataQ = 0
@@ -137,7 +145,7 @@ def firstPrototypeCall(params):
     if dQ == None:
         dQ = 0
     # return logic
-    if finalScore > 0.8:
+    if finalScore > thresholdEcoAccuracy:
         return json.dumps({'has_results': hasResults, 'data_quality':dQ, 'score':finalScore, 'classification':0})
     elif finalScore < 0.5:
         return json.dumps({'has_results': hasResults, 'data_quality':dQ, 'score':finalScore,'classification':1})
