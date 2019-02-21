@@ -1,19 +1,27 @@
 {
-	"manifest_version": 2,
-	"name": "ShopGreen",
-	"description": "This is our environmentally friendly shopping project",
-	"version": "1.0.0",
-	"content_scripts": [{
-		"matches": ["http://www.amazon.com/*", "https://www.amazon.com/*", "https://www.amazon.com/*"],
-		"js": ["jquery.js", "myscript.js", "sort_script.js"],
-		"css":  ["styles.css"],
-		"run_at": "document_start"
-	}],
-	"web_accessible_resources": [
-		"assets/iconfont/*"
-	],
-	"permissions": ["http://localhost:5000/*"]
-
+  "manifest_version": 2,
+  "name": "ShopGreen",
+  "description": "This is our environmentally friendly shopping project",
+  "version": "1.0.0",
+  "content_scripts": [{
+    "matches": ["http://www.amazon.com/*", "https://www.amazon.com/*", "https://www.amazon.com/*"],
+    "js": ["jquery.js", "myscript.js", "sort_script.js"],
+    "css": ["styles.css"],
+    "run_at": "document_start"
+  }],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "web_accessible_resources": [
+    "assets/iconfont/*"
+  ],
+  
+  "permissions": ["activeTab", "declarativeContent", "storage", "http://localhost:5000/*"],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "3 Elephants"
+  }
 
 
 }

@@ -2,6 +2,7 @@ from util_functions import *
 from collections import Counter
 from enum import Enum
 from flask import json
+
 class ProductType(Enum):
     FOOD = 1
     COSMETICS = 2
@@ -11,9 +12,13 @@ def firstPrototypeCall(params):
     #set variables
     name = params.get("name")
     asin = params.get("asin")
+    betaMode = params.get("betaMode")
     cosmListings = params["cosmListings"]
     foodListings = params ["foodListings"]
+    thresholdEcoAccuracy = 0.8
 
+    if betaMode:
+        thresholdEcoAccuracy = 0.9
     # functions
 
     # convert cosmetics class name to class 3 Elephants score
@@ -78,7 +83,7 @@ def firstPrototypeCall(params):
 
     #gets the score based on food collection query
     # for use only when len(query results) > 0
-    def getScore(cursor, pType):
+    def getScore(cursor, pType, thresholdScore=0):
         startItem = cursor[0]
         startName = startItem["name"]
 
@@ -87,9 +92,13 @@ def firstPrototypeCall(params):
         else:
             numWords = len(Counter(cleanQuery(name)))
 
-            thresholdScore =  (numWords * 8)/(2.5 - 1.5/numWords) #if half to all words show up once in all fields we should include it
-                                                                                                        #more words means that if less of them match it is still accurate
-                                                                                                        # because more matches
+
+            if betaMode:
+                thresholdScore =  (numWords * 8)/(2.5 - 1.5/numWords) #if half to all words show up once in all fields we should include it
+                                                                                           #more words means that if less of them match it is still accurate
+                                                                                                     # because more matches
+            else:
+                thresholdScore = (numWords * 8)/(2.3 - 1.3/numWords)
             totalPossible = 0
             weightedSum = 0
             weightedSumDataQ = 0
@@ -137,7 +146,7 @@ def firstPrototypeCall(params):
     if dQ == None:
         dQ = 0
     # return logic
-    if finalScore > 0.8:
+    if finalScore > thresholdEcoAccuracy:
         return json.dumps({'has_results': hasResults, 'data_quality':dQ, 'score':finalScore, 'classification':0})
     elif finalScore < 0.5:
         return json.dumps({'has_results': hasResults, 'data_quality':dQ, 'score':finalScore,'classification':1})
