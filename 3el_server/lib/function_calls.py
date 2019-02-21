@@ -17,7 +17,7 @@ def firstPrototypeCall(params):
     foodListings = params ["foodListings"]
     thresholdEcoAccuracy = 0.8
 
-    if betaMode:
+    if not betaMode:
         thresholdEcoAccuracy = 0.9
     # functions
 
