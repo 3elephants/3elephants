@@ -1,0 +1,268 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(chrome-extension://__MSG_@@bcbdfklhjmhkhdloghmimgomcllhndio/assets/iconfont/MaterialIcons-Regular.eot);
+  /* For IE6-8 */
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url(chrome-extension://__MSG_@@bcbdfklhjmhkhdloghmimgomcllhndio/assets/iconfont/MaterialIcons-Regular.woff2) format('woff2'), url(chrome-extension://__MSG_@@bcbdfklhjmhkhdloghmimgomcllhndio/assets/iconfont/MaterialIcons-Regular.woff) format('woff'), url(chrome-extension://__MSG_@@bcbdfklhjmhkhdloghmimgomcllhndio/assets/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.no_data_available {
+  font-size: 14px;
+  color: #F79DA8;
+  font-weight: 200;
+  letter-spacing: 0;
+  font-style: italic;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.shop-green-dialogue {
+  width: 400px;
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  /* Light grey */
+  border-top: 16px solid #3498db;
+  /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+#loading {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  display: table;
+  opacity: 1;
+  background-color: #fff;
+  z-index: 99;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#loading-image {
+  position: fixed;
+  right: 50%;
+  left: 50%;
+  bottom: 50%;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.option div {
+  display: inline;
+}
+
+.prettycontainer {
+  width: 350px;
+}
+
+.prettycontainer li {
+  list-style: none;
+}
+
+.prettycontainer ul {
+  margin: 0px;
+  padding: 0px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked+.slider {
+  background-color: #2196F3;
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+
+/* Rounded sliders */
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+#t_el_label {
+  position: relative;
+  display: inline-block;
+}
+
+#t_el_label:hover .tooltiptext {
+  visibility: visible;
+  transition: opacity 0.1s;
+}
+
+#title_feature_div:hover .tooltiptext {
+  visibility: visible;
+  transition: opacity 0.1s;
+}
+
+#ask_feature_div:hover ~ .tooltiptext {
+  visibility: visible;
+  transition: opacity 0.1s;
+}
+
+#averageCustomerReviews:hover ~ .tooltiptext {
+  visibility: visible;
+  transition: opacity 0.1s;
+}
+
+#acBadge_feature_div:hover ~ .tooltiptext {
+  visibility: visible;
+  transition: opacity 0.1s;
+}
+
+.tooltiptext:hover {
+  visibility: visible;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: black;
+  /* Rectangle 4: */
+  background: #FFFFFF;
+  border: 1px solid #C3C3C3;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.30);
+  text-align: left;
+  border-radius: 2px;
+  padding: 20px 10px;
+  position: absolute;
+  font-size: 14px;
+  font-weight: lighter;
+  z-index: 1;
+  top: 150%;
+  left: 50%;
+  margin-left: -60px;
+  color: #8C8C8C;
+}
+
+.icon {
+  height: 10px;
+}
+
+.icon-colors {
+  color: #8C8C8C;
+  transition: opacity 0.1s;
+}
+
+.icon-colors:hover {
+  color: #C3C3C3;
+  cursor: pointer;
+}
+
+#t_el_label:hover {
+  cursor: pointer;
+}
+
+#t_el_label:hover .icon-colors {
+  color: #C3C3C3;
+  cursor: pointer;
+}
+
+.tooltiptextemphasis {
+  color: #646466;
+}
+
+.tooltiptext::after {
+  /* Rectangle 4: */
+  background: #FFFFFF;
+  border: 1px solid #C3C3C3;
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  /* At the top of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-color: transparent transparent #C3C3C3 transparent;
+}
+
+
+/*material icons support for info icon*/
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}

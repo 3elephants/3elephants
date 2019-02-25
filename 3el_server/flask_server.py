@@ -1,22 +1,24 @@
 from flask import Flask, request, json
+from lib.utilfunctions import *
 from lib.function_calls import *
-app = Flask(__name__)
+application = Flask(__name__)
 
 
 from pymongo import MongoClient
+import os
 
 
-
-client = MongoClient('localhost', 27017)
+client = MongoClient(os.environ.get('MONGO_URL'), 27017)
 db = client['3elephants']
 foodListings = db["foodListings"]
 cosmListings = db["cosmListings"]
 
 
-@app.route('/GetProductClass')
+@application.route('/GetProductClass')
 def GetProductClass():
     name = request.args.get('name')
     asin = request.args.get('asin')
+    print("made it here")
     betaMode = (request.args.get('mode') == 'true')
     params = {
         "name":name,
@@ -26,10 +28,9 @@ def GetProductClass():
     }
     if asin!=None:
         params["asin"] = asin
-
     return evalLogic(firstPrototypeCall, params)
 
-@app.route('/GetSearchResultsPageCache', methods=['POST'])
+@application.route('/GetSearchResultsPageCache', methods=['POST'])
 def GetSearchResultsPageCache():
     requestInfo = request
     products = requestInfo.json
@@ -57,4 +58,4 @@ def evalLogic(logic, params):
     return logic(params)
 
 if __name__ == '__main__':
-    app.run()
+    application.run()
