@@ -3,4 +3,4 @@ grpc-web/*
 grpc-web
 .DS_Store
 .idea/*
-
+3el_server/nltk_data/*
