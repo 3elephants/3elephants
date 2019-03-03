@@ -3,6 +3,7 @@ from collections import Counter
 from enum import Enum
 from flask import json
 
+
 class ProductType(Enum):
     FOOD = 1
     COSMETICS = 2
@@ -55,6 +56,7 @@ def firstPrototypeCall(params):
         if asinCursor.count() > 0:
             return getUnitRating(ProductType.FOOD, asinCursor[0])
 
+
     cursorFood = foodListings.find(
         {'$text': {'$search': name}},
         {'search_score': {'$meta': 'textScore'}})
@@ -67,11 +69,10 @@ def firstPrototypeCall(params):
 
 
 
-
     # Sort by 'score' field.
     cursorCosm.sort([('search_score', {'$meta': 'textScore'})])
     cursorFood.sort([('search_score', {'$meta': 'textScore'})])
-
+    # return json.dumps({'has_results': False, 'data_quality': 0, 'score': 0.0, 'classification': 2})
     numberReturnedCosm = 0 if not cursorCosm else cursorCosm.count()
     numberReturnedFood = 0 if not cursorFood else cursorFood.count()
 
