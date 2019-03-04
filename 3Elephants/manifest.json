@@ -8,7 +8,7 @@
   "version": "0.0.3",
   "content_scripts": [{
     "matches": ["http://www.amazon.com/*", "https://www.amazon.com/*", "https://www.amazon.com/*"],
-    "js": ["jquery.js", "myscript.js", "sort_script.js"],
+    "js": ["jquery.js", "controller.js", "sort_script.js"],
     "css": ["styles.css"],
     "run_at": "document_start"
   }],
