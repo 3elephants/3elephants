@@ -1,10 +1,15 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+
+
 function getResultsFromAPI(searchTerm, betaMode) {
   //Note: Call to backend service here
 
   var regex = RegExp("^(http[s]?://)?([\\w.-]+)(:[0-9]+)?/([\\w-%]+/)?(dp|gp/product|exec/obidos/asin)/(\\w+/)?(\\w{10})(.*)?$");
-  m = window.location.href.match(regex);
+  var m = window.location.href.match(regex);
 
-  encodedSearchTerm = encodeURIComponent(searchTerm);
+  var encodedSearchTerm = encodeURIComponent(searchTerm);
 
   var serverUrl = "https://sheltered-mountain-69586.herokuapp.com/GetProductClass?name=" + encodedSearchTerm + "&mode=" + betaMode;
   if (m!= null && m!=undefined && m.length > 7) {
@@ -26,11 +31,13 @@ function getResultsFromAPI(searchTerm, betaMode) {
     } else if (productGreenRating == 0)
       newText = "  <span style='color:green'> Eco Friendly </span> ";
     else if (productGreenRating == 1)
-      newText = "   <span style='color:red'> Not Eco Friendly </span>";
+      newText = "   <span style='color:red'> Not Eco Friendly <span id=\"sampleDiv\"></span> </span>";
     else if (productGreenRating == 2)
       newText = "    <span style='color:blue'> Neutral </span> ";
     else
       newText = "API return value is not valid in myscript.js";
+
+
     var labelObject = $(newText);
     if (result.has_results) {
 
@@ -67,7 +74,6 @@ function getResultsFromAPI(searchTerm, betaMode) {
 
       labelObject.append(tooltipHTML);
 
-
     }
 
 
@@ -78,13 +84,16 @@ function getResultsFromAPI(searchTerm, betaMode) {
       "overflow": "visible",
       "margin-bottom": "50px"
     });
+
+    ReactDOM.render(<App />, document.getElementById('sampleDiv'));
+
     $(function() { //incase the rest of the webpage lags and invalidates the css
       $("#productTitle").html(completeText);
       $("#title_feature_div").css({
         "overflow": "visible",
         "margin-bottom": "50px"
       });
-
+      ReactDOM.render(<App />, document.getElementById('sampleDiv'));
     });
 
 
@@ -136,20 +145,20 @@ observer.observe(document.documentElement, {
 });
 
 
-
-//Part 2: Give the product design description to the Flask server
-//*Please note that the product description's entire HTML is being retrieved, not just keywords.
-//So the algorithm has to be designed in a way that this will not dilute the score.
+//
+// Part 2: Give the product design description to the Flask server
+// *Please note that the product description's entire HTML is being retrieved, not just keywords.
+// So the algorithm has to be designed in a way that this will not dilute the score.
 // var productDescription = "This is just a product description";
 // productDescription = $("#a-section launchpad-text-left-justify").html();
-
-//No trimming necessary because of how jQuery html method works
+//
+// No trimming necessary because of how jQuery html method works
 // realProductDescription = productDescription;
 // console.log(realProductDescription);
 // giveAPITheProductDescription(realProductDescription);
-
-
-//Part 3: Get the Customer question and answers
+//
+//
+// Part 3: Get the Customer question and answers
 // var allAnswers = "This is going to be an array of customer answers";
 // var allText = "This is the allText variable";
 // allAnswers = $("#allAnswers").each(function(index) {
