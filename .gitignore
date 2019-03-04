@@ -4,3 +4,4 @@ data/*
 node_modules/*
 3el_server/nltk_data/*
 3el_server_lambda/nltk_data/*
+react-sandbox/src/.cache
