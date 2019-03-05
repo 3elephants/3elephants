@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import Rating from './components/Rating';
 
 
 function getResultsFromAPI(searchTerm, betaMode) {
@@ -37,6 +38,12 @@ function getResultsFromAPI(searchTerm, betaMode) {
     else
       newText = "API return value is not valid in myscript.js";
 
+        //1) productGreenRating is what matters here, should be in props
+        //2) We prepend a div called "rating_component" which can be modified later
+    $( "#averageCustomerReviews_feature_div" ).prepend( "<div id=\"rating_component\"></div>" );
+    ReactDOM.render(<Rating score={result.score} />, document.getElementById('rating_component'));
+    console.log("Stars rating feature added");
+    
 
     var labelObject = $(newText);
     if (result.has_results) {
@@ -109,6 +116,7 @@ function getResultsFromAPI(searchTerm, betaMode) {
 }
 var MY_SELECTOR = "productTitle"; // Could be any selector
 var observer = new MutationObserver(function(mutations) {
+  
   for (var i = 0; i < mutations.length; i++) {
     for (var j = 0; j < mutations[i].addedNodes.length; j++) {
       // We're iterating through _all_ the elements as the parser parses them,
@@ -143,6 +151,9 @@ observer.observe(document.documentElement, {
   childList: true,
   subtree: true
 });
+
+
+
 
 
 //
