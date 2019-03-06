@@ -160,17 +160,17 @@ input:checked+.slider:before {
   transition: opacity 0.1s;
 }
 
-#ask_feature_div:hover ~ .tooltiptext {
+#ask_feature_div:hover~.tooltiptext {
   visibility: visible;
   transition: opacity 0.1s;
 }
 
-#averageCustomerReviews:hover ~ .tooltiptext {
+#averageCustomerReviews:hover~.tooltiptext {
   visibility: visible;
   transition: opacity 0.1s;
 }
 
-#acBadge_feature_div:hover ~ .tooltiptext {
+#acBadge_feature_div:hover~.tooltiptext {
   visibility: visible;
   transition: opacity 0.1s;
 }
@@ -265,4 +265,13 @@ input:checked+.slider:before {
   -moz-osx-font-smoothing: grayscale;
   /* Support for IE. */
   font-feature-settings: 'liga';
+}
+
+.add-to-cart-elephants {
+  border-radius: 2px;
+  background-color: red;
+  padding: 0px 10px;
+  margin: 0px;
+  color: #FFFFFF;
+  line-height: inherit;
 }

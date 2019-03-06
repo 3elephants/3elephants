@@ -17,7 +17,8 @@
     "persistent": false
   },
   "web_accessible_resources": [
-    "assets/iconfont/*"
+    "assets/iconfont/*",
+    "assets/images/*"
   ],
 
   "permissions": ["activeTab", "declarativeContent", "storage", "https://sheltered-mountain-69586.herokuapp.com/*"],
