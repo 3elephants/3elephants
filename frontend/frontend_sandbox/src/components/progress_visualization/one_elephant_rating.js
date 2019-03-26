@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Rating from 'react-rating';
-class ElephantsRating extends Component {
+class OneElephantRating extends Component {
 
   constructor(props) {
     super(props);
@@ -46,18 +46,15 @@ class ElephantsRating extends Component {
     );
 
     return (
-    	<div id="rating_component" style="margin:10px 0px; display:flex; align-items:center" >
-        <div style="display:inline-block"><b>Green Score:</b> &nbsp; &nbsp; </div>
 	      <Rating  name="elephants-star-rating"
 
-            initialRating={this.props.score * 5}
+            initialRating={this.props.score}
             emptySymbol={<SVGIconEmpty/>}
-
-          fullSymbol={<SVGIconFull/>}
+            stop={1}
+            fullSymbol={<SVGIconFull/>}
             readonly />
-	    </div>
     );
   }
 }
 
-export default ElephantsRating;
+export default OneElephantRating;

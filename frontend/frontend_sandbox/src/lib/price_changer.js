@@ -12,12 +12,26 @@ export function create(data, variant) {
     }
     //get price
     var floatPrice = params[2] //to keep price changer create idempotent
+
     if (floatPrice == undefined || floatPrice == null)
     {
+
       var amazonPrice = $("#priceblock_ourprice").text();
+
+      amazonPrice = amazonPrice.trim();
+
+      var indexOfDelimiter = amazonPrice.indexOf(' ');
+      if(indexOfDelimiter != -1)
+        amazonPrice = amazonPrice.substr(0,indexOfDelimiter);
+      indexOfDelimiter = amazonPrice.indexOf('(');
+      if(indexOfDelimiter != -1)
+        amazonPrice = amazonPrice.substr(0,indexOfDelimiter);
+
+
       var regex = /[^0-9.]/g;
       var newPrice = amazonPrice.replace(regex, "");
       floatPrice = parseFloat(newPrice);
+
     }
 
     var amazonData = {
@@ -27,9 +41,21 @@ export function create(data, variant) {
 
     //update DOM
     var labelContainer = '<span id="elephants-price"></span>';
-    $("#priceblock_ourprice").html(labelContainer);
+    var priceContainer = $("#priceblock_ourprice");
+    var outerSpecialContainer = $("#snsPrice");
 
-    ReactDOM.render(<PriceChanger score={params[0].score} variant={params[1]} amazonData={amazonData} />, document.getElementById('elephants-price'));
+    if(outerSpecialContainer != undefined && outerSpecialContainer != null && outerSpecialContainer.length != 0) {
+      priceContainer = $("#priceblock_snsprice_Based .a-size-large").not(".aok-hidden");
+      if(priceContainer == undefined || priceContainer == null)
+        priceContainer = $("#priceblock_snsprice_Tiered .a-size-large").not(".aok-hidden");
+    }
+
+
+
+    if(priceContainer == undefined || priceContainer == null || priceContainer.length == 0)
+      return;
+    priceContainer.append(labelContainer);
+    ReactDOM.render(<PriceChanger score={params[0].score} percentage={variant.percentage} amazonData={amazonData} />, document.getElementById('elephants-price'));
 
   };
 

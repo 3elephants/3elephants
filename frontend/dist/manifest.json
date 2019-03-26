@@ -5,10 +5,10 @@
            "48": "assets/images/icon-48.png",
           "128": "assets/images/icon-128.png" },
   "description": "A browser extension that supports environmentally conscious shopping",
-  "version": "0.0.3",
+  "version": "0.0.7",
   "content_scripts": [{
     "matches": ["http://www.amazon.com/*", "https://www.amazon.com/*", "https://www.amazon.com/*"],
-    "js": ["jquery.js", "controller.js", "sort_script.js"],
+    "js": ["controller.js"],
     "css": ["styles.css"],
     "run_at": "document_start"
   }],
@@ -21,7 +21,7 @@
     "assets/images/*"
   ],
 
-  "permissions": ["activeTab", "declarativeContent", "storage", "*://*/3elephants-beta/*"],
+  "permissions": ["activeTab", "declarativeContent", "storage", "https://*.amazonaws.com/3elephants-beta/*"],
   "browser_action": {
     "default_popup": "popup.html",
     "default_title": "3 Elephants"

@@ -1,5 +1,36 @@
 import mixpanel from 'mixpanel-browser';
 
+
+// mixpanel link click event
+mixpanel.delegate_links = function (parent, selector, event_name, properties) {
+    properties = properties || {};
+    parent = parent || document.body;
+    parent = $(parent);
+
+    parent.on('click', selector, function (event) {
+        var new_tab = event.which === 2 || event.metaKey || event.target.target === '_blank';
+        console.log(event);
+        properties.url = event.currentTarget.href;
+
+        function callback() {
+
+            if (new_tab) {
+                return;
+            }
+
+            window.location = properties.url;
+        }
+
+        if (!new_tab) {
+            event.preventDefault();
+            setTimeout(callback, 300);
+        }
+
+        mixpanel.track(event_name, properties, callback);
+    });
+};
+
+
 function chooseVariant(variantsArray) {
 
 
@@ -42,7 +73,7 @@ function randomizeConfiguration(configuration) {
         continue;
       }
 
-      configuration[key].is_on = binomial(0.2);
+      configuration[key].is_on = binomial(0.5);
 
       if (key == "price") {
         configuration[key].green_tax = binomial(0.8);
@@ -61,25 +92,30 @@ export function generateConfiguration() {
       is_on: true,
       finalized: true
     },
-    tooltip: {
-      is_on: true
-    },
     background_color: {
       is_on: true
     },
     add_to_cart: {
       is_on: true
     },
+    nav_cart: {
+      is_on:true
+    },
     price: {
       is_on: true,
-      green_tax: true,
       percentage: 0.5
     },
     rating: {
-      is_on: true
+      is_on: true,
+      finalized: true
     },
-    sorting: {
-      is_on: true
+    sort_results: {
+      is_on: true,
+      finalized: true
+    },
+    restrictive_mode: {
+      is_on: false,
+      finalized:true
     }
   };
 
@@ -103,16 +139,42 @@ export function registerSession(configuration, data) {
     });
 }
 
-export function trackAddToCart() {
-  mixpanel.track_links(".nav-cart,#nav-cart", "Add To Cart", {});
-}
 
-export function trackBackButton(){
-  $(window).on('popstate', function(event) {
-      mixpanel.track("Back Button");
+export function trackAddToCart() {
+  $("#submit\\.add-to-cart").click(function() {
+      mixpanel.track("Add to Cart");
   });
 }
 
+
+export function trackNavCart() {
+  mixpanel.delegate_links(document.body, ".nav-cart,#nav-cart", "Nav Cart");
+}
+
+
+
+
+export function trackQuitNavigate(){
+  $(window).on('unload', function(event) {
+      mixpanel.track("Quit Navigation");
+  });
+}
+
+
+
+export function trackOptionsMenu(ids){
+  for(var id of ids) {
+    (function () {
+      var functionCallback = ()=> {
+        mixpanel.track(id + " option changed");
+        mixpanel.register({
+          "configuration": configuration
+        });
+      };
+      document.getElementById(id).addEventListener('click',functionCallback)
+    }());
+  }
+}
 export function trackLabelClick(){
 
   $("#t_el_label").click(function() {
@@ -128,7 +190,9 @@ export function trackRatingClick(){
 
 export function trackingCode() {
   $( document ).ready(function() {
-    trackBackButton();
+
+    trackQuitNavigate();
+    trackNavCart();
     trackAddToCart();
     trackLabelClick();
     trackRatingClick();

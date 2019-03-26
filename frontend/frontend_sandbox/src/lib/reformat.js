@@ -19,9 +19,18 @@ export function changeBackgroundColor(data) {
   if (data.classification == 1) {
     var updateLogic = (params) => { //private logic is where core dom updating logic is placed
 
-      $("#leftCol").css({
+      $("#leftCol, #centerCol, .a-container, .a-box").css({
         "background-color": "#ffd6d6"
       });
+      $(".a-container").css({
+        "padding-top":"100px"
+      });
+
+      $(".a-box").css({
+        "border-color":"#8b0000"
+      });
+
+
       $("#t_el_label").css({
         "color": "#8b0000"
       });

@@ -2,9 +2,26 @@
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(chrome-extension://__MSG_@@bcbdfklhjmhkhdloghmimgomcllhndio/assets/iconfont/MaterialIcons-Regular.eot);
+  src: url(chrome-extension://__MSG_@@jgepdcjmbmlngiilglhiccojaonmjnpm/assets/iconfont/MaterialIcons-Regular.eot);
   /* For IE6-8 */
-  src: local('Material Icons'), local('MaterialIcons-Regular'), url(chrome-extension://__MSG_@@bcbdfklhjmhkhdloghmimgomcllhndio/assets/iconfont/MaterialIcons-Regular.woff2) format('woff2'), url(chrome-extension://__MSG_@@bcbdfklhjmhkhdloghmimgomcllhndio/assets/iconfont/MaterialIcons-Regular.woff) format('woff'), url(chrome-extension://__MSG_@@bcbdfklhjmhkhdloghmimgomcllhndio/assets/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url(chrome-extension://__MSG_@@jgepdcjmbmlngiilglhiccojaonmjnpm/assets/iconfont/MaterialIcons-Regular.woff2) format('woff2'), url(chrome-extension://__MSG_@@jgepdcjmbmlngiilglhiccojaonmjnpm/assets/iconfont/MaterialIcons-Regular.woff) format('woff'), url(chrome-extension://__MSG_@@bcbdfklhjmhkhdloghmimgomcllhndio/assets/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.elephants-link-no-style {
+  color: #000000;
+  text-decoration: none;
+}
+
+
+.elephants-link-no-style:hover {
+  color: #000000;
+  text-decoration: none;
+}
+
+
+.elephants-link-no-style:active {
+  color: #000000;
+  text-decoration: none;
 }
 
 .no_data_available {
@@ -14,7 +31,10 @@
   letter-spacing: 0;
   font-style: italic;
 }
-
+.elephants-price-text {
+  font-size: 14px;
+  color:#0A9A6E;
+}
 .switch {
   position: relative;
   display: inline-block;
@@ -150,40 +170,28 @@ input:checked+.slider:before {
   display: inline-block;
 }
 
-#t_el_label:hover .tooltiptext {
-  visibility: visible;
-  transition: opacity 0.1s;
-}
-
-#title_feature_div:hover .tooltiptext {
-  visibility: visible;
-  transition: opacity 0.1s;
-}
-
-#ask_feature_div:hover~.tooltiptext {
-  visibility: visible;
-  transition: opacity 0.1s;
-}
-
-#averageCustomerReviews:hover~.tooltiptext {
-  visibility: visible;
-  transition: opacity 0.1s;
-}
-
-#acBadge_feature_div:hover~.tooltiptext {
-  visibility: visible;
-  transition: opacity 0.1s;
-}
 
 .tooltiptext:hover {
   visibility: visible;
 }
 
-.tooltiptext {
+#elephant-data-tooltip-span:hover  .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+
+}
+#elephant-data-tooltip-span {
+  position: relative;
+  display: inline-block;
+
+}
+#elephant-data-tooltip-span .tooltiptext {
   visibility: hidden;
   width: 200px;
-  background-color: black;
+  opacity: 0;
+  transition: opacity 1s;
   /* Rectangle 4: */
+
   background: #FFFFFF;
   border: 1px solid #C3C3C3;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.30);
@@ -194,9 +202,9 @@ input:checked+.slider:before {
   font-size: 14px;
   font-weight: lighter;
   z-index: 1;
-  top: 150%;
+  top: 100%;
   left: 50%;
-  margin-left: -60px;
+  margin-left: -98px;
   color: #8C8C8C;
 }
 
@@ -229,7 +237,7 @@ input:checked+.slider:before {
 
 .tooltiptext::after {
   /* Rectangle 4: */
-  background: #FFFFFF;
+  background: transparent;
   border: 1px solid #C3C3C3;
   content: " ";
   position: absolute;
@@ -248,7 +256,7 @@ input:checked+.slider:before {
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;
+  font-size: 16px;
   /* Preferred icon size */
   display: inline-block;
   line-height: 1;

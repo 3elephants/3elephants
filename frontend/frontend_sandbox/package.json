@@ -3,15 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "chart.js": "^2.8.0",
     "jquery": "^3.3.1",
     "lib": "^4.0.1",
     "mixpanel-browser": "^2.27.1",
+    "popper.js": "^1.14.7",
     "preact": "^8.4.2",
     "preact-compat": "^3.18.4",
-    "react": "^16.8.3",
-    "react-dom": "^16.8.3",
+    "react": "^16.0.0",
+    "react-chartjs-2": "^2.7.4",
+    "react-circular-progressbar": "^1.0.0",
+    "react-dom": "^16.0.0",
     "react-rating": "^1.6.2",
     "react-scripts": "2.1.5",
+    "react-share": "^2.4.0",
+    "reactstrap": "^7.1.0",
     "utils": "^0.3.1"
   },
   "scripts": {
@@ -32,5 +38,8 @@
   "alias": {
     "react": "preact-compat",
     "react-dom": "preact-compat"
+  },
+  "devDependencies": {
+    "sass": "^1.17.3"
   }
 }

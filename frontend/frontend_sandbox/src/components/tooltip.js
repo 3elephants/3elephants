@@ -18,18 +18,24 @@ class Tooltip extends Component {
     };
     return (
       <span>
-      {this.result.data_quality >=2 &&
         <span>
+          &nbsp;
           <i className="material-icons icon-colors">info</i>
           <span className="tooltiptext">
-
-            <br/> <br/> Based on
-            <span className="tooltiptextemphasis">
+            {this.result.data_quality >=2 &&
+              <span>
+            <br/>
+            Based on <span className="tooltiptextemphasis">
               {dQratingsMap[Math.round(this.result.data_quality)]}
             </span> amount of data.
+            </span>
+            }
+            <br/>
+            <a  target="_blank" style="font-style: italic;" href="https://3elephants.github.io/website/description.html">
+              See More Information on How We Rate Products
+            </a>
           </span>
         </span>
-      }
       </span>
     );
   }

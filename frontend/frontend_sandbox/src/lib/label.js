@@ -12,7 +12,7 @@ export function create(data) {
       return;
     }
     var labelContainer = '<span id="elephant-label-span"> </span>';
-    $("#productTitle").append(labelContainer);
+    $("#productTitle").after(labelContainer);
 
     ReactDOM.render( <Label data={params[0]}/> , document.getElementById('elephant-label-span'));
   };
