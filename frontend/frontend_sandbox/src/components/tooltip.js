@@ -20,7 +20,7 @@ class Tooltip extends Component {
       <span>
         <span>
           &nbsp;
-          <i className="material-icons icon-colors">info</i>
+          <i className="material-icons icon-colors">&#9432;</i>
           <span className="tooltiptext">
             {this.result.data_quality >=2 &&
               <span>

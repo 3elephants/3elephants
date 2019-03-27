@@ -30,7 +30,7 @@ function addClickListeners(options) {
   for (var i=0; i< options.length; ++i) {
     (function () {
     var option = options[i];
-    var newFunc = () =>  saveOptions(option.features,document.getElementById(option.id).checked);
+    var newFunc = () =>  saveOptions(option.features,document.getElementById(option.id).checked, ()=>{});
     document.getElementById(options[i].id).addEventListener('click', newFunc);
     }());
   }

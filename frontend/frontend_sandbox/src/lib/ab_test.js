@@ -131,7 +131,7 @@ export function mixpanelInstall() {
     mixpanel.init("65ea6d2abd34039ed97c8018eaf15e78");
 }
 export function registerSession(configuration, data) {
-    mixpanel.register_once({
+    mixpanel.register({
         "configuration":configuration
     });
     mixpanel.register({
@@ -163,12 +163,22 @@ export function trackQuitNavigate(){
 
 
 export function trackOptionsMenu(ids){
-  for(var id of ids) {
+
+  for(var i = 0; i<ids.length; ++i) {
     (function () {
+      var id = ids[i];
+
       var functionCallback = ()=> {
-        mixpanel.track(id + " option changed");
-        mixpanel.register({
-          "configuration": configuration
+        chrome.storage.sync.get(['elephants_feature_settings'], function(result) {
+          if (result.elephants_feature_settings == undefined || result.elephants_feature_settings == null)
+            result.elephants_feature_settings = generateConfiguration();
+
+          mixpanelInstall();
+          registerSession(result.elephants_feature_settings, []);
+
+
+          mixpanel.track(id + " option changed");
+
         });
       };
       document.getElementById(id).addEventListener('click',functionCallback)

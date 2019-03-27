@@ -83,7 +83,7 @@ export function create() {
     chrome.storage.sync.get(['elephants_feature_settings'], function(result) {
       if (result.elephants_feature_settings == undefined || result.elephants_feature_settings == null)
         result.elephants_feature_settings = abTest.generateConfiguration();
-      if (result.elephants_feature_settings.sort_results) {
+      if (result.elephants_feature_settings.sort_results.is_on) {
         $(".s-desktop-toolbar .a-text-right").html('<input type="checkbox" id="elephants-sort-results" name="" checked> Sort By Green Score ');
         document.getElementById('elephants-sort-results').addEventListener('click',
           saveOptions);
