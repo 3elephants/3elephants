@@ -137,6 +137,9 @@ export function registerSession(configuration, data) {
     mixpanel.register({
       "data":data
     });
+    mixpanel.register({
+      "dev":true
+    });
 }
 
 

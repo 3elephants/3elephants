@@ -55,6 +55,10 @@ class OptionsMenu extends Component {
 
                 </li>
                 <li>
+                <span className="small-elephants"> **This is just to make you more aware of products we identify as potentially hazardous. We don't charge you anything.</span>
+                </li>
+
+                <li>
                       <input type="checkbox" id="bg-color"/>
 
 
