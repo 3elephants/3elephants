@@ -8,12 +8,12 @@ If you are curious to learn about the project roadmap; please check out our [Tre
 
 ### Prerequisites
 
-* node and npm
+* node (v8 or greater - update node if you don't have this) and npm
 * python3.5 or greater
 * MongoDB (optional if you do not plan to modify the database)
 
 
-### Installation Instructions
+### Quickstart Instructions
 ```
 git clone https://github.com/3elephants/3elephants
 git checkout -b <your_name>_branch
@@ -50,10 +50,10 @@ The following should now appear in the chrome extensions page.
 There may be a button that says that "Errors" exist if you run the development version.
 This is because parcel, the frontend code bundler used by the project, in the development version, will try to update the chrome extension automatically, but it will fail to do so. You can feel free to ignore this issue.
 
-Chrome does not automatically update the plugin when the code changes. In order to update the plugin on chrome after you've changed the code, you may either go through the steps above again or download [Extensions Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid), a chrome extension that reloads code for extensions with a click on a button. Suggestions and pull requests for resolving immediate reloading experience for developers are welcome.
+Chrome does not automatically update the plugin when the code changes. In order to update the plugin on chrome after you've changed the code, you may either go through the steps above again or download [Extensions Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid), a chrome extension that reloads code for extensions with a click on a button. Suggestions and pull requests for improving the reloading experience for developers are welcome.
 
 #### Running the Backend
-To run the backend
+To run the backend:
 
 ```
 # create a python virtual environment or work with your global environment if you are ok with that. But make sure your default python  
@@ -64,7 +64,7 @@ python data_downloading/setup.py
 ./backend/sandbox/deploy.sh
 ```
 
-The backend is a little bit more tricky. We use AWS lambda and API gateway, so think of the backend as a group of isolated functions using API Gateway as an interface. We're working on making the backend more accessible to open source contributors, but here's a starters guide:
+Contributing to the backend is a little bit more tricky. We use AWS lambda and API gateway, so think of the backend as a group of isolated functions using API Gateway as an interface. We're working on making the backend more accessible to open source contributors, but here's a starters guide:
 
 1. Add new functions to [backend/functions.py](backend/sandbox/functions.py)
 2. Add any necessary test cases in [backend/sandbox/tests.py](backend/sandbox/tests.py)  
@@ -102,7 +102,7 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 ## License
 
-This project is licensed under the GLPv3 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgments
 
