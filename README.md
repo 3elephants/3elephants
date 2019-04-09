@@ -8,12 +8,13 @@ If you are curious to learn about the project roadmap; please check out our [Tre
 
 ### Prerequisites
 
-* node (v8 or greater - update node if you don't have this) and npm
+* node (v8 or greater - [update node by reinstalling it](https://nodejs.org/en/) if you don't have this)
+* npm
 * python3.5 or greater
-* MongoDB (optional if you do not plan to modify the database)
+* Mongo and MongoD tools (optional if you do not plan to modify the database)
 
 
-### Quickstart Instructions
+### Initial Setup
 ```
 git clone https://github.com/3elephants/3elephants
 git checkout -b <your_name>_branch
