@@ -29,6 +29,7 @@ cd frontend
 ```
 ./frontend_sandbox/install/dev_deploy.sh
 ```
+What this script does is that it compiles and bundles the frontend_sandbox code into `dist/`. Additionally, it watches the code for any additional changes automatically updating `dist/` when changes in `frontend_sandbox` occur.
 
 #### For a Production Build
 ```
@@ -37,6 +38,10 @@ cd frontend
 
 Open the Chrome Extensions Page.
 ![How to Open Chrome Extensions Page](docs/readme_screenshot_1.png)
+
+Turn on Developer Mode on the top right corner.
+![Developer Mode](docs/readme_screenshot_5.png) 
+
 
 Click "Load Unpacked" on the top left corner.
 ![Load Unpacked](docs/readme_screenshot_2.png)
@@ -106,4 +111,4 @@ This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.
 
 ## Acknowledgments
 
-* Hat tip to contributors: Aditya Aggarwal and Sail Allu. Please add your name to this README in your pull request; we aim to acknowledge any contributions.
+* Hat tip to contributors: Sail Allu and Aditya Aggarwal. Please add your name to this README in your pull request; we aim to acknowledge any contributions.
