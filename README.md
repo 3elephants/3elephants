@@ -30,7 +30,7 @@ cd frontend
 ```
 ./frontend_sandbox/install/dev_deploy.sh
 ```
-What this script does is that it compiles and bundles the frontend_sandbox code into `dist/`. Additionally, it watches the code for any additional changes automatically updating `dist/` when changes in `frontend_sandbox` occur.
+What this script does is that it compiles and bundles the `frontend_sandbox` code into `dist/`. Additionally, it watches the code for any additional changes automatically updating `dist/` when changes in `frontend_sandbox` occur.
 
 #### For a Production Build
 ```
