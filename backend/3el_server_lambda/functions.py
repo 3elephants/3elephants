@@ -200,7 +200,3 @@ def combinedTechnique(event, context):
 #actual function
 def search_results_page_cache(event, context):
     return search_results_page_cache_multithreaded(event, context)
-
-
-
-
