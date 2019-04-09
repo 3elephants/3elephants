@@ -82,9 +82,9 @@ For most cases, we recommend using our preset MongoDB database URL. However, you
 For data collection,
 1) Write code used to download information in (data_downloading/downloaders/<data_collection_project_name>).
 2) Afterwards, upload the data collected to this [Google Drive Folder](). As this project falls under the GPL License, the information collected through this project will not be used for commercial aims.
-3) In your contribution, explain through a .txt file how you expect this data to be integrated in the database.  More specific the better and more likely your data collection work will be integrated into the project's database. We aim to integrate  such work when possible.
+3) In your contribution, explain through a .txt file how you expect this data to be integrated in the database.  More specific the better and more likely your data collection work will be integrated into the project's database. We aim to integrate such work when possible.
 
-However, if you do also want to figure out how to update the information in the database, then you must setup a MongoDB instance locally. Please note, the following instructions cater to experienced MongoDB users only. In a future update,
+However, if you do also want to figure out how to update the information in the database, then you must setup a MongoDB instance locally. Please note, the following instructions cater to experienced MongoDB users only.
 
 The following steps are required:
 
