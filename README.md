@@ -40,10 +40,12 @@ Open the Chrome Extensions Page.
 ![How to Open Chrome Extensions Page](docs/readme_screenshot_1.png)
 
 Turn on Developer Mode on the top right corner.
-![Developer Mode](docs/readme_screenshot_5.png) 
+
+![Developer Mode](docs/readme_screenshot_5.png)
 
 
 Click "Load Unpacked" on the top left corner.
+
 ![Load Unpacked](docs/readme_screenshot_2.png)
 
 Navigate to the [frontend/frontend_sandbox/dist](frontend/frontend_sandbox/dist) folder, click Select in the bottom right corner.
