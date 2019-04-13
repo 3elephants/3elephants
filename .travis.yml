@@ -6,5 +6,6 @@ install:
   - source backend/.env
   - pip install -r backend/requirements.txt
   - pip install -U pytest
+  - python backend/setup.py
 script:
   - pytest backend/src/tests.py
