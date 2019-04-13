@@ -4,8 +4,6 @@
 Right now we do this by reviewing the eco-friendliness of products on Amazon.
 If you are curious to learn about the project roadmap; please check out our [Trello Board](https://trello.com/b/ar3tb4be/3elephants).
 
-[![Build Status](https://travis-ci.org/3elephants/3elephants.svg?branch=master)](https://travis-ci.org/3elephants/3elephants)
-
 ## Getting Started
 
 ### Prerequisites
@@ -82,7 +80,7 @@ We use AWS lambda and API gateway, so think of the backend as a group of isolate
 2. Add any necessary test cases in [backend/src/tests.py](backend/src/tests.py)  
 3. Test by running the test cases or directly running the function by using `python -c 'print(<function_name>(...params))'`
 4. Add a route to [backend/src/flask_server.py](backend/src/flask_server.py). This file is used for a Flask app that allows developers like yourself to contribute to the backend without having to configure their own API Gateway and AWS Lambda setup.
-5. When you're done (first stop the current dev server if you are running one) and run `./dev_deploy.sh` or if you don't want to run the test cases and just want the development server `python backend/src/flask_server.py`.
+5. When you're done (first stop the current dev server if you are running one) and run `./dev_deploy.sh`.
 
 Try to abstract as much work as possible into the [backend/src/lib](backend/src/lib) folder (_For now use your best judgement, based on the style of other functions, but stay posted for more specifics on how to do this._).
 
@@ -113,8 +111,6 @@ The following steps are required:
   ```
 
 ## Running the tests
-
-[![Build Status](https://travis-ci.org/3elephants/3elephants.svg?branch=master)](https://travis-ci.org/3elephants/3elephants)
 
 #### Backend Test Cases
 

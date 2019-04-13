@@ -1,6 +1,6 @@
 language: python
   - "3.6"
 install:
-  - ./backend/setup.sh
+  - ./setup.sh
 script:
   - pytest backend/src/tests.py
