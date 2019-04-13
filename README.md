@@ -85,26 +85,35 @@ We use AWS lambda and API gateway, so think of the backend as a group of isolate
 Try to abstract as much work as possible into the [backend/src/lib](backend/src/lib) folder (_For now use your best judgement, based on the style of other functions, but stay posted for more specifics on how to do this._).
 
 
-#### Modifying the Database
+###  Modifying the Database
 
+#### Data Collection
 For most cases, we recommend using our preset MongoDB database URL. However, you might want to work on data collection and updating the database.
 
 For data collection,
-1) Write code used to download information in (data_downloading/downloaders/<data_collection_project_name>).
-2) Afterwards, upload the data collected to this [Google Drive Folder](). As this project falls under the GPL License, the information collected through this project will not be used for commercial aims.
-3) In your contribution, explain through a .txt file how you expect this data to be integrated in the database.  More specific the better and more likely your data collection work will be integrated into the project's database. We aim to integrate such work when possible.
+1) Write code used to download information in (`data_downloading/downloaders/<data_collection_project_name>`). Please comment your code and include any documentation you think may be necessary for a developer to understand it. Make a pull request to the master branch with this code.
+2) Afterwards, fill out this [request form](https://forms.gle/ZYwACUHAvQHFa9fJA). As this project falls under the GPL License, the information collected through this project will not be used for commercial aims.
+#### Running the Database Locally
 
 However, if you do also want to figure out how to update the information in the database, then you must setup a MongoDB instance locally. Please note, the following instructions cater to experienced MongoDB users only.
 
 The following steps are required:
 
 * create a new database called 3Elephants
-* `mongorestore` the database files in this [Google Drive Folder]()
-* create the indices specified in `create_indices.js`
+* `mongorestore` the database files in this [Google Drive Folder](https://drive.google.com/open?id=1bz84TSUN5LkenOcrm4fSfElhfvFPW4sd).
+* create the indices specified in `data_downloading/downloaders/create_indices.js`
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+#### Backend Test Cases
+
+To run backend test cases, it is as simple as:
+
+`py.test backend/src/tests.py`
+
+#### Frontend Test Cases
+
+_Coming Soon - Stay Tuned!_
 
 <!-- ## Contributing
 
@@ -116,4 +125,5 @@ This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.
 
 ## Acknowledgments
 
-* Hat tip to contributors: Sail Allu and Aditya Aggarwal. Please add your name to this README in your pull request; we aim to acknowledge any contributions.
+Hat tip to contributors: Sail Allu and Aditya Aggarwal. Please add your name to this README in your pull request; we aim to acknowledge any contributions. It is contributors like yourself that make this project run
+- _with ❤️, 3 Elephants_
