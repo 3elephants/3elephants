@@ -60,27 +60,29 @@ This is because parcel, the frontend code bundler used by the project, in the de
 
 Chrome does not automatically update the plugin when the code changes. In order to update the plugin on chrome after you've changed the code, you may either go through the steps above again or download [Extensions Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid), a chrome extension that reloads code for extensions with a click on a button. Suggestions and pull requests for improving the reloading experience for developers are welcome.
 
-#### Running the Backend
-To run the backend:
+### Running the Backend
+
+#### First Run
+To get started with the backend:
 
 ```
 # create a python virtual environment or work with your global environment if you are ok with that. But make sure your default python  
 # version is 3.5 or above.
 cd backend
-pip install -r requirements.txt
-python data_downloading/setup.py
-./backend/sandbox/deploy.sh
+./setup.sh
+./dev_deploy.sh
 ```
+#### Steps for Contributing to the Backend
 
-Contributing to the backend is a little bit more tricky. We use AWS lambda and API gateway, so think of the backend as a group of isolated functions using API Gateway as an interface. We're working on making the backend more accessible to open source contributors, but here's a starters guide:
+We use AWS lambda and API gateway, so think of the backend as a group of isolated functions using API Gateway as an interface. To start contributing to the backend:
 
-1. Add new functions to [backend/functions.py](backend/sandbox/functions.py)
-2. Add any necessary test cases in [backend/sandbox/tests.py](backend/sandbox/tests.py)  
+1. Add new functions to [backend/src/functions.py](backend/src/functions.py)
+2. Add any necessary test cases in [backend/sandbox/tests.py](backend/src/tests.py)  
 3. Test by running the test cases or directly running the function by using `python -c 'print(<function_name>(...params))'`
-4. Add a route to [backend/3el_server/flask_server.py](backend/3el_server/flask_server.py). This file is used for a Flask app that allows developers like yourself to contribute to the backend without having to configure their own API Gateway and AWS Lambda setup.
-5. When you're done run `./backend/sandbox/deploy.sh`.
+4. Add a route to [backend/src/flask_server.py](backend/src/flask_server.py). This file is used for a Flask app that allows developers like yourself to contribute to the backend without having to configure their own API Gateway and AWS Lambda setup.
+5. When you're done (first stop the current dev server if you are running one) and run `./dev_deploy.sh`.
 
-Try to abstract as much work as possible into the [backend/sandbox/lib](backend/sandbox/lib) folder (_For now use your best judgement, based on the style of other functions, but stay posted for more specifics on how to do this._).
+Try to abstract as much work as possible into the [backend/src/lib](backend/src/lib) folder (_For now use your best judgement, based on the style of other functions, but stay posted for more specifics on how to do this._).
 
 
 #### Modifying the Database
@@ -104,9 +106,9 @@ The following steps are required:
 
 Explain how to run the automated tests for this system
 
-## Contributing
+<!-- ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us. -->
 
 ## License
 
