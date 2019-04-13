@@ -91,8 +91,8 @@ Try to abstract as much work as possible into the [backend/src/lib](backend/src/
 For most cases, we recommend using our preset MongoDB database URL. However, you might want to work on data collection and updating the database.
 
 For data collection,
-1) Write code used to download information in (`data_downloading/downloaders/<data_collection_project_name>`). Please comment your code and include any documentation you think may be necessary for a developer to understand it. Make a pull request to the master branch with this code.
-2) Afterwards, fill out this [request form](https://forms.gle/ZYwACUHAvQHFa9fJA). As this project falls under the GPL License, the information collected through this project will not be used for commercial aims.
+1. Write code used to download information in (`data_downloading/downloaders/<data_collection_project_name>`). Please comment your code and include any documentation you think may be necessary for a developer to understand it. Make a pull request to the master branch with this code.
+2. Afterwards, fill out this [request form](https://forms.gle/ZYwACUHAvQHFa9fJA). As this project falls under the GPL License, the information collected through this project will not be used for commercial aims.
 #### Running the Database Locally
 
 However, if you do also want to figure out how to update the information in the database, then you must setup a MongoDB instance locally. Please note, the following instructions cater to experienced MongoDB users only.
