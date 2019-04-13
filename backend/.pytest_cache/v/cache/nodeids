@@ -1,0 +1,4 @@
+[
+  "src/tests.py::TestQuery::()::testQueryCampbellSoup",
+  "src/tests.py::TestSort::()::testSort"
+]
