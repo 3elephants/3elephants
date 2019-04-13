@@ -53,19 +53,20 @@ def firstPrototypeCall(params):
 
     if asin != None:
         asinCursor = foodListings.find({"asin_list": asin}) #if we find the asin in the database
-        if asinCursor.count() > 0:
+
+        if foodListings.count_documents({"asin_list": asin}) > 0:
             return getUnitRating(ProductType.FOOD, asinCursor[0])
 
 
     cursorFood = foodListings.find(
         {'$text': {'$search': name}},
         {'search_score': {'$meta': 'textScore'}})
-
+    foodCount = foodListings.count_documents({'$text': {'$search': name}})
 
     cursorCosm = cosmListings.find(
         {'$text': {'$search': name}},
         {'search_score': {'$meta': 'textScore'}})
-
+    cosmCount = cosmListings.count_documents({'$text': {'$search': name}})
 
 
 
@@ -73,8 +74,8 @@ def firstPrototypeCall(params):
     cursorCosm.sort([('search_score', {'$meta': 'textScore'})])
     cursorFood.sort([('search_score', {'$meta': 'textScore'})])
     # return json.dumps({'has_results': False, 'data_quality': 0, 'score': 0.0, 'classification': 2})
-    numberReturnedCosm = 0 if not cursorCosm else cursorCosm.count()
-    numberReturnedFood = 0 if not cursorFood else cursorFood.count()
+    numberReturnedCosm = 0 if not cursorCosm else cosmCount
+    numberReturnedFood = 0 if not cursorFood else foodCount  
 
 
 
