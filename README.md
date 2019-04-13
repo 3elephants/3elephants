@@ -77,7 +77,7 @@ cd backend
 We use AWS lambda and API gateway, so think of the backend as a group of isolated functions using API Gateway as an interface. To start contributing to the backend:
 
 1. Add new functions to [backend/src/functions.py](backend/src/functions.py)
-2. Add any necessary test cases in [backend/sandbox/tests.py](backend/src/tests.py)  
+2. Add any necessary test cases in [backend/src/tests.py](backend/src/tests.py)  
 3. Test by running the test cases or directly running the function by using `python -c 'print(<function_name>(...params))'`
 4. Add a route to [backend/src/flask_server.py](backend/src/flask_server.py). This file is used for a Flask app that allows developers like yourself to contribute to the backend without having to configure their own API Gateway and AWS Lambda setup.
 5. When you're done (first stop the current dev server if you are running one) and run `./dev_deploy.sh`.
@@ -125,5 +125,4 @@ This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.
 
 ## Acknowledgments
 
-Hat tip to contributors: Sail Allu and Aditya Aggarwal. Please add your name to this README in your pull request; we aim to acknowledge any contributions. It is contributors like yourself that make this project run
-- _with ❤️, 3 Elephants_
+Hat tip to contributors: Sail Allu and Aditya Aggarwal. Please add your name to this README in your pull request; we aim to acknowledge any contributions. It is contributors like yourself that make this project run - ❤️ _[3 Elephants](http://3elephants.github.io)_
