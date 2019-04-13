@@ -2,6 +2,6 @@ language: python
 python: 3.6
 install:
   - source backend/.env
-  - sudo pip install -r backend/requirements.txt
+  - sudo pip3 install -r backend/requirements.txt
 script:
   - pytest backend/src/tests.py
