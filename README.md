@@ -114,8 +114,6 @@ The following steps are required:
 
 ## Running the tests
 
-[![Build Status](https://travis-ci.org/3elephants/3elephants.svg?branch=master)](https://travis-ci.org/3elephants/3elephants)
-
 #### Backend Test Cases
 
 To run backend test cases, it is as simple as:
