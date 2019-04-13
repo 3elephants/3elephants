@@ -1,7 +1,8 @@
+dist: xenial
 language: python
 python: 3.6
 install:
-  - source backend/.env
-  - sudo pip3 install -r backend/requirements.txt
+  - pip3 install --upgrade pip
+  - ./backend/setup.sh
 script:
   - pytest backend/src/tests.py
