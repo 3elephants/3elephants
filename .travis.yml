@@ -1,6 +1,7 @@
 language: python
 python: 3.6
 install:
-  - ./backend/setup.sh
+  - source backend/.env
+  - sudo pip install -r backend/requirements.txt
 script:
   - pytest backend/src/tests.py
