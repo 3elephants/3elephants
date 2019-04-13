@@ -4,6 +4,8 @@
 Right now we do this by reviewing the eco-friendliness of products on Amazon.
 If you are curious to learn about the project roadmap; please check out our [Trello Board](https://trello.com/b/ar3tb4be/3elephants).
 
+[![Build Status](https://travis-ci.org/3elephants/3elephants.svg?branch=master)](https://travis-ci.org/3elephants/3elephants)
+
 ## Getting Started
 
 ### Prerequisites
@@ -111,6 +113,9 @@ The following steps are required:
   ```
 
 ## Running the tests
+
+[![Build Status](https://travis-ci.org/3elephants/3elephants.svg?branch=master)](https://travis-ci.org/3elephants/3elephants)
+
 
 #### Backend Test Cases
 
