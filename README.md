@@ -11,7 +11,7 @@ If you are curious to learn about the project roadmap; please check out our [Tre
 * node (v8 or greater - [update node by reinstalling it](https://nodejs.org/en/) if you don't have this)
 * npm
 * python3.5 or greater
-* Mongo and MongoD tools (optional if you do not plan to modify the database)
+* MongoDB 4.0 or greater (optional if you do not plan to modify the database)
 
 
 ### Initial Setup
@@ -60,53 +60,71 @@ This is because parcel, the frontend code bundler used by the project, in the de
 
 Chrome does not automatically update the plugin when the code changes. In order to update the plugin on chrome after you've changed the code, you may either go through the steps above again or download [Extensions Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid), a chrome extension that reloads code for extensions with a click on a button. Suggestions and pull requests for improving the reloading experience for developers are welcome.
 
-#### Running the Backend
-To run the backend:
+### Running the Backend
+
+#### First Run
+To get started with the backend:
 
 ```
 # create a python virtual environment or work with your global environment if you are ok with that. But make sure your default python  
 # version is 3.5 or above.
 cd backend
-pip install -r requirements.txt
-python data_downloading/setup.py
-./backend/sandbox/deploy.sh
+./setup.sh
+./dev_deploy.sh
 ```
+#### Steps for Contributing to the Backend
 
-Contributing to the backend is a little bit more tricky. We use AWS lambda and API gateway, so think of the backend as a group of isolated functions using API Gateway as an interface. We're working on making the backend more accessible to open source contributors, but here's a starters guide:
+We use AWS lambda and API gateway, so think of the backend as a group of isolated functions using API Gateway as an interface. To start contributing to the backend:
 
-1. Add new functions to [backend/functions.py](backend/sandbox/functions.py)
-2. Add any necessary test cases in [backend/sandbox/tests.py](backend/sandbox/tests.py)  
+1. Add new functions to [backend/src/functions.py](backend/src/functions.py)
+2. Add any necessary test cases in [backend/src/tests.py](backend/src/tests.py)  
 3. Test by running the test cases or directly running the function by using `python -c 'print(<function_name>(...params))'`
-4. Add a route to [backend/3el_server/flask_server.py](backend/3el_server/flask_server.py). This file is used for a Flask app that allows developers like yourself to contribute to the backend without having to configure their own API Gateway and AWS Lambda setup.
-5. When you're done run `./backend/sandbox/deploy.sh`.
+4. Add a route to [backend/src/flask_server.py](backend/src/flask_server.py). This file is used for a Flask app that allows developers like yourself to contribute to the backend without having to configure their own API Gateway and AWS Lambda setup.
+5. When you're done (first stop the current dev server if you are running one) and run `./dev_deploy.sh`.
 
-Try to abstract as much work as possible into the [backend/sandbox/lib](backend/sandbox/lib) folder (_For now use your best judgement, based on the style of other functions, but stay posted for more specifics on how to do this._).
+Try to abstract as much work as possible into the [backend/src/lib](backend/src/lib) folder (_For now use your best judgement, based on the style of other functions, but stay posted for more specifics on how to do this._).
 
 
-#### Modifying the Database
+###  Modifying the Database
 
+#### Data Collection
 For most cases, we recommend using our preset MongoDB database URL. However, you might want to work on data collection and updating the database.
 
 For data collection,
-1) Write code used to download information in (data_downloading/downloaders/<data_collection_project_name>).
-2) Afterwards, upload the data collected to this [Google Drive Folder](). As this project falls under the GPL License, the information collected through this project will not be used for commercial aims.
-3) In your contribution, explain through a .txt file how you expect this data to be integrated in the database.  More specific the better and more likely your data collection work will be integrated into the project's database. We aim to integrate such work when possible.
+1. Write code used to download information in (`data_downloading/downloaders/<data_collection_project_name>`). Please comment your code and include any documentation you think may be necessary for a developer to understand it. Make a pull request to the master branch with this code.
+2. Afterwards, fill out this [request form](https://forms.gle/ZYwACUHAvQHFa9fJA). As this project falls under the GPL License, the information collected through this project will not be used for commercial aims.
+#### Running the Database Locally
 
 However, if you do also want to figure out how to update the information in the database, then you must setup a MongoDB instance locally. Please note, the following instructions cater to experienced MongoDB users only.
 
 The following steps are required:
-
-* create a new database called 3Elephants
-* `mongorestore` the database files in this [Google Drive Folder]()
-* create the indices specified in `create_indices.js`
+* start mongo using `mongod`
+*  Download the data from this [Google Drive Folder](https://drive.google.com/open?id=1bz84TSUN5LkenOcrm4fSfElhfvFPW4sd) (make sure it is not anywhere in the project directory)
+* unzip this data
+* run `mongorestore --db 3elephants dump/`
+* and run
+  ```
+  cd <project root directory>
+  cd data_downloading/downloaders
+  npm i
+  node data_downloading/downloaders/create_indices.js
+  ```
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+#### Backend Test Cases
 
-## Contributing
+To run backend test cases, it is as simple as:
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+`py.test backend/src/tests.py`
+
+#### Frontend Test Cases
+
+_Coming Soon - Stay Tuned!_
+
+<!-- ## Contributing
+
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us. -->
 
 ## License
 
@@ -114,4 +132,4 @@ This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.
 
 ## Acknowledgments
 
-* Hat tip to contributors: Sail Allu and Aditya Aggarwal. Please add your name to this README in your pull request; we aim to acknowledge any contributions.
+Hat tip to contributors: Sail Allu and Aditya Aggarwal. Please add your name to this README in your pull request; we aim to acknowledge any contributions. It is contributors like yourself that make this project run - ❤️  **[3 Elephants](http://3elephants.github.io)**
