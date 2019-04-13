@@ -3,6 +3,8 @@ language: python
 python: 3.6
 install:
   - pip3 install --upgrade pip
-  - ./backend/setup.sh
+  - source backend/.env
+  - pip install -r $DIR/requirements.txt
+  - pip install -U pytest
 script:
   - pytest backend/src/tests.py
