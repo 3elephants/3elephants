@@ -4,7 +4,7 @@ python: 3.6
 install:
   - pip3 install --upgrade pip
   - source backend/.env
-  - pip install -r $DIR/requirements.txt
+  - pip install -r backend/requirements.txt
   - pip install -U pytest
 script:
   - pytest backend/src/tests.py
