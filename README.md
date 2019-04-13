@@ -11,7 +11,7 @@ If you are curious to learn about the project roadmap; please check out our [Tre
 * node (v8 or greater - [update node by reinstalling it](https://nodejs.org/en/) if you don't have this)
 * npm
 * python3.5 or greater
-* Mongo and MongoD tools (optional if you do not plan to modify the database)
+* MongoDB 4.0 or greater (optional if you do not plan to modify the database)
 
 
 ### Initial Setup
@@ -98,10 +98,17 @@ For data collection,
 However, if you do also want to figure out how to update the information in the database, then you must setup a MongoDB instance locally. Please note, the following instructions cater to experienced MongoDB users only.
 
 The following steps are required:
-
-* create a new database called 3Elephants
-* `mongorestore` the database files in this [Google Drive Folder](https://drive.google.com/open?id=1bz84TSUN5LkenOcrm4fSfElhfvFPW4sd).
-* create the indices specified in `data_downloading/downloaders/create_indices.js`
+* start mongo using `mongod`
+*  Download the data from this [Google Drive Folder](https://drive.google.com/open?id=1bz84TSUN5LkenOcrm4fSfElhfvFPW4sd) (make sure it is not anywhere in the project directory)
+* unzip this data
+* run `mongorestore --db 3elephants dump/`
+* and run
+  ```
+  cd <project root directory>
+  cd data_downloading/downloaders
+  npm i
+  node data_downloading/downloaders/create_indices.js
+  ```
 
 ## Running the tests
 
@@ -125,4 +132,4 @@ This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.
 
 ## Acknowledgments
 
-Hat tip to contributors: Sail Allu and Aditya Aggarwal. Please add your name to this README in your pull request; we aim to acknowledge any contributions. It is contributors like yourself that make this project run - ❤️ _[3 Elephants](http://3elephants.github.io)_
+Hat tip to contributors: Sail Allu and Aditya Aggarwal. Please add your name to this README in your pull request; we aim to acknowledge any contributions. It is contributors like yourself that make this project run - ❤️  **[3 Elephants](http://3elephants.github.io)**
