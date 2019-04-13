@@ -6,3 +6,4 @@ node_modules/*
 3el_server_lambda/nltk_data/*
 frontend_sandbox/src/.cache/*
 frontend_sandbox/src/install/*
+.pytest_cache/*
