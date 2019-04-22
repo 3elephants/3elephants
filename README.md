@@ -112,6 +112,14 @@ The following steps are required:
   node data_downloading/downloaders/create_indices.js
   ```
 
+  Please add a source field as metadata to all new collections. We may also later create a source collection where each document has the following information:
+  * credibility
+  * details on credibility
+  * url
+  * source name
+  * database type (brand or product)
+  This will help us display source information to the user later on.
+
 ## Running the tests
 
 [![Build Status](https://travis-ci.org/3elephants/3elephants.svg?branch=master)](https://travis-ci.org/3elephants/3elephants)

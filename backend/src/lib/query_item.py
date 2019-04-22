@@ -75,7 +75,7 @@ def firstPrototypeCall(params):
     cursorFood.sort([('search_score', {'$meta': 'textScore'})])
     # return json.dumps({'has_results': False, 'data_quality': 0, 'score': 0.0, 'classification': 2})
     numberReturnedCosm = 0 if not cursorCosm else cosmCount
-    numberReturnedFood = 0 if not cursorFood else foodCount  
+    numberReturnedFood = 0 if not cursorFood else foodCount
 
 
 
