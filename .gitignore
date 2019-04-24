@@ -7,3 +7,5 @@ node_modules/*
 frontend_sandbox/src/.cache/*
 frontend_sandbox/src/install/*
 .pytest_cache/*
+downloaders/nlm_data/nlm_data*
+downloaders/good_for_you_data/good_for_you_data.json
