@@ -2,6 +2,7 @@ import * as abTest from './lib/ab_test'
 import $ from "jquery";
 import * as constants from './lib/constants';
 
+//Onboarding can go here
 chrome.runtime.onInstalled.addListener(function() {
   abTest.generateConfiguration();
 });
