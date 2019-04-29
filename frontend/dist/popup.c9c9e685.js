@@ -5,8 +5,6 @@
 //
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
-
-// eslint-disable-next-line no-global-assign
 parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
@@ -77,8 +75,16 @@ parcelRequire = (function (modules, cache, entry, globalName) {
     }, {}];
   };
 
+  var error;
   for (var i = 0; i < entry.length; i++) {
-    newRequire(entry[i]);
+    try {
+      newRequire(entry[i]);
+    } catch (e) {
+      // Save first error but execute all entries
+      if (!error) {
+        error = e;
+      }
+    }
   }
 
   if (entry.length) {
@@ -103,6 +109,13 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   // Override the current require with this new one
+  parcelRequire = newRequire;
+
+  if (error) {
+    // throw error from earlier, _after updating parcelRequire_
+    throw error;
+  }
+
   return newRequire;
 })({"../node_modules/react-is/cjs/react-is.development.js":[function(require,module,exports) {
 /** @license React v16.8.3
@@ -1964,7 +1977,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.render = render$1;
+exports.hydrate = exports.render = render$1;
 exports.createClass = createClass;
 exports.createPortal = createPortal;
 exports.createFactory = createFactory;
@@ -1982,6 +1995,12 @@ Object.defineProperty(exports, "PropTypes", {
   enumerable: true,
   get: function () {
     return _propTypes.default;
+  }
+});
+Object.defineProperty(exports, "createRef", {
+  enumerable: true,
+  get: function () {
+    return _preact.createRef;
   }
 });
 exports.Children = exports.DOM = exports.version = exports.default = void 0;
@@ -2587,11 +2606,10 @@ function callMethod(ctx, m, args) {
 function multihook(hooks, skipDuplicates) {
   return function () {
     var arguments$1 = arguments;
-    var this$1 = this;
     var ret;
 
     for (var i = 0; i < hooks.length; i++) {
-      var r = callMethod(this$1, hooks[i], arguments$1);
+      var r = callMethod(this, hooks[i], arguments$1);
 
       if (skipDuplicates && r != null) {
         if (!ret) {
@@ -2673,12 +2691,11 @@ extend(Component$1.prototype = new _preact.Component(), {
   constructor: Component$1,
   isReactComponent: {},
   replaceState: function (state, callback) {
-    var this$1 = this;
     this.setState(state, callback);
 
-    for (var i in this$1.state) {
+    for (var i in this.state) {
       if (!(i in state)) {
-        delete this$1.state[i];
+        delete this.state[i];
       }
     }
   },
@@ -2712,11 +2729,13 @@ var index = {
   PropTypes: _propTypes.default,
   Children: Children,
   render: render$1,
+  hydrate: render$1,
   createClass: createClass,
   createPortal: createPortal,
   createFactory: createFactory,
   createElement: createElement,
   cloneElement: cloneElement$1,
+  createRef: _preact.createRef,
   isValidElement: isValidElement,
   findDOMNode: findDOMNode,
   unmountComponentAtNode: unmountComponentAtNode,
@@ -3258,7 +3277,6 @@ Item.prototype.run = function () {
 };
 
 process.title = 'browser';
-process.browser = true;
 process.env = {};
 process.argv = [];
 process.version = ''; // empty string to avoid regexp issues
@@ -8312,7 +8330,7 @@ function getBundleURL() {
   try {
     throw new Error();
   } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
 
     if (matches) {
       return getBaseURL(matches[0]);
@@ -8323,7 +8341,7 @@ function getBundleURL() {
 }
 
 function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
 }
 
 exports.getBundleURL = getBundleURLCached;
@@ -14124,7 +14142,7 @@ function polyfill(Component) {
 
   return Component;
 }
-},{}],"../node_modules/react-transition-group/cjs/utils/PropTypes.js":[function(require,module,exports) {
+},{}],"../node_modules/react-transition-group/utils/PropTypes.js":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -14157,7 +14175,7 @@ var classNamesShape = "development" !== 'production' ? _propTypes.default.oneOfT
   exitActive: _propTypes.default.string
 })]) : null;
 exports.classNamesShape = classNamesShape;
-},{"prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/react-transition-group/cjs/Transition.js":[function(require,module,exports) {
+},{"prop-types":"../node_modules/prop-types/index.js"}],"../node_modules/react-transition-group/Transition.js":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -14295,25 +14313,23 @@ var EXITING = 'exiting';
  * begins the "Enter" stage. During this stage, the component will shift from
  * its current transition state, to `'entering'` for the duration of the
  * transition and then to the `'entered'` stage once it's complete. Let's take
- * the following example:
+ * the following example (we'll use the
+ * [useState](https://reactjs.org/docs/hooks-reference.html#usestate) hook):
  *
  * ```jsx
- * state = { in: false };
- *
- * toggleEnterState = () => {
- *   this.setState({ in: true });
- * }
- *
- * render() {
+ * function App() {
+ *   const [inProp, setInProp] = useState(false);
  *   return (
- *     <>
- *       <Transition in={this.state.in} timeout={500}>
+ *     <div>
+ *       <Transition in={inProp} timeout={500}>
  *         {state => (
  *           // ...
  *         )}
  *       </Transition>
- *       <button onClick={this.toggleEnterState}>Click to Enter</button>
- *     </>
+ *       <button onClick={() => setInProp(true)}>
+ *         Click to Enter
+ *       </button>
+ *     </div>
  *   );
  * }
  * ```
@@ -14717,8 +14733,7 @@ Transition.propTypes = "development" !== "production" ? {
    * @type {number | { enter?: number, exit?: number, appear?: number }}
    */
   timeout: function timeout(props) {
-    var pt = "development" !== "production" ? _PropTypes.timeoutsShape : {};
-    ;
+    var pt = _PropTypes.timeoutsShape;
     if (!props.addEndListener) pt = pt.isRequired;
 
     for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -14814,7 +14829,7 @@ Transition.EXITING = 4;
 var _default = (0, _reactLifecyclesCompat.polyfill)(Transition);
 
 exports.default = _default;
-},{"prop-types":"../node_modules/prop-types/index.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","./utils/PropTypes":"../node_modules/react-transition-group/cjs/utils/PropTypes.js"}],"../node_modules/react-transition-group/cjs/CSSTransition.js":[function(require,module,exports) {
+},{"prop-types":"../node_modules/prop-types/index.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","./utils/PropTypes":"../node_modules/react-transition-group/utils/PropTypes.js"}],"../node_modules/react-transition-group/CSSTransition.js":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -14911,6 +14926,24 @@ var removeClass = function removeClass(node, classes) {
  * transition, matching `*-done` class names are applied to persist the
  * transition state.
  *
+ * ```jsx
+ * function App() {
+ *   const [inProp, setInProp] = useState(false);
+ *   return (
+ *     <div>
+ *       <CSSTransition in={inProp} timeout={200} classNames="my-node">
+ *         <div>
+ *           {"I'll receive my-node-* classes"}
+ *         </div>
+ *       </CSSTransition>
+ *       <button type="button" onClick={() => setInProp(true)}>
+ *         Click to Enter
+ *       </button>
+ *     </div>
+ *   );
+ * }
+ * ```
+ *
  * When the `in` prop is set to `true`, the child component will first receive
  * the class `example-enter`, then the `example-enter-active` will be added in
  * the next tick. `CSSTransition` [forces a
@@ -14920,6 +14953,25 @@ var removeClass = function removeClass(node, classes) {
  * `example-enter-active` even though they were added immediately one after
  * another. Most notably, this is what makes it possible for us to animate
  * _appearance_.
+ *
+ * ```css
+ * .my-node-enter {
+ *   opacity: 0;
+ * }
+ * .my-node-enter-active {
+ *   opacity: 1;
+ *   transition: opacity 200ms;
+ * }
+ * .my-node-exit {
+ *   opacity: 1;
+ * }
+ * .my-node-exit-active {
+ *   opacity: 0;
+ *   transition: opacity: 200ms;
+ * }
+ * ```
+ *
+ * `*-active` classes represent which styles you want to animate **to**.
  */
 
 
@@ -14962,8 +15014,11 @@ function (_React$Component) {
     };
 
     _this.onEntered = function (node, appearing) {
-      var _this$getClassNames3 = _this.getClassNames('enter'),
-          doneClassName = _this$getClassNames3.doneClassName;
+      var appearClassName = _this.getClassNames('appear').doneClassName;
+
+      var enterClassName = _this.getClassNames('enter').doneClassName;
+
+      var doneClassName = appearing ? appearClassName + " " + enterClassName : enterClassName;
 
       _this.removeClasses(node, appearing ? 'appear' : 'enter');
 
@@ -14975,8 +15030,8 @@ function (_React$Component) {
     };
 
     _this.onExit = function (node) {
-      var _this$getClassNames4 = _this.getClassNames('exit'),
-          className = _this$getClassNames4.className;
+      var _this$getClassNames3 = _this.getClassNames('exit'),
+          className = _this$getClassNames3.className;
 
       _this.removeClasses(node, 'appear');
 
@@ -14990,8 +15045,8 @@ function (_React$Component) {
     };
 
     _this.onExiting = function (node) {
-      var _this$getClassNames5 = _this.getClassNames('exit'),
-          activeClassName = _this$getClassNames5.activeClassName;
+      var _this$getClassNames4 = _this.getClassNames('exit'),
+          activeClassName = _this$getClassNames4.activeClassName;
 
       _this.reflowAndAddClass(node, activeClassName);
 
@@ -15001,8 +15056,8 @@ function (_React$Component) {
     };
 
     _this.onExited = function (node) {
-      var _this$getClassNames6 = _this.getClassNames('exit'),
-          doneClassName = _this$getClassNames6.doneClassName;
+      var _this$getClassNames5 = _this.getClassNames('exit'),
+          doneClassName = _this$getClassNames5.doneClassName;
 
       _this.removeClasses(node, 'exit');
 
@@ -15015,9 +15070,11 @@ function (_React$Component) {
 
     _this.getClassNames = function (type) {
       var classNames = _this.props.classNames;
-      var className = typeof classNames !== 'string' ? classNames[type] : classNames + '-' + type;
-      var activeClassName = typeof classNames !== 'string' ? classNames[type + 'Active'] : className + '-active';
-      var doneClassName = typeof classNames !== 'string' ? classNames[type + 'Done'] : className + '-done';
+      var isStringClassNames = typeof classNames === 'string';
+      var prefix = isStringClassNames && classNames ? classNames + '-' : '';
+      var className = isStringClassNames ? prefix + type : classNames[type];
+      var activeClassName = isStringClassNames ? className + '-active' : classNames[type + 'Active'];
+      var doneClassName = isStringClassNames ? className + '-done' : classNames[type + 'Done'];
       return {
         className: className,
         activeClassName: activeClassName,
@@ -15031,10 +15088,10 @@ function (_React$Component) {
   var _proto = CSSTransition.prototype;
 
   _proto.removeClasses = function removeClasses(node, type) {
-    var _this$getClassNames7 = this.getClassNames(type),
-        className = _this$getClassNames7.className,
-        activeClassName = _this$getClassNames7.activeClassName,
-        doneClassName = _this$getClassNames7.doneClassName;
+    var _this$getClassNames6 = this.getClassNames(type),
+        className = _this$getClassNames6.className,
+        activeClassName = _this$getClassNames6.activeClassName,
+        doneClassName = _this$getClassNames6.doneClassName;
 
     className && removeClass(node, className);
     activeClassName && removeClass(node, activeClassName);
@@ -15070,19 +15127,34 @@ function (_React$Component) {
   return CSSTransition;
 }(_react.default.Component);
 
+CSSTransition.defaultProps = {
+  classNames: ''
+};
 CSSTransition.propTypes = "development" !== "production" ? _extends({}, _Transition.default.propTypes, {
   /**
-   * The animation classNames applied to the component as it enters, exits or has finished the transition.
-   * A single name can be provided and it will be suffixed for each stage: e.g.
+   * The animation classNames applied to the component as it enters, exits or
+   * has finished the transition. A single name can be provided and it will be
+   * suffixed for each stage: e.g.
    *
-   * `classNames="fade"` applies `fade-enter`, `fade-enter-active`, `fade-enter-done`,
-   * `fade-exit`, `fade-exit-active`, `fade-exit-done`, `fade-appear`, and `fade-appear-active`.
+   * `classNames="fade"` applies `fade-enter`, `fade-enter-active`,
+   * `fade-enter-done`, `fade-exit`, `fade-exit-active`, `fade-exit-done`,
+   * `fade-appear`, `fade-appear-active`, and `fade-appear-done`.
+   *
+   * **Note**: `fade-appear-done` and `fade-enter-done` will _both_ be applied.
+   * This allows you to define different behavior for when appearing is done and
+   * when regular entering is done, using selectors like
+   * `.fade-enter-done:not(.fade-appear-done)`. For example, you could apply an
+   * epic entrance animation when element first appears in the DOM using
+   * [Animate.css](https://daneden.github.io/animate.css/). Otherwise you can
+   * simply use `fade-enter-done` for defining both cases.
+   *
    * Each individual classNames can also be specified independently like:
    *
    * ```js
    * classNames={{
    *  appear: 'my-appear',
    *  appearActive: 'my-active-appear',
+   *  appearDone: 'my-done-appear',
    *  enter: 'my-enter',
    *  enterActive: 'my-active-enter',
    *  enterDone: 'my-done-enter',
@@ -15098,8 +15170,8 @@ CSSTransition.propTypes = "development" !== "production" ? _extends({}, _Transit
    * import styles from './styles.css';
    * ```
    *
-   * you might want to use camelCase in your CSS file, that way could simply spread
-   * them instead of listing them one by one:
+   * you might want to use camelCase in your CSS file, that way could simply
+   * spread them instead of listing them one by one:
    *
    * ```js
    * classNames={{ ...styles }}
@@ -15108,6 +15180,7 @@ CSSTransition.propTypes = "development" !== "production" ? _extends({}, _Transit
    * @type {string | {
    *  appear?: string,
    *  appearActive?: string,
+   *  appearDone?: string,
    *  enter?: string,
    *  enterActive?: string,
    *  enterDone?: string,
@@ -15168,7 +15241,7 @@ CSSTransition.propTypes = "development" !== "production" ? _extends({}, _Transit
 var _default = CSSTransition;
 exports.default = _default;
 module.exports = exports["default"];
-},{"prop-types":"../node_modules/prop-types/index.js","dom-helpers/class/addClass":"../node_modules/dom-helpers/class/addClass.js","dom-helpers/class/removeClass":"../node_modules/dom-helpers/class/removeClass.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","./Transition":"../node_modules/react-transition-group/cjs/Transition.js","./utils/PropTypes":"../node_modules/react-transition-group/cjs/utils/PropTypes.js"}],"../node_modules/react-transition-group/cjs/utils/ChildMapping.js":[function(require,module,exports) {
+},{"prop-types":"../node_modules/prop-types/index.js","dom-helpers/class/addClass":"../node_modules/dom-helpers/class/addClass.js","dom-helpers/class/removeClass":"../node_modules/dom-helpers/class/removeClass.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","./Transition":"../node_modules/react-transition-group/Transition.js","./utils/PropTypes":"../node_modules/react-transition-group/utils/PropTypes.js"}],"../node_modules/react-transition-group/utils/ChildMapping.js":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -15319,7 +15392,7 @@ function getNextChildMapping(nextProps, prevChildMapping, onExited) {
   });
   return children;
 }
-},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js"}],"../node_modules/react-transition-group/cjs/TransitionGroup.js":[function(require,module,exports) {
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js"}],"../node_modules/react-transition-group/TransitionGroup.js":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -15571,7 +15644,7 @@ var _default = (0, _reactLifecyclesCompat.polyfill)(TransitionGroup);
 
 exports.default = _default;
 module.exports = exports["default"];
-},{"prop-types":"../node_modules/prop-types/index.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","./utils/ChildMapping":"../node_modules/react-transition-group/cjs/utils/ChildMapping.js"}],"../node_modules/react-transition-group/cjs/ReplaceTransition.js":[function(require,module,exports) {
+},{"prop-types":"../node_modules/prop-types/index.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","./utils/ChildMapping":"../node_modules/react-transition-group/utils/ChildMapping.js"}],"../node_modules/react-transition-group/ReplaceTransition.js":[function(require,module,exports) {
 "use strict";
 
 exports.__esModule = true;
@@ -15744,30 +15817,26 @@ ReplaceTransition.propTypes = "development" !== "production" ? {
 var _default = ReplaceTransition;
 exports.default = _default;
 module.exports = exports["default"];
-},{"prop-types":"../node_modules/prop-types/index.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./TransitionGroup":"../node_modules/react-transition-group/cjs/TransitionGroup.js"}],"../node_modules/react-transition-group/cjs/index.js":[function(require,module,exports) {
+},{"prop-types":"../node_modules/prop-types/index.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./TransitionGroup":"../node_modules/react-transition-group/TransitionGroup.js"}],"../node_modules/react-transition-group/index.js":[function(require,module,exports) {
 "use strict";
-
-exports.__esModule = true;
-exports.Transition = exports.TransitionGroup = exports.ReplaceTransition = exports.CSSTransition = void 0;
 
 var _CSSTransition = _interopRequireDefault(require("./CSSTransition"));
 
-exports.CSSTransition = _CSSTransition.default;
-
 var _ReplaceTransition = _interopRequireDefault(require("./ReplaceTransition"));
-
-exports.ReplaceTransition = _ReplaceTransition.default;
 
 var _TransitionGroup = _interopRequireDefault(require("./TransitionGroup"));
 
-exports.TransitionGroup = _TransitionGroup.default;
-
 var _Transition = _interopRequireDefault(require("./Transition"));
 
-exports.Transition = _Transition.default;
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./CSSTransition":"../node_modules/react-transition-group/cjs/CSSTransition.js","./ReplaceTransition":"../node_modules/react-transition-group/cjs/ReplaceTransition.js","./TransitionGroup":"../node_modules/react-transition-group/cjs/TransitionGroup.js","./Transition":"../node_modules/react-transition-group/cjs/Transition.js"}],"../node_modules/reactstrap/es/Fade.js":[function(require,module,exports) {
+
+module.exports = {
+  Transition: _Transition.default,
+  TransitionGroup: _TransitionGroup.default,
+  ReplaceTransition: _ReplaceTransition.default,
+  CSSTransition: _CSSTransition.default
+};
+},{"./CSSTransition":"../node_modules/react-transition-group/CSSTransition.js","./ReplaceTransition":"../node_modules/react-transition-group/ReplaceTransition.js","./TransitionGroup":"../node_modules/react-transition-group/TransitionGroup.js","./Transition":"../node_modules/react-transition-group/Transition.js"}],"../node_modules/reactstrap/es/Fade.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15839,7 +15908,7 @@ Fade.propTypes = propTypes;
 Fade.defaultProps = defaultProps;
 var _default = Fade;
 exports.default = _default;
-},{"@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"../node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js","@babel/runtime/helpers/esm/objectSpread":"../node_modules/@babel/runtime/helpers/esm/objectSpread.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","prop-types":"../node_modules/prop-types/index.js","classnames":"../node_modules/classnames/index.js","react-transition-group":"../node_modules/react-transition-group/cjs/index.js","./utils":"../node_modules/reactstrap/es/utils.js"}],"../node_modules/reactstrap/es/Badge.js":[function(require,module,exports) {
+},{"@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"../node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js","@babel/runtime/helpers/esm/objectSpread":"../node_modules/@babel/runtime/helpers/esm/objectSpread.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","prop-types":"../node_modules/prop-types/index.js","classnames":"../node_modules/classnames/index.js","react-transition-group":"../node_modules/react-transition-group/index.js","./utils":"../node_modules/reactstrap/es/utils.js"}],"../node_modules/reactstrap/es/Badge.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -16555,7 +16624,7 @@ CarouselItem.contextTypes = {
 };
 var _default = CarouselItem;
 exports.default = _default;
-},{"@babel/runtime/helpers/esm/objectSpread":"../node_modules/@babel/runtime/helpers/esm/objectSpread.js","@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"../node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js","@babel/runtime/helpers/esm/inheritsLoose":"../node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","@babel/runtime/helpers/esm/assertThisInitialized":"../node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","prop-types":"../node_modules/prop-types/index.js","classnames":"../node_modules/classnames/index.js","react-transition-group":"../node_modules/react-transition-group/cjs/index.js","./utils":"../node_modules/reactstrap/es/utils.js"}],"../node_modules/reactstrap/es/Carousel.js":[function(require,module,exports) {
+},{"@babel/runtime/helpers/esm/objectSpread":"../node_modules/@babel/runtime/helpers/esm/objectSpread.js","@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"../node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js","@babel/runtime/helpers/esm/inheritsLoose":"../node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","@babel/runtime/helpers/esm/assertThisInitialized":"../node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","prop-types":"../node_modules/prop-types/index.js","classnames":"../node_modules/classnames/index.js","react-transition-group":"../node_modules/react-transition-group/index.js","./utils":"../node_modules/reactstrap/es/utils.js"}],"../node_modules/reactstrap/es/Carousel.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20718,7 +20787,7 @@ Collapse.propTypes = propTypes;
 Collapse.defaultProps = defaultProps;
 var _default = Collapse;
 exports.default = _default;
-},{"@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"../node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js","@babel/runtime/helpers/esm/inheritsLoose":"../node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","@babel/runtime/helpers/esm/assertThisInitialized":"../node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js","@babel/runtime/helpers/esm/objectSpread":"../node_modules/@babel/runtime/helpers/esm/objectSpread.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","prop-types":"../node_modules/prop-types/index.js","classnames":"../node_modules/classnames/index.js","react-transition-group":"../node_modules/react-transition-group/cjs/index.js","./utils":"../node_modules/reactstrap/es/utils.js"}],"../node_modules/reactstrap/es/ListGroupItem.js":[function(require,module,exports) {
+},{"@babel/runtime/helpers/esm/extends":"../node_modules/@babel/runtime/helpers/esm/extends.js","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"../node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js","@babel/runtime/helpers/esm/inheritsLoose":"../node_modules/@babel/runtime/helpers/esm/inheritsLoose.js","@babel/runtime/helpers/esm/assertThisInitialized":"../node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js","@babel/runtime/helpers/esm/objectSpread":"../node_modules/@babel/runtime/helpers/esm/objectSpread.js","react":"../node_modules/preact-compat/dist/preact-compat.es.js","prop-types":"../node_modules/prop-types/index.js","classnames":"../node_modules/classnames/index.js","react-transition-group":"../node_modules/react-transition-group/index.js","./utils":"../node_modules/reactstrap/es/utils.js"}],"../node_modules/reactstrap/es/ListGroupItem.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29317,26 +29386,46 @@ function Module(moduleName) {
 }
 
 module.bundle.Module = Module;
+var checkedAssets, assetsToAccept;
 var parent = module.bundle.parent;
 
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63774" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58421" + '/');
 
   ws.onmessage = function (event) {
+    checkedAssets = {};
+    assetsToAccept = [];
     var data = JSON.parse(event.data);
 
     if (data.type === 'update') {
-      console.clear();
-      data.assets.forEach(function (asset) {
-        hmrApply(global.parcelRequire, asset);
-      });
+      var handled = false;
       data.assets.forEach(function (asset) {
         if (!asset.isNew) {
-          hmrAccept(global.parcelRequire, asset.id);
+          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
+
+          if (didAccept) {
+            handled = true;
+          }
         }
+      }); // Enable HMR for CSS by default.
+
+      handled = handled || data.assets.every(function (asset) {
+        return asset.type === 'css' && asset.generated.js;
       });
+
+      if (handled) {
+        console.clear();
+        data.assets.forEach(function (asset) {
+          hmrApply(global.parcelRequire, asset);
+        });
+        assetsToAccept.forEach(function (v) {
+          hmrAcceptRun(v[0], v[1]);
+        });
+      } else {
+        window.location.reload();
+      }
     }
 
     if (data.type === 'reload') {
@@ -29424,7 +29513,7 @@ function hmrApply(bundle, asset) {
   }
 }
 
-function hmrAccept(bundle, id) {
+function hmrAcceptCheck(bundle, id) {
   var modules = bundle.modules;
 
   if (!modules) {
@@ -29432,9 +29521,27 @@ function hmrAccept(bundle, id) {
   }
 
   if (!modules[id] && bundle.parent) {
-    return hmrAccept(bundle.parent, id);
+    return hmrAcceptCheck(bundle.parent, id);
   }
 
+  if (checkedAssets[id]) {
+    return;
+  }
+
+  checkedAssets[id] = true;
+  var cached = bundle.cache[id];
+  assetsToAccept.push([bundle, id]);
+
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    return true;
+  }
+
+  return getParents(global.parcelRequire, id).some(function (id) {
+    return hmrAcceptCheck(global.parcelRequire, id);
+  });
+}
+
+function hmrAcceptRun(bundle, id) {
   var cached = bundle.cache[id];
   bundle.hotData = {};
 
@@ -29459,10 +29566,6 @@ function hmrAccept(bundle, id) {
 
     return true;
   }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAccept(global.parcelRequire, id);
-  });
 }
 },{}]},{},["../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","lib/menu/popup.js"], null)
-//# sourceMappingURL=popup.c9c9e685.map
+//# sourceMappingURL=popup.c9c9e685.js.map

@@ -15,6 +15,7 @@ import * as reformat from './lib/reformat';
 import * as addToCart from './lib/add_to_cart';
 import * as navCart from './lib/nav_cart';
 import * as sort from './lib/sort';
+import * as shipping from './lib/shipping';
 
 import * as priceChanger from './lib/price_changer'
 import * as rating from './lib/rating'
@@ -106,7 +107,7 @@ function main() {
 
   //to turn on sort feature
   sort.create();
-
+  shipping.create();
 
   //we need the product title to trigger the api call thus it needs to be parsed
   //observe the dom to figure out when this is parsed and we can trigger api call
