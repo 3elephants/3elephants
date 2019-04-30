@@ -5,7 +5,7 @@ Right now we do this by reviewing the eco-friendliness of products on Amazon.
 If you are curious to learn about the project roadmap; please check out our [Trello Board](https://trello.com/b/ar3tb4be/3elephants).
 
 [![Build Status](https://travis-ci.org/3elephants/3elephants.svg?branch=master)](https://travis-ci.org/3elephants/3elephants)
-
+_Please Note: Test Cases won't run because Travis requires a local ElasticSearch instance in order for this to work. The test cases are still applicable so make sure you test locally before making a PR._
 ## Getting Started
 
 ### Prerequisites
@@ -62,7 +62,7 @@ This is because parcel, the frontend code bundler used by the project, in the de
 
 Chrome does not automatically update the plugin when the code changes. In order to update the plugin on chrome after you've changed the code, you may either go through the steps above again or download [Extensions Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid), a chrome extension that reloads code for extensions with a click on a button. Suggestions and pull requests for improving the reloading experience for developers are welcome.
 
-### Running the Backend
+### Running the Backend (The Backend Documentation is no longer relevant - stay tuned for an update)
 
 #### First Run
 To get started with the backend:
@@ -74,6 +74,8 @@ cd backend
 ./setup.sh
 ./dev_deploy.sh
 ```
+
+
 #### Steps for Contributing to the Backend
 
 We use AWS lambda and API gateway, so think of the backend as a group of isolated functions using API Gateway as an interface. To start contributing to the backend:
@@ -128,7 +130,7 @@ The following steps are required:
 #### Backend Test Cases
 
 To run backend test cases, it is as simple as:
-
+_Please Note: Test Cases won't run because Travis requires a local ElasticSearch instance in order for this to work. The test cases are still applicable so make sure you test locally before making a PR._
 `py.test backend/src/tests.py`
 
 #### Frontend Test Cases
