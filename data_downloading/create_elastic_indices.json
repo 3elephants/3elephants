@@ -1,0 +1,53 @@
+PUT 3elephants
+{
+  "settings": {
+    "number_of_shards": 1,
+    "analysis": {
+      "filter": {
+        "elephants_filter": {
+          "type": "shingle",
+          "min_shingle_size": 2,
+          "max_shingle_size": 3,
+          "output_unigrams": false
+        }
+      },
+      "analyzer": {
+        "elephants_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "elephants_filter"
+          ]
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "product_name": {
+          "type": "text",
+          "analyzer": "standard",
+          "fields": {
+            "shingles": {
+              "type": "text",
+              "analyzer": "elephants_analyzer"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+POST /3elephants/_analyze
+{
+  "analyzer": "elephants_analyzer",
+  "text":     "The quick brown fox."
+}
+
+GET 3elephants/_msearch
+{}
+{"query": {"match" : { "name" : {"cutoff_frequency":0.1, "minimum_should_match": "-25%","query":"" }}}}
+
+//mongo connector to elastic
+mongo-connector -m localhost:27017 -t localhost:9200 -d elastic2_doc_manager -c config.json --verbose --stdout

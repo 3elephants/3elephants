@@ -1,4 +1,8 @@
 [
-  "src/tests.py::TestQuery::()::testQueryCampbellSoup",
+  "src/tests.py::TestQuery::()::testFood",
+  "src/tests.py::TestQuery::()::testElectronics",
+  "src/tests.py::TestQuery::()::testCosmetics",
+  "src/tests.py::TestQuery::()::testFashion",
+  "src/tests.py::TestQuery::()::testHousehold",
   "src/tests.py::TestSort::()::testSort"
 ]

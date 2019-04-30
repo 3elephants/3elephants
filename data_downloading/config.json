@@ -1,0 +1,25 @@
+{
+  "namespaces": {
+    "3elephants.cosmEWG": {
+      "rename": "cosm_ewg._doc",
+      "includeFields":["_id", "brand_name", "ewg_verified", "score", "name","product_id"]
+
+    },
+    "3elephants.foodEWG": {
+      "rename": "food_ewg._doc",
+      "includeFields":["_id", "name", "asin_list", "scores.overall", "upc"]
+    },
+    "3elephants.householdNLM": {
+      "rename": "household_nlm._doc",
+      "includeFields":["_id", "product_name", "manufacturer", "overall_rating", "web_url"]
+    },
+    "3elephants.fashionGOY": {
+      "rename": "fashion_goy._doc",
+      "includeFields":["_id", "environment_rating", "name", "id"]
+    },
+    "3elephants.electronicsGP": {
+        "rename": "electronics_gp._doc",
+        "includeFields":["_id", "name", "letter_overall_rating"]
+    }
+  }
+}

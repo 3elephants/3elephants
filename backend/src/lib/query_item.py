@@ -1,157 +1,365 @@
-from .utilfunctions import *
-from collections import Counter
-from enum import Enum
-from flask import json
+from abc import ABC, abstractmethod
+from elasticsearch_dsl import MultiSearch, Search
+from . import similarity
 
 
-class ProductType(Enum):
-    FOOD = 1
-    COSMETICS = 2
+class AbstractRequestInterface(ABC):
+    instance = None
 
-def firstPrototypeCall(params):
+    @classmethod
+    def getInstance(cls, newInstance):
+        """ Static access method. """
+        if cls.instance == None:
+            cls.instance = newInstance
+        return cls.instance
 
-    #set variables
-    name = params.get("name")
-    asin = params.get("asin")
-    betaMode = params.get("betaMode")
-    cosmListings = params["cosmListings"]
-    foodListings = params ["foodListings"]
-    thresholdEcoAccuracy = 0.8
+    def __init__(self, params):
+        self.sourceName = params["sourceName"]
+        self.dataQuality = params["dataQuality"]
+        self.baseUrl = params["baseUrl"]
+        self.nameKey = params.get("queryNameKey")
+        self.brandKey = params.get("queryBrandKey")
+        self.requiresBrand = False
 
-    if not betaMode:
-        thresholdEcoAccuracy = 0.9
-    # functions
+    @abstractmethod
+    def getScore(self, response):
+        pass
 
-    # convert cosmetics class name to class 3 Elephants score
-    def classToNumber(cLabel):
-        return 1 if cLabel == 'Y' else 0
+    @abstractmethod
+    def getEndUrl(self, response):
+        pass
 
-    # convert ewg food score to 3 Elephants score
-    def scoreToNumber(score):
+    def requestBrand(self, params):
+        return {
+            "query": {
+                "match_phrase": {
+                    self.brandKey: {
+                        "query": params["brand"]
+                    }
+                }
+            }
+        }
+
+    def request(self, params):
+        should = [{
+            "match": {
+                self.nameKey + ".shingles": params["name"]
+            }
+        }]
+        if self.brandKey!=  None and params.get('brand') != None:
+            should.append({
+                "match_phrase": {
+                    self.brandKey: params['brand']
+                }
+            })
+        return {
+            "query": {
+                "bool": {
+                    "must": {
+                        "match": {
+                            self.nameKey: {
+                                "cutoff_frequency": 0.1,
+                                "minimum_should_match": "-50%",
+                                "query": params["name"]
+                            }
+                        }
+                    },
+                    "should": should
+                }
+            }
+        }
+
+
+
+    def response(self, responses):
+        if len(responses) == 0:
+            return -1
+
+        # primary
+        endUrl = self.getEndUrl(responses[0])
+        dataQuality = self.dataQuality
+        firstMetaScore = responses[0].meta.score
+
+        totalScore = 0
+        totalPossible = 0
+        # scoring
+        for i in range(len(responses)):
+            metaScore = responses[i].meta.score
+
+            if (firstMetaScore * 0.9 < metaScore):
+                ratingScore = self.getScore(responses[i])
+                if ratingScore != None:
+                    totalScore += metaScore * ratingScore
+                    totalPossible += metaScore
+            else:
+                break
+        if totalPossible != 0:
+            totalScore /= totalPossible
+        else:
+            return -1
+
+
+        return (totalScore, dataQuality, {"source": self.sourceName, "url": self.baseUrl + endUrl})
+
+
+class CosmEWG(AbstractRequestInterface):
+
+    def getScore(self, score):
         if (score < 1):
             score = 1
         if (score > 10):
             score = 10
         return 1 - (score - 1) / 9
 
-    def extractCosmRatingInfo(cosmInfo):
+    def extractCosmRatingInfo(self, cosmInfo):
+        if(cosmInfo == None):
+            return None, None
         dataQualityMap = {"None": 1, "Limited": 2, "Fair": 3, "Good": 4, "Robust": 5}
         score, dataQuality = cosmInfo.split("_")
 
-        return dataQualityMap[dataQuality], scoreToNumber(int(score))
+        return dataQualityMap[dataQuality], self.getScore(int(score))
 
-    def getUnitRating(pType, param):
-        if pType == ProductType.COSMETICS:
+    def getEndUrl(self, response):
+        return response.product_id + "/A/"
 
-            return extractCosmRatingInfo(param["score"])
-        else:
-            return None, scoreToNumber(param["scores"]["overall"])
+    def response(self, responses):
+        if len(responses) == 0:
+            return -1
 
+        # primary
+        endUrl = self.getEndUrl(responses[0])
+        dataQuality = self.dataQuality
+        firstMetaScore = responses[0].meta.score
 
+        totalScore = 0
+        totalPossible = 0
+        ewgRatedDataQuality = 0
+        # scoring
+        for i in range(len(responses)):
+            metaScore = responses[i].meta.score
 
-    #query
-
-    if asin != None:
-        asinCursor = foodListings.find({"asin_list": asin}) #if we find the asin in the database
-
-        if foodListings.count_documents({"asin_list": asin}) > 0:
-            return getUnitRating(ProductType.FOOD, asinCursor[0])
-
-
-    cursorFood = foodListings.find(
-        {'$text': {'$search': name}},
-        {'search_score': {'$meta': 'textScore'}})
-    foodCount = foodListings.count_documents({'$text': {'$search': name}})
-
-    cursorCosm = cosmListings.find(
-        {'$text': {'$search': name}},
-        {'search_score': {'$meta': 'textScore'}})
-    cosmCount = cosmListings.count_documents({'$text': {'$search': name}})
-
-
-
-    # Sort by 'score' field.
-    cursorCosm.sort([('search_score', {'$meta': 'textScore'})])
-    cursorFood.sort([('search_score', {'$meta': 'textScore'})])
-    # return json.dumps({'has_results': False, 'data_quality': 0, 'score': 0.0, 'classification': 2})
-    numberReturnedCosm = 0 if not cursorCosm else cosmCount
-    numberReturnedFood = 0 if not cursorFood else foodCount
-
-
-
-
-
-
-
-    #gets the score based on food collection query
-    # for use only when len(query results) > 0
-    def getScore(cursor, pType, thresholdScore=0):
-        startItem = cursor[0]
-        startName = startItem["name"]
-
-        if startName == name:
-            return getUnitRating(pType, startItem)
-        else:
-            numWords = len(Counter(cleanQuery(name)))
-
-
-            if betaMode:
-                thresholdScore =  (numWords * 8)/(2.5 - 1.5/numWords) #if half to all words show up once in all fields we should include it
-                                                                                           #more words means that if less of them match it is still accurate
-                                                                                                     # because more matches
+            if (firstMetaScore * 0.9 < metaScore):
+                ewgDataQuality, ratingScore = self.extractCosmRatingInfo(responses[i].score)
+                if ratingScore != None:
+                    totalScore += metaScore * ratingScore
+                    ewgRatedDataQuality += metaScore * ewgDataQuality
+                    totalPossible += metaScore
             else:
-                thresholdScore = (numWords * 8)/(2.3 - 1.3/numWords)
-            totalPossible = 0
-            weightedSum = 0
-            weightedSumDataQ = 0
-            totalPossibleDataQ = 0
-            count = 0
-            for startItem in cursor:
-                if count > 30 or startItem["search_score"] < thresholdScore: #if we have 30 items (assumed to be enough to describe any distribution or remaining results irrelevant break)
-                    break
-                factor = startItem["search_score"]
-                dataQuality, rating = getUnitRating(pType, startItem)
-
-                weightedSum += factor * rating
-                if dataQuality != None:
-                    weightedSumDataQ += factor * dataQuality
-                    totalPossibleDataQ += factor
-                totalPossible += factor
-                count+=1
+                break
+        if totalPossible != 0:
+            totalScore /= totalPossible
+            ewgRatedDataQuality/= totalPossible
+            dataQuality += (ewgRatedDataQuality - 1)/2 - 1
+        else:
+            return -1
 
 
-            if totalPossible == 0:
-
-                return False, None, 0.6 #we assume there is not enough data if no data point is above the threshold for a match
-
-            weightedAverage = weightedSum / totalPossible
-
-            weightedAverageDataQ  = None
-            if totalPossibleDataQ != 0:
-                weightedAverageDataQ = weightedSumDataQ/totalPossibleDataQ
-            return True, weightedAverageDataQ, weightedAverage
+        return (totalScore, dataQuality, {"source": self.sourceName, "url": self.baseUrl + endUrl})
 
 
-    #run logic
-    finalScore = 0.6
-    dQ = None
-    hasResults = False
-    if numberReturnedCosm != 0 and numberReturnedFood!=0:
+class FoodEWG(AbstractRequestInterface):
 
-        hasResults ,dQ,  finalScore = getScore(cursorFood, ProductType.FOOD) if cursorFood[0]["search_score"] > cursorCosm[0]["search_score"] else \
-            getScore(cursorCosm, ProductType.COSMETICS)
-    elif numberReturnedFood > 0:
-        hasResults, dQ, finalScore = getScore(cursorFood, ProductType.FOOD)
-    elif numberReturnedCosm > 0:
-        hasResults, dQ, finalScore = getScore(cursorCosm, ProductType.COSMETICS)
+    def getScore(self, response):
+        score = response.scores.overall
+        if (score < 1):
+            score = 1
+        if (score > 10):
+            score = 10
+        return 1 - (score - 1) / 9
 
-    if dQ == None:
-        dQ = 0
-    # return logic
-    if finalScore > thresholdEcoAccuracy:
-        return json.dumps({'has_results': hasResults, 'data_quality':dQ, 'score':finalScore, 'classification':0})
-    elif finalScore < 0.5:
-        return json.dumps({'has_results': hasResults, 'data_quality':dQ, 'score':finalScore,'classification':1})
+    def getEndUrl(self, response):
+        return response.upc
 
 
-    return json.dumps({'has_results':hasResults,'data_quality':dQ, 'score':finalScore, 'classification':2})
+class HouseholdNLM(AbstractRequestInterface):
+
+    def getScore(self, response):
+        response = response.to_dict()
+        score = response.get("overall_rating")
+        if score == None:
+            return None
+
+        return  (4 - score)/4
+
+    def getEndUrl(self, response):
+        return response.web_url
+
+
+
+
+class FashionGOY(AbstractRequestInterface):
+
+    def __init__(self, params):
+        super().__init__(params)
+        self.requiresBrand = True
+
+    def getScore(self, response):
+        response = response.to_dict()
+        score = response.get("environment_rating")
+        if score == -1.0:
+            return None
+        return  (score)/20
+
+    def getEndUrl(self, response):
+        return response.id
+
+    def request(self, params):
+        return super().requestBrand(params)
+
+class ElectronicsGP(AbstractRequestInterface):
+    def __init__(self, params):
+        super().__init__(params)
+        self.requiresBrand = True
+        self.greenPeaceMap = {'A': 11, 'A-': 10, 'B+': 9, 'B': 8, 'B-': 7, 'C+': 6, 'C': 5, 'C-': 4, 'D+': 3, 'D': 2,
+                         'D-': 1, 'F': 0}
+
+
+    def getScore(self, response):
+
+        score = self.greenPeaceMap.get(response.letter_overall_rating)
+        if score == None:
+            return None
+        return  score/11
+
+    def getEndUrl(self, response):
+        return response.name + ".pdf"
+
+    def request(self, params):
+        return super().requestBrand(params)
+
+
+
+
+dbs = {
+    "food_ewg": {"sourceName": "Environmental Working Group",
+                 "dataQuality": 1,
+                 "baseUrl": "https://www.ewg.org/foodscores/products/",
+                 "queryNameKey": "name"
+                 },
+    "household_nlm": {"sourceName": "National Library of Medicine",
+                      "dataQuality": 3,
+                      "baseUrl": "https://householdproducts.nlm.nih.gov/",
+                      "queryNameKey": "product_name",
+                      "queryBrandKey": "manufacturer"
+                      },
+    "fashion_goy": {"sourceName": "Good On You",
+                    "dataQuality": 2,
+                    "baseUrl": "https://directory.goodonyou.eco/brand/",
+                    "queryBrandKey": "name"
+                    },
+    "electronics_gp": {"sourceName": "Greenpeace",
+                       "dataQuality": 2,
+                       "baseUrl": "https://www.greenpeace.org/usa/wp-content/uploads/2017/10/GGE2017_",
+                       "queryBrandKey": "name"
+                       },
+    "cosm_ewg" : {"sourceName": "Environmental Working Group",
+                       "dataQuality": 2,
+                       "baseUrl": "https://www.ewg.org/skindeep/product/",
+                       "queryNameKey": "name",
+                        "queryBrandKey":"brand_name"
+                       }
+}
+
+interfaces = {
+    "food_ewg": FoodEWG.getInstance(FoodEWG(dbs["food_ewg"])),
+    "household_nlm": HouseholdNLM.getInstance(HouseholdNLM(dbs["household_nlm"])),
+    "electronics_gp": ElectronicsGP.getInstance(ElectronicsGP(dbs["electronics_gp"])),
+    "fashion_goy": FashionGOY.getInstance(FashionGOY(dbs["fashion_goy"])),
+    "cosm_ewg": CosmEWG.getInstance(CosmEWG(dbs["cosm_ewg"]))
+}
+
+
+
+
+#helper functions
+def classifier(betaMode, score):
+
+    threshold = 0.7 if betaMode else 0.9
+    if score < 0.5:
+        return 1 #not eco firendly
+    elif score > 0.5 and score < threshold:
+        return 2 #neutral
+    else:
+        return 0 #eco friendly
+
+
+def calculateIndexSimilarity(productCategory, indexName):
+    return similarity.categorySimilarity(productCategory, indexName)
+
+def getAllIndices():
+    indices = []
+    for key in interfaces.keys():
+        indices.append(key)
+    return indices
+
+def calculateSimilarities(productCategory, indices):
+    newIndices = []
+    for index in indices:
+        currInterface = interfaces[index]
+        currInterface.categorySimilarity = calculateIndexSimilarity(productCategory, index)
+        if currInterface.categorySimilarity != 0:
+            newIndices.append(index)
+    if (len(newIndices) == 0):
+        return indices
+    return newIndices
+
+
+
+#main api functions
+def elasticSearchRequest(params):
+    ms = MultiSearch()
+    indices = params.get("indices")
+    for index in indices:
+        ms = ms.add(Search.from_dict(interfaces[index].request(params))[:5].index(index))
+    responses = ms.execute()
+
+    return responses
+
+def postProcessResults(params):
+    responses = params["responses"]
+    indices = params["indices"]
+    betaMode = params.get("betaMode")
+    results = []
+    similarities = []
+    scores = []
+    qualities = []
+    for i in range(len(responses)):  #aggregate indices
+        response = responses[i]
+        index = indices[i]
+        currInterface = interfaces[index]
+
+        result = currInterface.response(response)
+        if result != -1:
+            score, quality, row = result
+            results.append(row)
+            similarities.append(currInterface.categorySimilarity)
+            scores.append(score)
+            qualities.append(quality)
+
+    if len(results) == 0:
+        return {"has_results":False}
+    else:
+
+        totalQuality = 0
+        totalScore = 0
+        similaritiesSum = sum(similarities)
+
+        if similaritiesSum == 0:
+            resultsLength = len(results)
+            totalScore = sum(scores)/resultsLength
+            totalQuality = sum(qualities)/resultsLength
+        else:
+
+            totalScore = sum([scores[elIndex] * similarities[elIndex] for elIndex in range(len(results))])  / similaritiesSum
+            totalQuality = sum([qualities[elIndex] * similarities[elIndex] for elIndex in range(len(results))])  / similaritiesSum
+
+        return {
+            "data_quality": totalQuality,
+            "score": totalScore,
+            "classification": classifier(betaMode, totalScore),
+            "has_results": True,
+            "sources": results
+        }
+
+
+
