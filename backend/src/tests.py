@@ -2,27 +2,103 @@ import time
 from functions import *
 import os
 
-print(os.getenv("MONGO_URL"))
 
 
 class TestQuery:
 
     #querys for campbell's soup - tests if basic product rating and information retrieval is working
-    def testQueryCampbellSoup(self):
+    def testFood(self):
         event = {
             "queryStringParameters": {
                 "name": "Campbell's Chunky Grilled Chicken & Sausage Gumbo, 18.8 oz. Can (Pack of 12)",
-                "mode": True,
-                "asin": "B0014EOUYI"
+                "brand": "Campbell's",
+                "mode": "true",
+                "asin": "B0014EOUYI",
+                "nodeid": "16310101"
             }
         }
+
+
         results = getProductClass(event, None)
         results = results["body"]
         results = json.loads(results)
 
+        print(json.dumps(results))
         assert results["classification"] == 1
         assert results["has_results"] == True
         assert results["score"] < 0.6
+
+    def testElectronics(self):
+        event = {
+            "queryStringParameters": {
+                "name": "Apple iPhone 6, GSM Unlocked, 16 GB Unlocked, Silver (Renewed)",
+                "brand": "Apple",
+                "mode": "true",
+                "asin": "B01BI2VZEI",
+                "nodeid": "2335752011"
+            }
+        }
+
+        results = getProductClass(event, None)
+        results = results["body"]
+        results = json.loads(results)
+
+        print(json.dumps(results))
+        assert results["has_results"] == True
+
+    def testCosmetics(self):
+        event = {
+            "queryStringParameters": {
+                "name": "Dove Beauty Bar Gentle Exfoliating Soap",
+                "brand": "Dove",
+                "mode": "true",
+                "asin": "B00OMXW9F0",
+                "nodeid": "3760911"
+            }
+        }
+
+        results = getProductClass(event, None)
+        results = results["body"]
+        results = json.loads(results)
+
+        print(json.dumps(results))
+        assert results["has_results"] == True
+
+    def testFashion(self):
+        event = {
+            "queryStringParameters": {
+                "name": "Nike Men's Revolution 4 Running Shoe",
+                "brand": "Nike",
+                "mode": "true",
+                "asin": "B06XKKRPBJ",
+                "nodeid": "672123011"
+            }
+        }
+
+        results = getProductClass(event, None)
+        results = results["body"]
+        results = json.loads(results)
+
+        print(json.dumps(results))
+        assert results["has_results"] == True
+
+    def testHousehold(self):
+        event = {
+            "queryStringParameters": {
+                "name": "Easy-Off Glass-Ceramic Cooktop Cleaner",
+                "brand": "Reckitt",
+                "mode": "true",
+                "nodeid": "284507"
+            }
+        }
+
+        results = getProductClass(event, None)
+        results = results["body"]
+        results = json.loads(results)
+
+        print(json.dumps(results))
+        assert results["has_results"] == True
+
 
 
 class TestSort:
@@ -84,16 +160,18 @@ class TestSort:
 
     # tests that product results are sorted correctly (in descending order)
     def testSort(self):
-        event = {"body": json.dumps(self.original)}
-
+        event = {"body": {"products":json.dumps(self.original),"nodeid":"3375251"}}
+        start = time.time()
         results = batchProductClassQuery(event, None)
-
+        end = time.time()
+        print(end-start,'s')
         results = results["body"]
-        results = json.loads(results)
 
+        results = json.loads(results)
         assert len(results) == len(self.original)
         oldScore = 1
         for result in results:
+
             assert oldScore >= result["score"]
             oldScore = result["score"]
 
@@ -101,3 +179,11 @@ class TestSort:
 
 # more test cases may be added here
 # for more than 100 entries as input or validation, consider using a file for data
+TestQuery().testFashion()
+TestQuery().testCosmetics()
+TestQuery().testElectronics()
+TestQuery().testFood()
+TestQuery().testHousehold()
+sort = TestSort()
+sort.setup()
+sort.testSort()

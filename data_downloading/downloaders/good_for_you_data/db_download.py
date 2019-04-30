@@ -34,6 +34,7 @@ def getData():
                     results = json.loads(r.text)
                     for brand in results["result"]["brands"]:
                         if brand["id"] not in retrievedSet:
+                            brand["environment_rating"] = -1.0
                             retrievedSet.add(brand["id"])
                             print(brand["id"])
                             secondData = {"id": brand["id"], "_ApplicationId": "gcrp2V42PHW7S8ElL639",
@@ -47,6 +48,8 @@ def getData():
                                 print("timeout on " + brand["id"])
                             if rDetails and rDetails.ok:
                                 brand["details"] = json.loads(rDetails.text)
+                                if brand["details"]["result"].get("environment_rating") != None:
+                                    brand["environment_rating"] = float(brand["details"]["result"].get("environment_rating"))
                             brands.append(brand)
                 else:
                     print("HTTP %i - %s" % (r.status_code, r.reason))
@@ -73,6 +76,7 @@ def findAllDataforSearch(requestUrl, data, retrievedSet):
             if brand["id"] not in retrievedSet:
                 retrievedSet.add(brand["id"])
                 print(brand["id"])
+                brand["environment_rating"] = -1.0
                 secondData = {"id": brand["id"], "_ApplicationId": "gcrp2V42PHW7S8ElL639",
                               "_JavaScriptKey": "gVoyh28ouDRUazw9IMrF6nIkxHVtvvALHHJL5BOg",
                               "_ClientVersion": "js2.1.0",
@@ -85,6 +89,8 @@ def findAllDataforSearch(requestUrl, data, retrievedSet):
                     print("timeout on " + brand["id"])
                 if rDetails and rDetails.ok:
                     brand["details"] = json.loads(rDetails.text)
+                    if brand["details"]["result"].get("environment_rating") != None:
+                        brand["environment_rating"] = float(brand["details"]["result"].get("environment_rating"))
                 brands.append(brand)
     return brands
 
