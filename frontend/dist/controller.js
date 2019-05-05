@@ -13589,6 +13589,7 @@ function jQueryDOMUpdater(functionLogic, params) {
   $(function () {
     //incase the rest of the webpage lags and invalidates the css
     if (newParams != undefined) {
+      //not necessary in most cases
       params.push.apply(params, _toConsumableArray(newParams));
     }
 
@@ -14009,13 +14010,13 @@ function changeBackgroundColor(data) {
         "border-color": "#8b0000"
       });
 
-      if ($("#t_el_label").exists()) {
+      if ($("#t_el_label").length) {
         $("#t_el_label").css({
           "color": "#8b0000"
         });
       }
 
-      if ($("#elephants-health-risk-span").exists()) {
+      if ($("#elephants-health-risk-span").length) {
         $("#elephants-health-risk-span").css({
           "color": "#8b0000"
         });
@@ -23514,7 +23515,137 @@ function create(data) {
 
   (0, _utils.jQueryDOMUpdater)(updateLogic, [data]);
 }
-},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/rating":"components/rating.js"}],"controller.js":[function(require,module,exports) {
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/rating":"components/rating.js"}],"components/shipping.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Shipping =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Shipping, _Component);
+
+  function Shipping(props) {
+    _classCallCheck(this, Shipping);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Shipping).call(this, props));
+  }
+
+  _createClass(Shipping, [{
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("span", {
+        id: "elephant-shipping-span"
+      }, " ", _react.default.createElement("div", {
+        class: "elephants-speech-bubble-shipping"
+      }, " Help our planet and get cash back by shipping it more ", _react.default.createElement("span", {
+        class: "three-elephants-promotion"
+      }, "efficiently."), " "), " ");
+    }
+  }]);
+
+  return Shipping;
+}(_react.Component);
+
+var _default = Shipping;
+exports.default = _default;
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js"}],"lib/shipping.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.create = create;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _reactDom = _interopRequireDefault(require("react-dom"));
+
+var _utils = require("./utils");
+
+var _shipping = _interopRequireDefault(require("./../components/shipping"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function shippingModifier(jQueryArray) {
+  var goodShippingOption = null;
+  var length = jQueryArray.length;
+  var goGreenHTML = '<span> <div class="elephants-speech-bubble-shipping"> Help our planet and get cash back by shipping it more <span class="three-elephants-promotion">efficiently.</span> </div> </span>';
+
+  for (var i = 0; i < length; i++) {
+    var badShipping = false;
+    var text = jQueryArray.eq(i).find(".a-color-secondary").text().trim().toLowerCase();
+    var date = jQueryArray.eq(i).find(".a-color-success").text().trim();
+
+    if (date == "Tomorrow") {
+      badShipping = true;
+    } else {
+      var shippingDate = new Date(date + ", " + new Date().getFullYear());
+      var timeDiff = Math.abs(shippingDate.getTime() - new Date().getTime());
+      var difference = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+      if (difference <= 3) {
+        badShipping = true;
+      }
+    }
+
+    if (!badShipping) {
+      if (text.includes("no-rush") || text.includes("standard")) {
+        goodShippingOption = jQueryArray.eq(i);
+        $(goodShippingOption).addClass("good-shipping");
+        $($(goodShippingOption).find("input")[0]).attr('checked', true);
+        $($(goodShippingOption).find(".deliveryPromoDescription")).addClass("three-elephants-promotion");
+        $(goodShippingOption).after(goGreenHTML);
+
+        _reactDom.default.render(_react.default.createElement(Label, {
+          data: params[0]
+        }), document.getElementById('elephant-label-span'));
+      }
+    } else {
+      jQueryArray.eq(i).addClass("bad-shipping");
+    }
+  }
+}
+
+function create() {
+  $(function () {
+    var updateLogic = function updateLogic(params) {
+      shippingModifier($(".prime-ship-speed"));
+      shippingModifier($(".shipping-speed.ship-option"));
+    };
+
+    updateLogic();
+  });
+} //Jquery selector chains with "dot notation"
+//.eq(0) can get the first element in an HTML array, [0] doesn't work
+//.css can get the styling done for us
+//jQuery.find can search for child elements, string.search looks for keywords in the text
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/shipping":"components/shipping.js"}],"controller.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireWildcard(require("react"));
@@ -23546,6 +23677,8 @@ var rating = _interopRequireWildcard(require("./lib/rating"));
 var abTest = _interopRequireWildcard(require("./lib/ab_test"));
 
 var constants = _interopRequireWildcard(require("./lib/constants"));
+
+var shipping = _interopRequireWildcard(require("./lib/shipping"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23621,22 +23754,25 @@ function triggerAPI(searchTerms) {
 
 function main() {
   //to turn on sort feature
-  sort.create(); //we need the product title to trigger the api call thus it needs to be parsed
+  sort.create(); //to turn on shipping feature
+
+  shipping.create(); //we need the product title to trigger the api call thus it needs to be parsed
   //observe the dom to figure out when this is parsed and we can trigger api call
 
   var triggered = false;
   var boolMap = {
-    "productTitle": 0,
-    "nodeID": 0,
-    "ASIN": 0,
-    "bylineInfo": 0
+    "productTitle": false,
+    "nodeID": false,
+    "ASIN": false,
+    "bylineInfo": false
   };
   var textKeys = new Set(["productTitle"]);
   var searchTerms = {};
   var keys = Object.keys(boolMap);
 
   var findValuefromIDSub = function findValuefromIDSub(key) {
-    return (textKeys.has(key) ? (0, _jquery.default)("#" + key).text() : (0, _jquery.default)("#" + key).val()).trim();
+    var results = textKeys.has(key) ? (0, _jquery.default)("#" + key).text().trim() : (0, _jquery.default)("#" + key).val();
+    return results;
   };
 
   var findValuefromID = function findValuefromID(key) {
@@ -23670,10 +23806,8 @@ function main() {
           var key = _keys[_i];
 
           if (node.nodeType == Node.ELEMENT_NODE && node.id == key) {
-            for (var _i3 = 0, _keys3 = keys; _i3 < _keys3.length; _i3++) {
-              var key = _keys3[_i3];
-              searchTerms[key] = findValuefromID(key);
-            }
+            searchTerms[key] = findValuefromID(key);
+            boolMap[key] = true;
           }
         }
 
@@ -23688,10 +23822,9 @@ function main() {
         triggered = isTrigger;
 
         if (triggered) {
+          observer.disconnect();
           triggerAPI(searchTerms);
         }
-
-        observer.disconnect();
       }
     }
   });
@@ -23699,11 +23832,17 @@ function main() {
     if (!triggered) {
       triggered = true;
 
-      for (var _i4 = 0, _keys4 = keys; _i4 < _keys4.length; _i4++) {
-        var key = _keys4[_i4];
+      for (var _i3 = 0, _keys3 = keys; _i3 < _keys3.length; _i3++) {
+        var key = _keys3[_i3];
+
+        if (!(0, _jquery.default)("#" + key).length) {
+          return;
+        }
+
         searchTerms[key] = findValuefromID(key);
       }
 
+      observer.disconnect();
       triggerAPI(searchTerms);
     }
   });
@@ -23715,7 +23854,7 @@ function main() {
 
 ;
 main();
-},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","jquery":"../node_modules/jquery/dist/jquery.js","./lib/utils":"lib/utils.js","./lib/label":"lib/label.js","./lib/health_risk_label":"lib/health_risk_label.js","./lib/tooltip":"lib/tooltip.js","./lib/reformat":"lib/reformat.js","./lib/add_to_cart":"lib/add_to_cart.js","./lib/nav_cart":"lib/nav_cart.js","./lib/sort":"lib/sort.js","./lib/price_changer":"lib/price_changer.js","./lib/rating":"lib/rating.js","./lib/ab_test":"lib/ab_test.js","./lib/constants":"lib/constants.js"}],"../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","jquery":"../node_modules/jquery/dist/jquery.js","./lib/utils":"lib/utils.js","./lib/label":"lib/label.js","./lib/health_risk_label":"lib/health_risk_label.js","./lib/tooltip":"lib/tooltip.js","./lib/reformat":"lib/reformat.js","./lib/add_to_cart":"lib/add_to_cart.js","./lib/nav_cart":"lib/nav_cart.js","./lib/sort":"lib/sort.js","./lib/price_changer":"lib/price_changer.js","./lib/rating":"lib/rating.js","./lib/ab_test":"lib/ab_test.js","./lib/constants":"lib/constants.js","./lib/shipping":"lib/shipping.js"}],"../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

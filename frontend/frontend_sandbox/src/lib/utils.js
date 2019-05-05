@@ -6,7 +6,7 @@ export function regexFunc() {
 export function jQueryDOMUpdater(functionLogic, params) {
   var newParams = functionLogic(params);
   $(function() { //incase the rest of the webpage lags and invalidates the css
-    if (newParams!=undefined) {
+    if (newParams!=undefined) {  //not necessary in most cases
       params.push(...newParams)
     }
     functionLogic(params);

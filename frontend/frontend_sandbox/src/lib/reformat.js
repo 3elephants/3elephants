@@ -32,12 +32,12 @@ export function changeBackgroundColor(data) {
         "border-color":"#8b0000"
       });
 
-      if($("#t_el_label").exists()) {
+      if($("#t_el_label").length) {
         $("#t_el_label").css({
           "color": "#8b0000"
         });
       }
-      if($("#elephants-health-risk-span").exists()) {
+      if($("#elephants-health-risk-span").length) {
         $("#elephants-health-risk-span").css({
           "color": "#8b0000"
         });

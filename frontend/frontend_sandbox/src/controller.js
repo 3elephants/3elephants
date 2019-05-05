@@ -21,7 +21,7 @@ import * as priceChanger from './lib/price_changer'
 import * as rating from './lib/rating'
 import * as abTest from './lib/ab_test'
 import * as constants from './lib/constants'
-
+import * as shipping from './lib/shipping';
 
 
 
@@ -124,22 +124,24 @@ function main() {
 
   //to turn on sort feature
   sort.create();
+  //to turn on shipping feature
+  shipping.create();
 
   //we need the product title to trigger the api call thus it needs to be parsed
   //observe the dom to figure out when this is parsed and we can trigger api call
   let triggered = false;
   let boolMap = {
-    "productTitle": 0,
-    "nodeID": 0,
-    "ASIN": 0,
-    "bylineInfo": 0
+    "productTitle": false,
+    "nodeID": false,
+    "ASIN": false,
+    "bylineInfo": false
   };
   let textKeys = new Set(["productTitle"]);
   let searchTerms = {}
   let keys = Object.keys(boolMap);
   var findValuefromIDSub = (key) => {
-
-    return ((textKeys.has(key))?($("#"+key).text()):($("#"+key).val())).trim();
+    var results = ((textKeys.has(key))?($("#"+key).text().trim()):($("#"+key).val()));
+    return results;
   }
   var findValuefromID = (key) => {
 
@@ -172,9 +174,8 @@ function main() {
 
         for (var key of keys) {
           if ((node.nodeType == Node.ELEMENT_NODE) && (node.id == key)) {
-            for (var key of keys) {
-              searchTerms[key] =  findValuefromID(key);
-            }
+            searchTerms[key] =  findValuefromID(key);
+            boolMap[key] = true;
           }
         }
         let isTrigger = true;
@@ -185,9 +186,10 @@ function main() {
           }
         triggered = isTrigger;
         if (triggered) {
+          observer.disconnect();
           triggerAPI(searchTerms);
         }
-        observer.disconnect();
+
       }
     }
   });
@@ -195,9 +197,15 @@ function main() {
   $(function() {
     if (!triggered) {
       triggered = true;
-      for (var key of keys)
+      for (var key of keys) {
+          if(!($("#" + key).length)) {
+            return;
+          }
           searchTerms[key] =  findValuefromID(key);
+      }
+      observer.disconnect();
       triggerAPI(searchTerms);
+
     }
   });
   observer.observe(document.documentElement, {
