@@ -1,0 +1,6 @@
+The CSS updates all modals equally throughout the tutorial
+The onboarding process is called in controller.js if the configuration for onboarding is turned on
+*The configuration probably has to be turned off after onboarding is complete
+
+*The search term of "Campbell's soup" should be changed to the specific one we want them to to search for
+*The "redirectedLink" variable in "onboarding.js" should be updated after the search term is changed from "Campbell's soup"

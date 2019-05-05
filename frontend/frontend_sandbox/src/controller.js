@@ -45,6 +45,8 @@ function updateUICallback(data, configuration) {
       navCart.create(data);
     if(configuration.price.is_on)
       priceChanger.create(data, configuration.price);
+    if(configuration.onboarding_is_on)
+      onboarding.run();
   }
 
 
