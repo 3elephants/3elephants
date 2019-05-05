@@ -186,12 +186,21 @@ function main() {
           }
         triggered = isTrigger;
         if (triggered) {
-          observer.disconnect();
+
           triggerAPI(searchTerms);
+          observer.disconnect();
+          return;
+
         }
 
       }
     }
+  });
+
+
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true
   });
 
   $(function() {
@@ -203,14 +212,10 @@ function main() {
           }
           searchTerms[key] =  findValuefromID(key);
       }
-      observer.disconnect();
-      triggerAPI(searchTerms);
 
+      triggerAPI(searchTerms);
+      observer.disconnect();
     }
-  });
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true
   });
 
 };
