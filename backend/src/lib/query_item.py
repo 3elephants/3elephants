@@ -20,6 +20,7 @@ class AbstractRequestInterface(ABC):
         self.nameKey = params.get("queryNameKey")
         self.brandKey = params.get("queryBrandKey")
         self.requiresBrand = False
+        self.categorySimilarity = 0
 
     @abstractmethod
     def getScore(self, response):
@@ -215,7 +216,7 @@ class ElectronicsGP(AbstractRequestInterface):
 
 
     def getScore(self, response):
-
+        print(response.to_dict())
         score = self.greenPeaceMap.get(response.letter_overall_rating)
         if score == None:
             return None
@@ -309,6 +310,7 @@ def calculateSimilarities(productCategory, indices):
 def elasticSearchRequest(params):
     ms = MultiSearch()
     indices = params.get("indices")
+
     for index in indices:
         ms = ms.add(Search.from_dict(interfaces[index].request(params))[:5].index(index))
     responses = ms.execute()

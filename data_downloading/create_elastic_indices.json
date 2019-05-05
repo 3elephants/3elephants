@@ -26,7 +26,6 @@ PUT 3elephants
       "properties": {
         "product_name": {
           "type": "text",
-          "analyzer": "standard",
           "fields": {
             "shingles": {
               "type": "text",

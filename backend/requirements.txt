@@ -1,6 +1,8 @@
 beautifulsoup4
 enum34==1.1.6
 Flask==1.0.2
-nltk==3.3
 elasticsearch_dsl
+elasticsearch
+urllib3==1.21.1
 requests
+requests_aws4auth

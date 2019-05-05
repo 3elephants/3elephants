@@ -10,11 +10,9 @@ class TestQuery:
     def testFood(self):
         event = {
             "queryStringParameters": {
-                "name": "Campbell's Chunky Grilled Chicken & Sausage Gumbo, 18.8 oz. Can (Pack of 12)",
-                "brand": "Campbell's",
+                "name": "Dove Beauty Bar White Bar",
                 "mode": "true",
-                "asin": "B0014EOUYI",
-                "nodeid": "16310101"
+
             }
         }
 
@@ -179,10 +177,12 @@ class TestSort:
 
 # more test cases may be added here
 # for more than 100 entries as input or validation, consider using a file for data
+TestQuery().testFood()
+print("fashion...")
 TestQuery().testFashion()
 TestQuery().testCosmetics()
 TestQuery().testElectronics()
-TestQuery().testFood()
+
 TestQuery().testHousehold()
 sort = TestSort()
 sort.setup()

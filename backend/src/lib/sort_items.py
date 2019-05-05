@@ -36,7 +36,6 @@ def bulkPostProcessResultsMultithreaded(gParams):
         idx, responses = pair
         params = {
             "responses": responses,
-            "productCategory": gParams["productCategory"],
             "indices": gParams["indices"]
         }
         result = postProcessResults(params)

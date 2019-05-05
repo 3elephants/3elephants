@@ -4,7 +4,8 @@ rm -rf $DIR/src/__pycache__
 mv $DIR/src/tests.py $DIR
 rm $DIR/../deployments/backend.zip
 pip install -r $DIR/requirements.txt --target $DIR/src/packages
-cd currentPath="$PWD"
+currentPath="$PWD"
+cd currentPath
 cd $DIR/src
 zip -r   -X $DIR/../deployments/backend.zip . -x "__pycache__/*" *.DStore* *.idea*
 mkdir $DIR/src/packages

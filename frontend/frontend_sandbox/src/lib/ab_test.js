@@ -116,6 +116,10 @@ export function generateConfiguration() {
     restrictive_mode: {
       is_on: false,
       finalized:true
+    },
+    tooltip: {
+      is_on: true,
+      finalized:true
     }
   };
 
