@@ -15,8 +15,10 @@ export function spaceTitleDiv() {
 }
 
 export function changeBackgroundColor(data) {
-
-  if (data.classification == 1) {
+  let cClass = data.classification;
+  if(!data.has_results)
+    cClass = data.health_risk;
+  if (cClass == 1) {
     var updateLogic = (params) => { //private logic is where core dom updating logic is placed
 
       $("#leftCol, #centerCol, .a-container, .a-box").css({
@@ -30,10 +32,16 @@ export function changeBackgroundColor(data) {
         "border-color":"#8b0000"
       });
 
-
-      $("#t_el_label").css({
-        "color": "#8b0000"
-      });
+      if($("#t_el_label").exists()) {
+        $("#t_el_label").css({
+          "color": "#8b0000"
+        });
+      }
+      if($("#elephants-health-risk-span").exists()) {
+        $("#elephants-health-risk-span").css({
+          "color": "#8b0000"
+        });
+      }
     };
     jQueryDOMUpdater(updateLogic, []);
 

@@ -9593,6 +9593,10 @@ function generateConfiguration() {
     tooltip: {
       is_on: true,
       finalized: true
+    },
+    health_risk_label: {
+      is_on: true,
+      finalized: true
     }
   };
   configuration = randomizeConfiguration(configuration);

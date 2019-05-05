@@ -12,7 +12,7 @@ class NavCart extends Component {
       <div style="
        display: table-cell;
        vertical-align: middle;
-       
+
        padding: 5px 5px 0 5px;">
         <span aria-hidden="true" class="nav-line-2" style="
          padding: 0px;
@@ -21,8 +21,11 @@ class NavCart extends Component {
         </span>
       </div>
     </div>
-
-  return (<span>{(data.classification == 1) && addToCartSpan}</span>);
+    
+  let cClass = data.classification;
+  if(!data.has_results)
+    cClass = data.health_risk;
+  return (<span>{(cClass == 1) && addToCartSpan}</span>);
 
   }
 }

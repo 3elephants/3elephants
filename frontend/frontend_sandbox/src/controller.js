@@ -10,6 +10,7 @@ window.jQuery = jQuery;
 
 import * as customUtils from './lib/utils';
 import * as label from './lib/label';
+import * as healthRisk from './lib/health_risk_label';
 import * as tooltip from './lib/tooltip';
 import * as reformat from './lib/reformat';
 import * as addToCart from './lib/add_to_cart';
@@ -24,6 +25,7 @@ import * as constants from './lib/constants'
 
 
 
+
 function updateUICallback(data, configuration) {
 
   var productGreenRating = data.classification;
@@ -32,23 +34,32 @@ function updateUICallback(data, configuration) {
     return;
   }
 
-  if(configuration.label.is_on && data.has_results &&  !(data.data_quality < 1)) {
+  if(configuration.label.is_on && (data.has_results || data.has_results_health) &&  !(data.data_quality < 1)) {
 
-    label.create(data);
-    if(configuration.rating.is_on)
-      rating.create(data);
+
+    if(data.has_results) {
+      if(configuration.rating.is_on)
+        rating.create(data);
+      if(configuration.price.is_on)
+        priceChanger.create(data, configuration.price);
+      if(configuration.label.is_on)
+        label.create(data);
+    }
+    if(data.has_results_health) {
+      if(configuration.health_risk_label.is_on)
+        healthRisk.create(data);
+    }
+
     if(configuration.background_color.is_on)
       reformat.changeBackgroundColor(data);
     if(configuration.add_to_cart.is_on)
       addToCart.create(data);
     if(configuration.nav_cart.is_on)
       navCart.create(data);
-    if(configuration.price.is_on)
-      priceChanger.create(data, configuration.price);
     if(configuration.tooltip.is_on) {
-
+      tooltip.create(data);
     }
-    tooltip.create(data);
+
   }
 
 
@@ -73,7 +84,7 @@ function updateUICallback(data, configuration) {
 function triggerAPI(searchTerms) {
 
   chrome.storage.sync.get(['elephants_feature_settings'], function(result) {
-    
+    result.elephants_feature_settings = abTest.generateConfiguration();
     if (result.elephants_feature_settings == undefined || result.elephants_feature_settings == null)
       result.elephants_feature_settings = abTest.generateConfiguration();
     let endUrl = "";

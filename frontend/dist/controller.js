@@ -13718,7 +13718,107 @@ function create(data) {
 
   (0, _utils.jQueryDOMUpdater)(updateLogic, [data]);
 }
-},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/label":"components/label.js"}],"components/tooltip.js":[function(require,module,exports) {
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/label":"components/label.js"}],"components/health_risk_label.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var HealthRiskLabel =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(HealthRiskLabel, _Component);
+
+  function HealthRiskLabel(props) {
+    _classCallCheck(this, HealthRiskLabel);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(HealthRiskLabel).call(this, props));
+  }
+
+  _createClass(HealthRiskLabel, [{
+    key: "render",
+    value: function render() {
+      var data = this.props.data;
+      var cClass = data.health_risk;
+
+      var healthRisk = _react.default.createElement("span", {
+        style: "color:red"
+      }, " ", data.has_results == true ? "&" : "", " Health Hazard ");
+
+      if (cClass != 1) {
+        healthRisk = _react.default.createElement("div", {
+          className: "elephants-informational-label"
+        }, "Note: ", cClass == 0 ? "No Health Risk Found" : "Mild Health Risk", " ");
+      }
+
+      return _react.default.createElement("span", null, healthRisk);
+    }
+  }]);
+
+  return HealthRiskLabel;
+}(_react.Component);
+
+var _default = HealthRiskLabel;
+exports.default = _default;
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js"}],"lib/health_risk_label.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.create = create;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _reactDom = _interopRequireDefault(require("react-dom"));
+
+var _utils = require("./utils");
+
+var _health_risk_label = _interopRequireDefault(require("./../components/health_risk_label"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function create(data) {
+  var updateLogic = function updateLogic(params) {
+    if ((0, _utils.exists)(document.getElementById('elephants-health-risk-span'))) {
+      return;
+    }
+
+    var healthRisk = '<span id="elephants-health-risk-span"> </span>';
+    $("#productTitle").after(healthRisk);
+
+    _reactDom.default.render(_react.default.createElement(_health_risk_label.default, {
+      data: params[0]
+    }), document.getElementById('elephants-health-risk-span'));
+  };
+
+  (0, _utils.jQueryDOMUpdater)(updateLogic, [data]);
+}
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/health_risk_label":"components/health_risk_label.js"}],"components/tooltip.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13798,13 +13898,12 @@ function (_Component) {
         }, " ", source.source, " "), " ");
       });
       var credFormat = dQratingsMap[Math.round(this.result.data_quality)];
-      return _react.default.createElement("div", null, _react.default.createElement("img", {
-        src: chrome.extension.getURL("assets/images/el-logo.png")
-      }), "  Label: ", _react.default.createElement(_label.default, {
-        data: this.result
-      }), _react.default.createElement("br", null), _react.default.createElement("br", null), _react.default.createElement("div", {
+      this.result.health_risk = 0;
+      return _react.default.createElement("div", null, _react.default.createElement("div", {
         className: "elephants-tooltip-title"
-      }, " ", _react.default.createElement("span", {
+      }, " ", _react.default.createElement("img", {
+        src: chrome.extension.getURL("assets/images/el-logo.png")
+      }), " ", _react.default.createElement("span", {
         style: "color:" + credFormat.color
       }, " ", credFormat.name.toUpperCase(), " "), " Credibility "), _react.default.createElement("div", {
         className: "elephants-source-text"
@@ -13894,7 +13993,10 @@ function spaceTitleDiv() {
 }
 
 function changeBackgroundColor(data) {
-  if (data.classification == 1) {
+  var cClass = data.classification;
+  if (!data.has_results) cClass = data.health_risk;
+
+  if (cClass == 1) {
     var updateLogic = function updateLogic(params) {
       //private logic is where core dom updating logic is placed
       $("#leftCol, #centerCol, .a-container, .a-box").css({
@@ -13906,9 +14008,18 @@ function changeBackgroundColor(data) {
       $(".a-box").css({
         "border-color": "#8b0000"
       });
-      $("#t_el_label").css({
-        "color": "#8b0000"
-      });
+
+      if ($("#t_el_label").exists()) {
+        $("#t_el_label").css({
+          "color": "#8b0000"
+        });
+      }
+
+      if ($("#elephants-health-risk-span").exists()) {
+        $("#elephants-health-risk-span").css({
+          "color": "#8b0000"
+        });
+      }
     };
 
     (0, _utils.jQueryDOMUpdater)(updateLogic, []);
@@ -13982,7 +14093,9 @@ function (_Component) {
         style: " color: white;"
       }, "Add to Cart"));
 
-      return _react.default.createElement("span", null, data.classification == 1 && addToCartSpan);
+      var cClass = data.classification;
+      if (!data.has_results) cClass = data.health_risk;
+      return _react.default.createElement("span", null, cClass == 1 && addToCartSpan);
     }
   }]);
 
@@ -14098,7 +14211,9 @@ function (_Component) {
         style: " padding: 0px; margin-left:0px; margin-right: 4px;"
       }, "\u26A0 Cart")));
 
-      return _react.default.createElement("span", null, data.classification == 1 && addToCartSpan);
+      var cClass = data.classification;
+      if (!data.has_results) cClass = data.health_risk;
+      return _react.default.createElement("span", null, cClass == 1 && addToCartSpan);
     }
   }]);
 
@@ -20946,6 +21061,10 @@ function generateConfiguration() {
     tooltip: {
       is_on: true,
       finalized: true
+    },
+    health_risk_label: {
+      is_on: true,
+      finalized: true
     }
   };
   configuration = randomizeConfiguration(configuration);
@@ -23408,6 +23527,8 @@ var customUtils = _interopRequireWildcard(require("./lib/utils"));
 
 var label = _interopRequireWildcard(require("./lib/label"));
 
+var healthRisk = _interopRequireWildcard(require("./lib/health_risk_label"));
+
 var tooltip = _interopRequireWildcard(require("./lib/tooltip"));
 
 var reformat = _interopRequireWildcard(require("./lib/reformat"));
@@ -23442,17 +23563,24 @@ function updateUICallback(data, configuration) {
     return;
   }
 
-  if (configuration.label.is_on && data.has_results && !(data.data_quality < 1)) {
-    label.create(data);
-    if (configuration.rating.is_on) rating.create(data);
+  if (configuration.label.is_on && (data.has_results || data.has_results_health) && !(data.data_quality < 1)) {
+    if (data.has_results) {
+      if (configuration.rating.is_on) rating.create(data);
+      if (configuration.price.is_on) priceChanger.create(data, configuration.price);
+      if (configuration.label.is_on) label.create(data);
+    }
+
+    if (data.has_results_health) {
+      if (configuration.health_risk_label.is_on) healthRisk.create(data);
+    }
+
     if (configuration.background_color.is_on) reformat.changeBackgroundColor(data);
     if (configuration.add_to_cart.is_on) addToCart.create(data);
     if (configuration.nav_cart.is_on) navCart.create(data);
-    if (configuration.price.is_on) priceChanger.create(data, configuration.price);
 
-    if (configuration.tooltip.is_on) {}
-
-    tooltip.create(data);
+    if (configuration.tooltip.is_on) {
+      tooltip.create(data);
+    }
   } //this check doesn't apply to the above features
   //because the above would work with not enough data
 
@@ -23466,6 +23594,7 @@ function updateUICallback(data, configuration) {
 
 function triggerAPI(searchTerms) {
   chrome.storage.sync.get(['elephants_feature_settings'], function (result) {
+    result.elephants_feature_settings = abTest.generateConfiguration();
     if (result.elephants_feature_settings == undefined || result.elephants_feature_settings == null) result.elephants_feature_settings = abTest.generateConfiguration();
     var endUrl = "";
 
@@ -23586,7 +23715,7 @@ function main() {
 
 ;
 main();
-},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","jquery":"../node_modules/jquery/dist/jquery.js","./lib/utils":"lib/utils.js","./lib/label":"lib/label.js","./lib/tooltip":"lib/tooltip.js","./lib/reformat":"lib/reformat.js","./lib/add_to_cart":"lib/add_to_cart.js","./lib/nav_cart":"lib/nav_cart.js","./lib/sort":"lib/sort.js","./lib/price_changer":"lib/price_changer.js","./lib/rating":"lib/rating.js","./lib/ab_test":"lib/ab_test.js","./lib/constants":"lib/constants.js"}],"../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","jquery":"../node_modules/jquery/dist/jquery.js","./lib/utils":"lib/utils.js","./lib/label":"lib/label.js","./lib/health_risk_label":"lib/health_risk_label.js","./lib/tooltip":"lib/tooltip.js","./lib/reformat":"lib/reformat.js","./lib/add_to_cart":"lib/add_to_cart.js","./lib/nav_cart":"lib/nav_cart.js","./lib/sort":"lib/sort.js","./lib/price_changer":"lib/price_changer.js","./lib/rating":"lib/rating.js","./lib/ab_test":"lib/ab_test.js","./lib/constants":"lib/constants.js"}],"../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

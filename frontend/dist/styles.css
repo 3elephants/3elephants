@@ -219,6 +219,17 @@ input:checked+.slider:before {
 #elephants-data-tooltip .elephants-source-text {
     /* Sources - click the: */
   font-style: italic;
+  
+  font-weight: 100px;
+  font-size: 16px;
+  color: #000000;
+  letter-spacing: 0;
+  margin-top: 20px;
+}
+
+.elephants-informational-label {
+    /* Sources - click the: */
+  color: #8C8C8C;
   font-family: Arial;
   font-weight: 100px;
   font-size: 16px;

@@ -23,13 +23,15 @@ class Tooltip extends Component {
     );
 
     let credFormat = dQratingsMap[Math.round(this.result.data_quality)];
+    this.result.health_risk = 0;
     return (
-      
+
       <div>
-         <img src={chrome.extension.getURL("assets/images/el-logo.png")}/>  Label: <Label  data={this.result} />
-        <br/>
-      <br/>
-        <div className="elephants-tooltip-title"> <span style={"color:"+credFormat.color}> {credFormat.name.toUpperCase()} </span> Credibility </div>
+
+
+
+        <div className="elephants-tooltip-title"> <img src={chrome.extension.getURL("assets/images/el-logo.png")}/> <span style={"color:"+credFormat.color}> {credFormat.name.toUpperCase()} </span> Credibility </div>
+      
 
         <div className="elephants-source-text">  Sources - click the source to
           see the original data </div>
