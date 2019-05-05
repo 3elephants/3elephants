@@ -116,6 +116,14 @@ export function generateConfiguration() {
     restrictive_mode: {
       is_on: false,
       finalized:true
+    },
+    tooltip: {
+      is_on: true,
+      finalized:true
+    },
+    health_risk_label: {
+      is_on: true,
+      finalized: true
     }
   };
 

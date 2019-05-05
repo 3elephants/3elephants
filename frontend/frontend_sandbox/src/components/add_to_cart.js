@@ -21,8 +21,10 @@ class AddToCart extends Component {
       <span id="submit.add-to-cart-announce" class="a-button-text" aria-hidden="true" style="
       color: white;">Add to Cart</span>
     </span>
-
-  return (<span>{(data.classification == 1) && addToCartSpan}</span>);
+  let cClass = data.classification;
+  if(!data.has_results)
+    cClass = data.health_risk;
+  return (<span>{(cClass == 1) && addToCartSpan}</span>);
 
   }
 }

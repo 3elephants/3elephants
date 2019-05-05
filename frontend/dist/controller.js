@@ -5,8 +5,6 @@
 //
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
-
-// eslint-disable-next-line no-global-assign
 parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
@@ -77,8 +75,16 @@ parcelRequire = (function (modules, cache, entry, globalName) {
     }, {}];
   };
 
+  var error;
   for (var i = 0; i < entry.length; i++) {
-    newRequire(entry[i]);
+    try {
+      newRequire(entry[i]);
+    } catch (e) {
+      // Save first error but execute all entries
+      if (!error) {
+        error = e;
+      }
+    }
   }
 
   if (entry.length) {
@@ -103,6 +109,13 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   // Override the current require with this new one
+  parcelRequire = newRequire;
+
+  if (error) {
+    // throw error from earlier, _after updating parcelRequire_
+    throw error;
+  }
+
   return newRequire;
 })({"../node_modules/react-is/cjs/react-is.development.js":[function(require,module,exports) {
 /** @license React v16.8.3
@@ -1964,7 +1977,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.render = render$1;
+exports.hydrate = exports.render = render$1;
 exports.createClass = createClass;
 exports.createPortal = createPortal;
 exports.createFactory = createFactory;
@@ -1982,6 +1995,12 @@ Object.defineProperty(exports, "PropTypes", {
   enumerable: true,
   get: function () {
     return _propTypes.default;
+  }
+});
+Object.defineProperty(exports, "createRef", {
+  enumerable: true,
+  get: function () {
+    return _preact.createRef;
   }
 });
 exports.Children = exports.DOM = exports.version = exports.default = void 0;
@@ -2587,11 +2606,10 @@ function callMethod(ctx, m, args) {
 function multihook(hooks, skipDuplicates) {
   return function () {
     var arguments$1 = arguments;
-    var this$1 = this;
     var ret;
 
     for (var i = 0; i < hooks.length; i++) {
-      var r = callMethod(this$1, hooks[i], arguments$1);
+      var r = callMethod(this, hooks[i], arguments$1);
 
       if (skipDuplicates && r != null) {
         if (!ret) {
@@ -2673,12 +2691,11 @@ extend(Component$1.prototype = new _preact.Component(), {
   constructor: Component$1,
   isReactComponent: {},
   replaceState: function (state, callback) {
-    var this$1 = this;
     this.setState(state, callback);
 
-    for (var i in this$1.state) {
+    for (var i in this.state) {
       if (!(i in state)) {
-        delete this$1.state[i];
+        delete this.state[i];
       }
     }
   },
@@ -2712,11 +2729,13 @@ var index = {
   PropTypes: _propTypes.default,
   Children: Children,
   render: render$1,
+  hydrate: render$1,
   createClass: createClass,
   createPortal: createPortal,
   createFactory: createFactory,
   createElement: createElement,
   cloneElement: cloneElement$1,
+  createRef: _preact.createRef,
   isValidElement: isValidElement,
   findDOMNode: findDOMNode,
   unmountComponentAtNode: unmountComponentAtNode,
@@ -2900,7 +2919,6 @@ Item.prototype.run = function () {
 };
 
 process.title = 'browser';
-process.browser = true;
 process.env = {};
 process.argv = [];
 process.version = ''; // empty string to avoid regexp issues
@@ -2943,7 +2961,7 @@ var global = arguments[3];
 var process = require("process");
 var define;
 /*!
- * jQuery JavaScript Library v3.3.1
+ * jQuery JavaScript Library v3.4.1
  * https://jquery.com/
  *
  * Includes Sizzle.js
@@ -2953,7 +2971,7 @@ var define;
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2018-01-20T17:24Z
+ * Date: 2019-05-01T21:04Z
  */
 ( function( global, factory ) {
 
@@ -3035,20 +3053,33 @@ var isWindow = function isWindow( obj ) {
 	var preservedScriptAttributes = {
 		type: true,
 		src: true,
+		nonce: true,
 		noModule: true
 	};
 
-	function DOMEval( code, doc, node ) {
+	function DOMEval( code, node, doc ) {
 		doc = doc || document;
 
-		var i,
+		var i, val,
 			script = doc.createElement( "script" );
 
 		script.text = code;
 		if ( node ) {
 			for ( i in preservedScriptAttributes ) {
-				if ( node[ i ] ) {
-					script[ i ] = node[ i ];
+
+				// Support: Firefox 64+, Edge 18+
+				// Some browsers don't support the "nonce" property on scripts.
+				// On the other hand, just using `getAttribute` is not enough as
+				// the `nonce` attribute is reset to an empty string whenever it
+				// becomes browsing-context connected.
+				// See https://github.com/whatwg/html/issues/2369
+				// See https://html.spec.whatwg.org/#nonce-attributes
+				// The `node.getAttribute` check was added for the sake of
+				// `jQuery.globalEval` so that it can fake a nonce-containing node
+				// via an object.
+				val = node[ i ] || node.getAttribute && node.getAttribute( i );
+				if ( val ) {
+					script.setAttribute( i, val );
 				}
 			}
 		}
@@ -3073,7 +3104,7 @@ function toType( obj ) {
 
 
 var
-	version = "3.3.1",
+	version = "3.4.1",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -3202,25 +3233,28 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 			// Extend the base object
 			for ( name in options ) {
-				src = target[ name ];
 				copy = options[ name ];
 
+				// Prevent Object.prototype pollution
 				// Prevent never-ending loop
-				if ( target === copy ) {
+				if ( name === "__proto__" || target === copy ) {
 					continue;
 				}
 
 				// Recurse if we're merging plain objects or arrays
 				if ( deep && copy && ( jQuery.isPlainObject( copy ) ||
 					( copyIsArray = Array.isArray( copy ) ) ) ) {
+					src = target[ name ];
 
-					if ( copyIsArray ) {
-						copyIsArray = false;
-						clone = src && Array.isArray( src ) ? src : [];
-
+					// Ensure proper type for the source value
+					if ( copyIsArray && !Array.isArray( src ) ) {
+						clone = [];
+					} else if ( !copyIsArray && !jQuery.isPlainObject( src ) ) {
+						clone = {};
 					} else {
-						clone = src && jQuery.isPlainObject( src ) ? src : {};
+						clone = src;
 					}
+					copyIsArray = false;
 
 					// Never move original objects, clone them
 					target[ name ] = jQuery.extend( deep, clone, copy );
@@ -3273,9 +3307,6 @@ jQuery.extend( {
 	},
 
 	isEmptyObject: function( obj ) {
-
-		/* eslint-disable no-unused-vars */
-		// See https://github.com/eslint/eslint/issues/6125
 		var name;
 
 		for ( name in obj ) {
@@ -3285,8 +3316,8 @@ jQuery.extend( {
 	},
 
 	// Evaluates a script in a global context
-	globalEval: function( code ) {
-		DOMEval( code );
+	globalEval: function( code, options ) {
+		DOMEval( code, { nonce: options && options.nonce } );
 	},
 
 	each: function( obj, callback ) {
@@ -3442,14 +3473,14 @@ function isArrayLike( obj ) {
 }
 var Sizzle =
 /*!
- * Sizzle CSS Selector Engine v2.3.3
+ * Sizzle CSS Selector Engine v2.3.4
  * https://sizzlejs.com/
  *
- * Copyright jQuery Foundation and other contributors
+ * Copyright JS Foundation and other contributors
  * Released under the MIT license
- * http://jquery.org/license
+ * https://js.foundation/
  *
- * Date: 2016-08-08
+ * Date: 2019-04-08
  */
 (function( window ) {
 
@@ -3483,6 +3514,7 @@ var i,
 	classCache = createCache(),
 	tokenCache = createCache(),
 	compilerCache = createCache(),
+	nonnativeSelectorCache = createCache(),
 	sortOrder = function( a, b ) {
 		if ( a === b ) {
 			hasDuplicate = true;
@@ -3544,8 +3576,7 @@ var i,
 
 	rcomma = new RegExp( "^" + whitespace + "*," + whitespace + "*" ),
 	rcombinators = new RegExp( "^" + whitespace + "*([>+~]|" + whitespace + ")" + whitespace + "*" ),
-
-	rattributeQuotes = new RegExp( "=" + whitespace + "*([^\\]'\"]*?)" + whitespace + "*\\]", "g" ),
+	rdescend = new RegExp( whitespace + "|>" ),
 
 	rpseudo = new RegExp( pseudos ),
 	ridentifier = new RegExp( "^" + identifier + "$" ),
@@ -3566,6 +3597,7 @@ var i,
 			whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i" )
 	},
 
+	rhtml = /HTML$/i,
 	rinputs = /^(?:input|select|textarea|button)$/i,
 	rheader = /^h\d$/i,
 
@@ -3620,9 +3652,9 @@ var i,
 		setDocument();
 	},
 
-	disabledAncestor = addCombinator(
+	inDisabledFieldset = addCombinator(
 		function( elem ) {
-			return elem.disabled === true && ("form" in elem || "label" in elem);
+			return elem.disabled === true && elem.nodeName.toLowerCase() === "fieldset";
 		},
 		{ dir: "parentNode", next: "legend" }
 	);
@@ -3735,18 +3767,22 @@ function Sizzle( selector, context, results, seed ) {
 
 			// Take advantage of querySelectorAll
 			if ( support.qsa &&
-				!compilerCache[ selector + " " ] &&
-				(!rbuggyQSA || !rbuggyQSA.test( selector )) ) {
+				!nonnativeSelectorCache[ selector + " " ] &&
+				(!rbuggyQSA || !rbuggyQSA.test( selector )) &&
 
-				if ( nodeType !== 1 ) {
-					newContext = context;
-					newSelector = selector;
-
-				// qSA looks outside Element context, which is not what we want
-				// Thanks to Andrew Dupont for this workaround technique
-				// Support: IE <=8
+				// Support: IE 8 only
 				// Exclude object elements
-				} else if ( context.nodeName.toLowerCase() !== "object" ) {
+				(nodeType !== 1 || context.nodeName.toLowerCase() !== "object") ) {
+
+				newSelector = selector;
+				newContext = context;
+
+				// qSA considers elements outside a scoping root when evaluating child or
+				// descendant combinators, which is not what we want.
+				// In such cases, we work around the behavior by prefixing every selector in the
+				// list with an ID selector referencing the scope context.
+				// Thanks to Andrew Dupont for this technique.
+				if ( nodeType === 1 && rdescend.test( selector ) ) {
 
 					// Capture the context ID, setting it first if necessary
 					if ( (nid = context.getAttribute( "id" )) ) {
@@ -3768,17 +3804,16 @@ function Sizzle( selector, context, results, seed ) {
 						context;
 				}
 
-				if ( newSelector ) {
-					try {
-						push.apply( results,
-							newContext.querySelectorAll( newSelector )
-						);
-						return results;
-					} catch ( qsaError ) {
-					} finally {
-						if ( nid === expando ) {
-							context.removeAttribute( "id" );
-						}
+				try {
+					push.apply( results,
+						newContext.querySelectorAll( newSelector )
+					);
+					return results;
+				} catch ( qsaError ) {
+					nonnativeSelectorCache( selector, true );
+				} finally {
+					if ( nid === expando ) {
+						context.removeAttribute( "id" );
 					}
 				}
 			}
@@ -3942,7 +3977,7 @@ function createDisabledPseudo( disabled ) {
 					// Where there is no isDisabled, check manually
 					/* jshint -W018 */
 					elem.isDisabled !== !disabled &&
-						disabledAncestor( elem ) === disabled;
+						inDisabledFieldset( elem ) === disabled;
 			}
 
 			return elem.disabled === disabled;
@@ -3999,10 +4034,13 @@ support = Sizzle.support = {};
  * @returns {Boolean} True iff elem is a non-HTML XML node
  */
 isXML = Sizzle.isXML = function( elem ) {
-	// documentElement is verified for cases where it doesn't yet exist
-	// (such as loading iframes in IE - #4833)
-	var documentElement = elem && (elem.ownerDocument || elem).documentElement;
-	return documentElement ? documentElement.nodeName !== "HTML" : false;
+	var namespace = elem.namespaceURI,
+		docElem = (elem.ownerDocument || elem).documentElement;
+
+	// Support: IE <=8
+	// Assume HTML when documentElement doesn't yet exist, such as inside loading iframes
+	// https://bugs.jquery.com/ticket/4833
+	return !rhtml.test( namespace || docElem && docElem.nodeName || "HTML" );
 };
 
 /**
@@ -4424,11 +4462,8 @@ Sizzle.matchesSelector = function( elem, expr ) {
 		setDocument( elem );
 	}
 
-	// Make sure that attribute selectors are quoted
-	expr = expr.replace( rattributeQuotes, "='$1']" );
-
 	if ( support.matchesSelector && documentIsHTML &&
-		!compilerCache[ expr + " " ] &&
+		!nonnativeSelectorCache[ expr + " " ] &&
 		( !rbuggyMatches || !rbuggyMatches.test( expr ) ) &&
 		( !rbuggyQSA     || !rbuggyQSA.test( expr ) ) ) {
 
@@ -4442,7 +4477,9 @@ Sizzle.matchesSelector = function( elem, expr ) {
 					elem.document && elem.document.nodeType !== 11 ) {
 				return ret;
 			}
-		} catch (e) {}
+		} catch (e) {
+			nonnativeSelectorCache( expr, true );
+		}
 	}
 
 	return Sizzle( expr, document, null, [ elem ] ).length > 0;
@@ -4901,7 +4938,7 @@ Expr = Sizzle.selectors = {
 		"contains": markFunction(function( text ) {
 			text = text.replace( runescape, funescape );
 			return function( elem ) {
-				return ( elem.textContent || elem.innerText || getText( elem ) ).indexOf( text ) > -1;
+				return ( elem.textContent || getText( elem ) ).indexOf( text ) > -1;
 			};
 		}),
 
@@ -5040,7 +5077,11 @@ Expr = Sizzle.selectors = {
 		}),
 
 		"lt": createPositionalPseudo(function( matchIndexes, length, argument ) {
-			var i = argument < 0 ? argument + length : argument;
+			var i = argument < 0 ?
+				argument + length :
+				argument > length ?
+					length :
+					argument;
 			for ( ; --i >= 0; ) {
 				matchIndexes.push( i );
 			}
@@ -6090,18 +6131,18 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-        if ( nodeName( elem, "iframe" ) ) {
-            return elem.contentDocument;
-        }
+		if ( typeof elem.contentDocument !== "undefined" ) {
+			return elem.contentDocument;
+		}
 
-        // Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
-        // Treat the template element as a regular one in browsers that
-        // don't support it.
-        if ( nodeName( elem, "template" ) ) {
-            elem = elem.content || elem;
-        }
+		// Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
+		// Treat the template element as a regular one in browsers that
+		// don't support it.
+		if ( nodeName( elem, "template" ) ) {
+			elem = elem.content || elem;
+		}
 
-        return jQuery.merge( [], elem.childNodes );
+		return jQuery.merge( [], elem.childNodes );
 	}
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
@@ -7410,6 +7451,26 @@ var rcssNum = new RegExp( "^(?:([+-])=|)(" + pnum + ")([a-z%]*)$", "i" );
 
 var cssExpand = [ "Top", "Right", "Bottom", "Left" ];
 
+var documentElement = document.documentElement;
+
+
+
+	var isAttached = function( elem ) {
+			return jQuery.contains( elem.ownerDocument, elem );
+		},
+		composed = { composed: true };
+
+	// Support: IE 9 - 11+, Edge 12 - 18+, iOS 10.0 - 10.2 only
+	// Check attachment across shadow DOM boundaries when possible (gh-3504)
+	// Support: iOS 10.0-10.2 only
+	// Early iOS 10 versions support `attachShadow` but not `getRootNode`,
+	// leading to errors. We need to check for `getRootNode`.
+	if ( documentElement.getRootNode ) {
+		isAttached = function( elem ) {
+			return jQuery.contains( elem.ownerDocument, elem ) ||
+				elem.getRootNode( composed ) === elem.ownerDocument;
+		};
+	}
 var isHiddenWithinTree = function( elem, el ) {
 
 		// isHiddenWithinTree might be called from jQuery#filter function;
@@ -7424,7 +7485,7 @@ var isHiddenWithinTree = function( elem, el ) {
 			// Support: Firefox <=43 - 45
 			// Disconnected elements can have computed display: none, so first confirm that elem is
 			// in the document.
-			jQuery.contains( elem.ownerDocument, elem ) &&
+			isAttached( elem ) &&
 
 			jQuery.css( elem, "display" ) === "none";
 	};
@@ -7466,7 +7527,8 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 		unit = valueParts && valueParts[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ),
 
 		// Starting value computation is required for potential unit mismatches
-		initialInUnit = ( jQuery.cssNumber[ prop ] || unit !== "px" && +initial ) &&
+		initialInUnit = elem.nodeType &&
+			( jQuery.cssNumber[ prop ] || unit !== "px" && +initial ) &&
 			rcssNum.exec( jQuery.css( elem, prop ) );
 
 	if ( initialInUnit && initialInUnit[ 3 ] !== unit ) {
@@ -7613,7 +7675,7 @@ jQuery.fn.extend( {
 } );
 var rcheckableType = ( /^(?:checkbox|radio)$/i );
 
-var rtagName = ( /<([a-z][^\/\0>\x20\t\r\n\f]+)/i );
+var rtagName = ( /<([a-z][^\/\0>\x20\t\r\n\f]*)/i );
 
 var rscriptType = ( /^$|^module$|\/(?:java|ecma)script/i );
 
@@ -7685,7 +7747,7 @@ function setGlobalEval( elems, refElements ) {
 var rhtml = /<|&#?\w+;/;
 
 function buildFragment( elems, context, scripts, selection, ignored ) {
-	var elem, tmp, tag, wrap, contains, j,
+	var elem, tmp, tag, wrap, attached, j,
 		fragment = context.createDocumentFragment(),
 		nodes = [],
 		i = 0,
@@ -7749,13 +7811,13 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 			continue;
 		}
 
-		contains = jQuery.contains( elem.ownerDocument, elem );
+		attached = isAttached( elem );
 
 		// Append to fragment
 		tmp = getAll( fragment.appendChild( elem ), "script" );
 
 		// Preserve script evaluation history
-		if ( contains ) {
+		if ( attached ) {
 			setGlobalEval( tmp );
 		}
 
@@ -7798,8 +7860,6 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 	div.innerHTML = "<textarea>x</textarea>";
 	support.noCloneChecked = !!div.cloneNode( true ).lastChild.defaultValue;
 } )();
-var documentElement = document.documentElement;
-
 
 
 var
@@ -7815,8 +7875,19 @@ function returnFalse() {
 	return false;
 }
 
+// Support: IE <=9 - 11+
+// focus() and blur() are asynchronous, except when they are no-op.
+// So expect focus to be synchronous when the element is already active,
+// and blur to be synchronous when the element is not already active.
+// (focus and blur are always synchronous in other supported browsers,
+// this just defines when we can count on it).
+function expectSync( elem, type ) {
+	return ( elem === safeActiveElement() ) === ( type === "focus" );
+}
+
 // Support: IE <=9 only
-// See #13393 for more info
+// Accessing document.activeElement can throw unexpectedly
+// https://bugs.jquery.com/ticket/13393
 function safeActiveElement() {
 	try {
 		return document.activeElement;
@@ -8116,9 +8187,10 @@ jQuery.event = {
 			while ( ( handleObj = matched.handlers[ j++ ] ) &&
 				!event.isImmediatePropagationStopped() ) {
 
-				// Triggered event must either 1) have no namespace, or 2) have namespace(s)
-				// a subset or equal to those in the bound event (both can have no namespace).
-				if ( !event.rnamespace || event.rnamespace.test( handleObj.namespace ) ) {
+				// If the event is namespaced, then each handler is only invoked if it is
+				// specially universal or its namespaces are a superset of the event's.
+				if ( !event.rnamespace || handleObj.namespace === false ||
+					event.rnamespace.test( handleObj.namespace ) ) {
 
 					event.handleObj = handleObj;
 					event.data = handleObj.data;
@@ -8242,39 +8314,51 @@ jQuery.event = {
 			// Prevent triggered image.load events from bubbling to window.load
 			noBubble: true
 		},
-		focus: {
-
-			// Fire native event if possible so blur/focus sequence is correct
-			trigger: function() {
-				if ( this !== safeActiveElement() && this.focus ) {
-					this.focus();
-					return false;
-				}
-			},
-			delegateType: "focusin"
-		},
-		blur: {
-			trigger: function() {
-				if ( this === safeActiveElement() && this.blur ) {
-					this.blur();
-					return false;
-				}
-			},
-			delegateType: "focusout"
-		},
 		click: {
 
-			// For checkbox, fire native event so checked state will be right
-			trigger: function() {
-				if ( this.type === "checkbox" && this.click && nodeName( this, "input" ) ) {
-					this.click();
-					return false;
+			// Utilize native event to ensure correct state for checkable inputs
+			setup: function( data ) {
+
+				// For mutual compressibility with _default, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
+				var el = this || data;
+
+				// Claim the first handler
+				if ( rcheckableType.test( el.type ) &&
+					el.click && nodeName( el, "input" ) ) {
+
+					// dataPriv.set( el, "click", ... )
+					leverageNative( el, "click", returnTrue );
 				}
+
+				// Return false to allow normal processing in the caller
+				return false;
+			},
+			trigger: function( data ) {
+
+				// For mutual compressibility with _default, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
+				var el = this || data;
+
+				// Force setup before triggering a click
+				if ( rcheckableType.test( el.type ) &&
+					el.click && nodeName( el, "input" ) ) {
+
+					leverageNative( el, "click" );
+				}
+
+				// Return non-false to allow normal event-path propagation
+				return true;
 			},
 
-			// For cross-browser consistency, don't fire native .click() on links
+			// For cross-browser consistency, suppress native .click() on links
+			// Also prevent it if we're currently inside a leveraged native-event stack
 			_default: function( event ) {
-				return nodeName( event.target, "a" );
+				var target = event.target;
+				return rcheckableType.test( target.type ) &&
+					target.click && nodeName( target, "input" ) &&
+					dataPriv.get( target, "click" ) ||
+					nodeName( target, "a" );
 			}
 		},
 
@@ -8290,6 +8374,93 @@ jQuery.event = {
 		}
 	}
 };
+
+// Ensure the presence of an event listener that handles manually-triggered
+// synthetic events by interrupting progress until reinvoked in response to
+// *native* events that it fires directly, ensuring that state changes have
+// already occurred before other listeners are invoked.
+function leverageNative( el, type, expectSync ) {
+
+	// Missing expectSync indicates a trigger call, which must force setup through jQuery.event.add
+	if ( !expectSync ) {
+		if ( dataPriv.get( el, type ) === undefined ) {
+			jQuery.event.add( el, type, returnTrue );
+		}
+		return;
+	}
+
+	// Register the controller as a special universal handler for all event namespaces
+	dataPriv.set( el, type, false );
+	jQuery.event.add( el, type, {
+		namespace: false,
+		handler: function( event ) {
+			var notAsync, result,
+				saved = dataPriv.get( this, type );
+
+			if ( ( event.isTrigger & 1 ) && this[ type ] ) {
+
+				// Interrupt processing of the outer synthetic .trigger()ed event
+				// Saved data should be false in such cases, but might be a leftover capture object
+				// from an async native handler (gh-4350)
+				if ( !saved.length ) {
+
+					// Store arguments for use when handling the inner native event
+					// There will always be at least one argument (an event object), so this array
+					// will not be confused with a leftover capture object.
+					saved = slice.call( arguments );
+					dataPriv.set( this, type, saved );
+
+					// Trigger the native event and capture its result
+					// Support: IE <=9 - 11+
+					// focus() and blur() are asynchronous
+					notAsync = expectSync( this, type );
+					this[ type ]();
+					result = dataPriv.get( this, type );
+					if ( saved !== result || notAsync ) {
+						dataPriv.set( this, type, false );
+					} else {
+						result = {};
+					}
+					if ( saved !== result ) {
+
+						// Cancel the outer synthetic event
+						event.stopImmediatePropagation();
+						event.preventDefault();
+						return result.value;
+					}
+
+				// If this is an inner synthetic event for an event with a bubbling surrogate
+				// (focus or blur), assume that the surrogate already propagated from triggering the
+				// native event and prevent that from happening again here.
+				// This technically gets the ordering wrong w.r.t. to `.trigger()` (in which the
+				// bubbling surrogate propagates *after* the non-bubbling base), but that seems
+				// less bad than duplication.
+				} else if ( ( jQuery.event.special[ type ] || {} ).delegateType ) {
+					event.stopPropagation();
+				}
+
+			// If this is a native event triggered above, everything is now in order
+			// Fire an inner synthetic event with the original arguments
+			} else if ( saved.length ) {
+
+				// ...and capture the result
+				dataPriv.set( this, type, {
+					value: jQuery.event.trigger(
+
+						// Support: IE <=9 - 11+
+						// Extend with the prototype to reset the above stopImmediatePropagation()
+						jQuery.extend( saved[ 0 ], jQuery.Event.prototype ),
+						saved.slice( 1 ),
+						this
+					)
+				} );
+
+				// Abort handling of the native event
+				event.stopImmediatePropagation();
+			}
+		}
+	} );
+}
 
 jQuery.removeEvent = function( elem, type, handle ) {
 
@@ -8403,6 +8574,7 @@ jQuery.each( {
 	shiftKey: true,
 	view: true,
 	"char": true,
+	code: true,
 	charCode: true,
 	key: true,
 	keyCode: true,
@@ -8448,6 +8620,33 @@ jQuery.each( {
 		return event.which;
 	}
 }, jQuery.event.addProp );
+
+jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateType ) {
+	jQuery.event.special[ type ] = {
+
+		// Utilize native event if possible so blur/focus sequence is correct
+		setup: function() {
+
+			// Claim the first handler
+			// dataPriv.set( this, "focus", ... )
+			// dataPriv.set( this, "blur", ... )
+			leverageNative( this, type, expectSync );
+
+			// Return false to allow normal processing in the caller
+			return false;
+		},
+		trigger: function() {
+
+			// Force setup before trigger
+			leverageNative( this, type );
+
+			// Return non-false to allow normal event-path propagation
+			return true;
+		},
+
+		delegateType: delegateType
+	};
+} );
 
 // Create mouseenter/leave events using mouseover/out and event-time checks
 // so that event delegation works in jQuery.
@@ -8699,11 +8898,13 @@ function domManip( collection, args, callback, ignored ) {
 						if ( node.src && ( node.type || "" ).toLowerCase()  !== "module" ) {
 
 							// Optional AJAX dependency, but won't run scripts if not present
-							if ( jQuery._evalUrl ) {
-								jQuery._evalUrl( node.src );
+							if ( jQuery._evalUrl && !node.noModule ) {
+								jQuery._evalUrl( node.src, {
+									nonce: node.nonce || node.getAttribute( "nonce" )
+								} );
 							}
 						} else {
-							DOMEval( node.textContent.replace( rcleanScript, "" ), doc, node );
+							DOMEval( node.textContent.replace( rcleanScript, "" ), node, doc );
 						}
 					}
 				}
@@ -8725,7 +8926,7 @@ function remove( elem, selector, keepData ) {
 		}
 
 		if ( node.parentNode ) {
-			if ( keepData && jQuery.contains( node.ownerDocument, node ) ) {
+			if ( keepData && isAttached( node ) ) {
 				setGlobalEval( getAll( node, "script" ) );
 			}
 			node.parentNode.removeChild( node );
@@ -8743,7 +8944,7 @@ jQuery.extend( {
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var i, l, srcElements, destElements,
 			clone = elem.cloneNode( true ),
-			inPage = jQuery.contains( elem.ownerDocument, elem );
+			inPage = isAttached( elem );
 
 		// Fix IE cloning issues
 		if ( !support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) &&
@@ -9039,8 +9240,10 @@ var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 
 		// Support: IE 9 only
 		// Detect overflow:scroll screwiness (gh-3699)
+		// Support: Chrome <=64
+		// Don't get tricked when zoom affects offsetWidth (gh-4029)
 		div.style.position = "absolute";
-		scrollboxSizeVal = div.offsetWidth === 36 || "absolute";
+		scrollboxSizeVal = roundPixelMeasures( div.offsetWidth / 3 ) === 12;
 
 		documentElement.removeChild( container );
 
@@ -9111,7 +9314,7 @@ function curCSS( elem, name, computed ) {
 	if ( computed ) {
 		ret = computed.getPropertyValue( name ) || computed[ name ];
 
-		if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
+		if ( ret === "" && !isAttached( elem ) ) {
 			ret = jQuery.style( elem, name );
 		}
 
@@ -9167,29 +9370,12 @@ function addGetHookIf( conditionFn, hookFn ) {
 }
 
 
-var
+var cssPrefixes = [ "Webkit", "Moz", "ms" ],
+	emptyStyle = document.createElement( "div" ).style,
+	vendorProps = {};
 
-	// Swappable if display is none or starts with table
-	// except "table", "table-cell", or "table-caption"
-	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
-	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
-	rcustomProp = /^--/,
-	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
-	cssNormalTransform = {
-		letterSpacing: "0",
-		fontWeight: "400"
-	},
-
-	cssPrefixes = [ "Webkit", "Moz", "ms" ],
-	emptyStyle = document.createElement( "div" ).style;
-
-// Return a css property mapped to a potentially vendor prefixed property
+// Return a vendor-prefixed property or undefined
 function vendorPropName( name ) {
-
-	// Shortcut for names that are not vendor prefixed
-	if ( name in emptyStyle ) {
-		return name;
-	}
 
 	// Check for vendor prefixed names
 	var capName = name[ 0 ].toUpperCase() + name.slice( 1 ),
@@ -9203,15 +9389,32 @@ function vendorPropName( name ) {
 	}
 }
 
-// Return a property mapped along what jQuery.cssProps suggests or to
-// a vendor prefixed property.
+// Return a potentially-mapped jQuery.cssProps or vendor prefixed property
 function finalPropName( name ) {
-	var ret = jQuery.cssProps[ name ];
-	if ( !ret ) {
-		ret = jQuery.cssProps[ name ] = vendorPropName( name ) || name;
+	var final = jQuery.cssProps[ name ] || vendorProps[ name ];
+
+	if ( final ) {
+		return final;
 	}
-	return ret;
+	if ( name in emptyStyle ) {
+		return name;
+	}
+	return vendorProps[ name ] = vendorPropName( name ) || name;
 }
+
+
+var
+
+	// Swappable if display is none or starts with table
+	// except "table", "table-cell", or "table-caption"
+	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
+	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+	rcustomProp = /^--/,
+	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
+	cssNormalTransform = {
+		letterSpacing: "0",
+		fontWeight: "400"
+	};
 
 function setPositiveNumber( elem, value, subtract ) {
 
@@ -9284,7 +9487,10 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 			delta -
 			extra -
 			0.5
-		) );
+
+		// If offsetWidth/offsetHeight is unknown, then we can't determine content-box scroll gutter
+		// Use an explicit zero to avoid NaN (gh-3964)
+		) ) || 0;
 	}
 
 	return delta;
@@ -9294,9 +9500,16 @@ function getWidthOrHeight( elem, dimension, extra ) {
 
 	// Start with computed style
 	var styles = getStyles( elem ),
+
+		// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
+		// Fake content-box until we know it's needed to know the true value.
+		boxSizingNeeded = !support.boxSizingReliable() || extra,
+		isBorderBox = boxSizingNeeded &&
+			jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+		valueIsBorderBox = isBorderBox,
+
 		val = curCSS( elem, dimension, styles ),
-		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
-		valueIsBorderBox = isBorderBox;
+		offsetProp = "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 );
 
 	// Support: Firefox <=54
 	// Return a confounding non-pixel value or feign ignorance, as appropriate.
@@ -9307,22 +9520,29 @@ function getWidthOrHeight( elem, dimension, extra ) {
 		val = "auto";
 	}
 
-	// Check for style in case a browser which returns unreliable values
-	// for getComputedStyle silently falls back to the reliable elem.style
-	valueIsBorderBox = valueIsBorderBox &&
-		( support.boxSizingReliable() || val === elem.style[ dimension ] );
 
 	// Fall back to offsetWidth/offsetHeight when value is "auto"
 	// This happens for inline elements with no explicit setting (gh-3571)
 	// Support: Android <=4.1 - 4.3 only
 	// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
-	if ( val === "auto" ||
-		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) {
+	// Support: IE 9-11 only
+	// Also use offsetWidth/offsetHeight for when box sizing is unreliable
+	// We use getClientRects() to check for hidden/disconnected.
+	// In those cases, the computed value can be trusted to be border-box
+	if ( ( !support.boxSizingReliable() && isBorderBox ||
+		val === "auto" ||
+		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
+		elem.getClientRects().length ) {
 
-		val = elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ];
+		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
-		// offsetWidth/offsetHeight provide border-box values
-		valueIsBorderBox = true;
+		// Where available, offsetWidth/offsetHeight approximate border box dimensions.
+		// Where not available (e.g., SVG), assume unreliable box-sizing and interpret the
+		// retrieved value as a content box dimension.
+		valueIsBorderBox = offsetProp in elem;
+		if ( valueIsBorderBox ) {
+			val = elem[ offsetProp ];
+		}
 	}
 
 	// Normalize "" and auto
@@ -9368,6 +9588,13 @@ jQuery.extend( {
 		"flexGrow": true,
 		"flexShrink": true,
 		"fontWeight": true,
+		"gridArea": true,
+		"gridColumn": true,
+		"gridColumnEnd": true,
+		"gridColumnStart": true,
+		"gridRow": true,
+		"gridRowEnd": true,
+		"gridRowStart": true,
 		"lineHeight": true,
 		"opacity": true,
 		"order": true,
@@ -9423,7 +9650,9 @@ jQuery.extend( {
 			}
 
 			// If a number was passed in, add the unit (except for certain CSS properties)
-			if ( type === "number" ) {
+			// The isCustomProp check can be removed in jQuery 4.0 when we only auto-append
+			// "px" to a few hardcoded values.
+			if ( type === "number" && !isCustomProp ) {
 				value += ret && ret[ 3 ] || ( jQuery.cssNumber[ origName ] ? "" : "px" );
 			}
 
@@ -9523,18 +9752,29 @@ jQuery.each( [ "height", "width" ], function( i, dimension ) {
 		set: function( elem, value, extra ) {
 			var matches,
 				styles = getStyles( elem ),
-				isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
-				subtract = extra && boxModelAdjustment(
-					elem,
-					dimension,
-					extra,
-					isBorderBox,
-					styles
-				);
+
+				// Only read styles.position if the test has a chance to fail
+				// to avoid forcing a reflow.
+				scrollboxSizeBuggy = !support.scrollboxSize() &&
+					styles.position === "absolute",
+
+				// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-3991)
+				boxSizingNeeded = scrollboxSizeBuggy || extra,
+				isBorderBox = boxSizingNeeded &&
+					jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+				subtract = extra ?
+					boxModelAdjustment(
+						elem,
+						dimension,
+						extra,
+						isBorderBox,
+						styles
+					) :
+					0;
 
 			// Account for unreliable border-box dimensions by comparing offset* to computed and
 			// faking a content-box to get border and padding (gh-3699)
-			if ( isBorderBox && support.scrollboxSize() === styles.position ) {
+			if ( isBorderBox && scrollboxSizeBuggy ) {
 				subtract -= Math.ceil(
 					elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] -
 					parseFloat( styles[ dimension ] ) -
@@ -9702,9 +9942,9 @@ Tween.propHooks = {
 			// Use .style if available and use plain properties where available.
 			if ( jQuery.fx.step[ tween.prop ] ) {
 				jQuery.fx.step[ tween.prop ]( tween );
-			} else if ( tween.elem.nodeType === 1 &&
-				( tween.elem.style[ jQuery.cssProps[ tween.prop ] ] != null ||
-					jQuery.cssHooks[ tween.prop ] ) ) {
+			} else if ( tween.elem.nodeType === 1 && (
+					jQuery.cssHooks[ tween.prop ] ||
+					tween.elem.style[ finalPropName( tween.prop ) ] != null ) ) {
 				jQuery.style( tween.elem, tween.prop, tween.now + tween.unit );
 			} else {
 				tween.elem[ tween.prop ] = tween.now;
@@ -11411,6 +11651,10 @@ jQuery.param = function( a, traditional ) {
 				encodeURIComponent( value == null ? "" : value );
 		};
 
+	if ( a == null ) {
+		return "";
+	}
+
 	// If an array was passed in, assume that it is an array of form elements.
 	if ( Array.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
 
@@ -11913,12 +12157,14 @@ jQuery.extend( {
 						if ( !responseHeaders ) {
 							responseHeaders = {};
 							while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
-								responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
+								responseHeaders[ match[ 1 ].toLowerCase() + " " ] =
+									( responseHeaders[ match[ 1 ].toLowerCase() + " " ] || [] )
+										.concat( match[ 2 ] );
 							}
 						}
-						match = responseHeaders[ key.toLowerCase() ];
+						match = responseHeaders[ key.toLowerCase() + " " ];
 					}
-					return match == null ? null : match;
+					return match == null ? null : match.join( ", " );
 				},
 
 				// Raw string
@@ -12307,7 +12553,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 } );
 
 
-jQuery._evalUrl = function( url ) {
+jQuery._evalUrl = function( url, options ) {
 	return jQuery.ajax( {
 		url: url,
 
@@ -12317,7 +12563,16 @@ jQuery._evalUrl = function( url ) {
 		cache: true,
 		async: false,
 		global: false,
-		"throws": true
+
+		// Only evaluate the response if it is successful (gh-4126)
+		// dataFilter is not invoked for failure responses, so using it instead
+		// of the default converter is kludgy but it works.
+		converters: {
+			"text script": function() {}
+		},
+		dataFilter: function( response ) {
+			jQuery.globalEval( response, options );
+		}
 	} );
 };
 
@@ -12600,24 +12855,21 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 // Bind script tag hack transport
 jQuery.ajaxTransport( "script", function( s ) {
 
-	// This transport only deals with cross domain requests
-	if ( s.crossDomain ) {
+	// This transport only deals with cross domain or forced-by-attrs requests
+	if ( s.crossDomain || s.scriptAttrs ) {
 		var script, callback;
 		return {
 			send: function( _, complete ) {
-				script = jQuery( "<script>" ).prop( {
-					charset: s.scriptCharset,
-					src: s.url
-				} ).on(
-					"load error",
-					callback = function( evt ) {
+				script = jQuery( "<script>" )
+					.attr( s.scriptAttrs || {} )
+					.prop( { charset: s.scriptCharset, src: s.url } )
+					.on( "load error", callback = function( evt ) {
 						script.remove();
 						callback = null;
 						if ( evt ) {
 							complete( evt.type === "error" ? 404 : 200, evt.type );
 						}
-					}
-				);
+					} );
 
 				// Use native DOM manipulation to avoid our domManip AJAX trickery
 				document.head.appendChild( script[ 0 ] );
@@ -13337,6 +13589,7 @@ function jQueryDOMUpdater(functionLogic, params) {
   $(function () {
     //incase the rest of the webpage lags and invalidates the css
     if (newParams != undefined) {
+      //not necessary in most cases
       params.push.apply(params, _toConsumableArray(newParams));
     }
 
@@ -13466,7 +13719,7 @@ function create(data) {
 
   (0, _utils.jQueryDOMUpdater)(updateLogic, [data]);
 }
-},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/label":"components/label.js"}],"components/tooltip.js":[function(require,module,exports) {
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/label":"components/label.js"}],"components/health_risk_label.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13475,6 +13728,110 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var HealthRiskLabel =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(HealthRiskLabel, _Component);
+
+  function HealthRiskLabel(props) {
+    _classCallCheck(this, HealthRiskLabel);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(HealthRiskLabel).call(this, props));
+  }
+
+  _createClass(HealthRiskLabel, [{
+    key: "render",
+    value: function render() {
+      var data = this.props.data;
+      var cClass = data.health_risk;
+
+      var healthRisk = _react.default.createElement("span", {
+        style: "color:red"
+      }, " ", data.has_results == true ? "&" : "", " Health Hazard ");
+
+      if (cClass != 1) {
+        healthRisk = _react.default.createElement("div", {
+          className: "elephants-informational-label"
+        }, "Note: ", cClass == 0 ? "No Health Risk Found" : "Mild Health Risk", " ");
+      }
+
+      return _react.default.createElement("span", null, healthRisk);
+    }
+  }]);
+
+  return HealthRiskLabel;
+}(_react.Component);
+
+var _default = HealthRiskLabel;
+exports.default = _default;
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js"}],"lib/health_risk_label.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.create = create;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _reactDom = _interopRequireDefault(require("react-dom"));
+
+var _utils = require("./utils");
+
+var _health_risk_label = _interopRequireDefault(require("./../components/health_risk_label"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function create(data) {
+  var updateLogic = function updateLogic(params) {
+    if ((0, _utils.exists)(document.getElementById('elephants-health-risk-span'))) {
+      return;
+    }
+
+    var healthRisk = '<span id="elephants-health-risk-span"> </span>';
+    $("#productTitle").after(healthRisk);
+
+    _reactDom.default.render(_react.default.createElement(_health_risk_label.default, {
+      data: params[0]
+    }), document.getElementById('elephants-health-risk-span'));
+  };
+
+  (0, _utils.jQueryDOMUpdater)(updateLogic, [data]);
+}
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/health_risk_label":"components/health_risk_label.js"}],"components/tooltip.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _label = _interopRequireDefault(require("./label"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -13516,22 +13873,48 @@ function (_Component) {
     key: "render",
     value: function render() {
       var dQratingsMap = {
-        2: 'Limited',
-        3: 'Fair',
-        4: 'Good',
-        5: 'Robust'
+        0: {
+          name: 'Low',
+          color: '#DDA629'
+        },
+        1: {
+          name: 'Mixed',
+          color: '#5F8013'
+        },
+        2: {
+          name: 'Reasonable',
+          color: '#7A9200'
+        },
+        3: {
+          name: 'High',
+          color: '#0A9A93'
+        }
       };
-      return _react.default.createElement("span", null, _react.default.createElement("span", null, "\xA0", _react.default.createElement("i", {
-        className: "material-icons icon-colors"
-      }, "\u24D8"), _react.default.createElement("span", {
-        className: "tooltiptext"
-      }, this.result.data_quality >= 2 && _react.default.createElement("span", null, _react.default.createElement("br", null), "Based on ", _react.default.createElement("span", {
-        className: "tooltiptextemphasis"
-      }, dQratingsMap[Math.round(this.result.data_quality)]), " amount of data."), _react.default.createElement("br", null), _react.default.createElement("a", {
+      var sourceItems = this.result.sources.map(function (source) {
+        return _react.default.createElement("li", {
+          key: source.source
+        }, " ", _react.default.createElement("a", {
+          target: "_blank",
+          href: source.url
+        }, " ", source.source, " "), " ");
+      });
+      var credFormat = dQratingsMap[Math.round(this.result.data_quality)];
+      this.result.health_risk = 0;
+      return _react.default.createElement("div", null, _react.default.createElement("div", {
+        className: "elephants-tooltip-title"
+      }, " ", _react.default.createElement("img", {
+        src: chrome.extension.getURL("assets/images/el-logo.png")
+      }), " ", _react.default.createElement("span", {
+        style: "color:" + credFormat.color
+      }, " ", credFormat.name.toUpperCase(), " "), " Credibility "), _react.default.createElement("div", {
+        className: "elephants-source-text"
+      }, "  Sources - click the source to see the original data "), _react.default.createElement("ul", {
+        className: "elephants-sources-list"
+      }, sourceItems), _react.default.createElement("br", null), _react.default.createElement("a", {
         target: "_blank",
-        style: "font-style: italic;",
+        className: "elephants-menu-footer-link",
         href: "https://3elephants.github.io/website/description.html"
-      }, "See More Information on How We Rate Products"))));
+      }, "How Products are Rated"));
     }
   }]);
 
@@ -13540,7 +13923,7 @@ function (_Component) {
 
 var _default = Tooltip;
 exports.default = _default;
-},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js"}],"lib/tooltip.js":[function(require,module,exports) {
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","./label":"components/label.js"}],"lib/tooltip.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13560,19 +13943,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function create(data) {
   var updateLogic = function updateLogic(params) {
-    if ((0, _utils.exists)(document.getElementById("elephant-data-tooltip-span"))) return;
+    if ((0, _utils.exists)(document.getElementById("elephants-data-tooltip"))) return;
     $("#title_feature_div").css({
       "overflow": "visible"
     });
     $("#actionPanelContainer").css({
       "z-index": "2"
     });
-    var labelContainer = '<a class="elephants-link-no-style" href="https://3elephants.github.io/website/description.html"> <div id="elephant-data-tooltip-span"> </div> </a>';
-    $("#elephant-label-span").after(labelContainer);
+    console.log('<img id="elephants-toggle" src="' + chrome.extension.getURL("assets/images/elephants-tab.svg") + '"/>');
+    $("body").append('<img id="elephants-toggle" src="' + chrome.extension.getURL("assets/images/elephants-tab.svg") + '"/>');
+    var labelContainer = '<div id="elephants-data-tooltip"> </div>';
+    $("body").append(labelContainer);
 
     _reactDom.default.render(_react.default.createElement(_tooltip.default, {
       data: params[0]
-    }), document.getElementById('elephant-data-tooltip-span'));
+    }), document.getElementById('elephants-data-tooltip'));
+
+    $("#elephants-toggle").click(function () {
+      $("#elephants-data-tooltip").toggle();
+    });
+    $(window).on("scroll", function (e) {
+      $("#elephants-data-tooltip").toggle();
+      $(window).unbind("scroll");
+    });
   };
 
   (0, _utils.jQueryDOMUpdater)(updateLogic, [data]);
@@ -13601,7 +13994,10 @@ function spaceTitleDiv() {
 }
 
 function changeBackgroundColor(data) {
-  if (data.classification == 1) {
+  var cClass = data.classification;
+  if (!data.has_results) cClass = data.health_risk;
+
+  if (cClass == 1) {
     var updateLogic = function updateLogic(params) {
       //private logic is where core dom updating logic is placed
       $("#leftCol, #centerCol, .a-container, .a-box").css({
@@ -13613,9 +14009,18 @@ function changeBackgroundColor(data) {
       $(".a-box").css({
         "border-color": "#8b0000"
       });
-      $("#t_el_label").css({
-        "color": "#8b0000"
-      });
+
+      if ($("#t_el_label").length) {
+        $("#t_el_label").css({
+          "color": "#8b0000"
+        });
+      }
+
+      if ($("#elephants-health-risk-span").length) {
+        $("#elephants-health-risk-span").css({
+          "color": "#8b0000"
+        });
+      }
     };
 
     (0, _utils.jQueryDOMUpdater)(updateLogic, []);
@@ -13689,7 +14094,9 @@ function (_Component) {
         style: " color: white;"
       }, "Add to Cart"));
 
-      return _react.default.createElement("span", null, data.classification == 1 && addToCartSpan);
+      var cClass = data.classification;
+      if (!data.has_results) cClass = data.health_risk;
+      return _react.default.createElement("span", null, cClass == 1 && addToCartSpan);
     }
   }]);
 
@@ -13805,7 +14212,9 @@ function (_Component) {
         style: " padding: 0px; margin-left:0px; margin-right: 4px;"
       }, "\u26A0 Cart")));
 
-      return _react.default.createElement("span", null, data.classification == 1 && addToCartSpan);
+      var cClass = data.classification;
+      if (!data.has_results) cClass = data.health_risk;
+      return _react.default.createElement("span", null, cClass == 1 && addToCartSpan);
     }
   }]);
 
@@ -20649,6 +21058,14 @@ function generateConfiguration() {
     restrictive_mode: {
       is_on: false,
       finalized: true
+    },
+    tooltip: {
+      is_on: true,
+      finalized: true
+    },
+    health_risk_label: {
+      is_on: true,
+      finalized: true
     }
   };
   configuration = randomizeConfiguration(configuration);
@@ -20924,10 +21341,15 @@ function getAllTheSortScores(list, b) {
   }
 
   console.log(products);
+  var nodeid = $("#departments li")[0].attr('id').split("/")[1];
+  var body = {
+    "products": products,
+    "nodeid": nodeid
+  };
   $.ajax({
     type: "POST",
-    url: constants.getBaseAPIUrl() + "BatchProductClassQuery",
-    data: JSON.stringify(products),
+    url: constants.getBaseAPIUrl() + "BatchProductClassQueryv2",
+    data: JSON.stringify(body),
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function success(data) {
@@ -23093,7 +23515,137 @@ function create(data) {
 
   (0, _utils.jQueryDOMUpdater)(updateLogic, [data]);
 }
-},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/rating":"components/rating.js"}],"controller.js":[function(require,module,exports) {
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/rating":"components/rating.js"}],"components/shipping.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Shipping =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Shipping, _Component);
+
+  function Shipping(props) {
+    _classCallCheck(this, Shipping);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Shipping).call(this, props));
+  }
+
+  _createClass(Shipping, [{
+    key: "render",
+    value: function render() {
+      return _react.default.createElement("span", {
+        id: "elephant-shipping-span"
+      }, " ", _react.default.createElement("div", {
+        class: "elephants-speech-bubble-shipping"
+      }, " Help our planet and get cash back by shipping it more ", _react.default.createElement("span", {
+        class: "three-elephants-promotion"
+      }, "efficiently."), " "), " ");
+    }
+  }]);
+
+  return Shipping;
+}(_react.Component);
+
+var _default = Shipping;
+exports.default = _default;
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js"}],"lib/shipping.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.create = create;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _reactDom = _interopRequireDefault(require("react-dom"));
+
+var _utils = require("./utils");
+
+var _shipping = _interopRequireDefault(require("./../components/shipping"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function shippingModifier(jQueryArray) {
+  var goodShippingOption = null;
+  var length = jQueryArray.length;
+  var goGreenHTML = '<span> <div class="elephants-speech-bubble-shipping"> Help our planet and get cash back by shipping it more <span class="three-elephants-promotion">efficiently.</span> </div> </span>';
+
+  for (var i = 0; i < length; i++) {
+    var badShipping = false;
+    var text = jQueryArray.eq(i).find(".a-color-secondary").text().trim().toLowerCase();
+    var date = jQueryArray.eq(i).find(".a-color-success").text().trim();
+
+    if (date == "Tomorrow") {
+      badShipping = true;
+    } else {
+      var shippingDate = new Date(date + ", " + new Date().getFullYear());
+      var timeDiff = Math.abs(shippingDate.getTime() - new Date().getTime());
+      var difference = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+      if (difference <= 3) {
+        badShipping = true;
+      }
+    }
+
+    if (!badShipping) {
+      if (text.includes("no-rush") || text.includes("standard")) {
+        goodShippingOption = jQueryArray.eq(i);
+        $(goodShippingOption).addClass("good-shipping");
+        $($(goodShippingOption).find("input")[0]).attr('checked', true);
+        $($(goodShippingOption).find(".deliveryPromoDescription")).addClass("three-elephants-promotion");
+        $(goodShippingOption).after(goGreenHTML);
+
+        _reactDom.default.render(_react.default.createElement(Label, {
+          data: params[0]
+        }), document.getElementById('elephant-label-span'));
+      }
+    } else {
+      jQueryArray.eq(i).addClass("bad-shipping");
+    }
+  }
+}
+
+function create() {
+  $(function () {
+    var updateLogic = function updateLogic(params) {
+      shippingModifier($(".prime-ship-speed"));
+      shippingModifier($(".shipping-speed.ship-option"));
+    };
+
+    updateLogic();
+  });
+} //Jquery selector chains with "dot notation"
+//.eq(0) can get the first element in an HTML array, [0] doesn't work
+//.css can get the styling done for us
+//jQuery.find can search for child elements, string.search looks for keywords in the text
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","./utils":"lib/utils.js","./../components/shipping":"components/shipping.js"}],"controller.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireWildcard(require("react"));
@@ -23105,6 +23657,8 @@ var _jquery = _interopRequireDefault(require("jquery"));
 var customUtils = _interopRequireWildcard(require("./lib/utils"));
 
 var label = _interopRequireWildcard(require("./lib/label"));
+
+var healthRisk = _interopRequireWildcard(require("./lib/health_risk_label"));
 
 var tooltip = _interopRequireWildcard(require("./lib/tooltip"));
 
@@ -23124,6 +23678,8 @@ var abTest = _interopRequireWildcard(require("./lib/ab_test"));
 
 var constants = _interopRequireWildcard(require("./lib/constants"));
 
+var shipping = _interopRequireWildcard(require("./lib/shipping"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
@@ -23140,14 +23696,24 @@ function updateUICallback(data, configuration) {
     return;
   }
 
-  if (configuration.label.is_on && data.has_results && !(data.data_quality != 0 && data.data_quality < 2)) {
-    label.create(data);
-    tooltip.create(data);
-    if (configuration.rating.is_on) rating.create(data);
+  if (configuration.label.is_on && (data.has_results || data.has_results_health) && !(data.data_quality < 1)) {
+    if (data.has_results) {
+      if (configuration.rating.is_on) rating.create(data);
+      if (configuration.price.is_on) priceChanger.create(data, configuration.price);
+      if (configuration.label.is_on) label.create(data);
+    }
+
+    if (data.has_results_health) {
+      if (configuration.health_risk_label.is_on) healthRisk.create(data);
+    }
+
     if (configuration.background_color.is_on) reformat.changeBackgroundColor(data);
     if (configuration.add_to_cart.is_on) addToCart.create(data);
     if (configuration.nav_cart.is_on) navCart.create(data);
-    if (configuration.price.is_on) priceChanger.create(data, configuration.price);
+
+    if (configuration.tooltip.is_on) {
+      tooltip.create(data);
+    }
   } //this check doesn't apply to the above features
   //because the above would work with not enough data
 
@@ -23159,17 +23725,22 @@ function updateUICallback(data, configuration) {
 
 ;
 
-function triggerAPI(searchTerm) {
+function triggerAPI(searchTerms) {
   chrome.storage.sync.get(['elephants_feature_settings'], function (result) {
+    result.elephants_feature_settings = abTest.generateConfiguration();
     if (result.elephants_feature_settings == undefined || result.elephants_feature_settings == null) result.elephants_feature_settings = abTest.generateConfiguration();
-    var encodedSearchTerm = encodeURIComponent(searchTerm);
-    var m = customUtils.regexFunc();
-    var afterServerUrl = "GetProductClass?name=" + encodedSearchTerm + "&mode=" + !result.elephants_feature_settings.restrictive_mode.is_on;
+    var endUrl = "";
 
-    if (m != null && m != undefined && m.length > 7) {
-      if (m[7].length == 10) afterServerUrl += "&asin=" + m[7];
+    for (var searchTerm in searchTerms) {
+      endUrl += "&";
+      endUrl += searchTerm.toLowerCase();
+      endUrl += "=";
+      endUrl += encodeURIComponent(searchTerms[searchTerm]);
     }
 
+    var encodedSearchTerm = encodeURIComponent(searchTerm);
+    var afterServerUrl = "GetProductClassv2?mode=" + !result.elephants_feature_settings.restrictive_mode.is_on + endUrl;
+    console.log(afterServerUrl);
     chrome.runtime.sendMessage({
       elephantsGetRequest: true,
       afterServerUrl: afterServerUrl
@@ -23183,8 +23754,46 @@ function triggerAPI(searchTerm) {
 
 function main() {
   //to turn on sort feature
-  sort.create(); //we need the product title to trigger the api call thus it needs to be parsed
+  sort.create(); //to turn on shipping feature
+
+  shipping.create(); //we need the product title to trigger the api call thus it needs to be parsed
   //observe the dom to figure out when this is parsed and we can trigger api call
+
+  var triggered = false;
+  var boolMap = {
+    "productTitle": false,
+    "nodeID": false,
+    "ASIN": false,
+    "bylineInfo": false
+  };
+  var textKeys = new Set(["productTitle"]);
+  var searchTerms = {};
+  var keys = Object.keys(boolMap);
+
+  var findValuefromIDSub = function findValuefromIDSub(key) {
+    var results = textKeys.has(key) ? (0, _jquery.default)("#" + key).text().trim() : (0, _jquery.default)("#" + key).val();
+    return results;
+  };
+
+  var findValuefromID = function findValuefromID(key) {
+    if (key == "bylineInfo") {
+      var byLineUrl = (0, _jquery.default)("#" + key);
+
+      if (byLineUrl.length == 0) {
+        byLineUrl = (0, _jquery.default)("#bylineInfo_feature_div #brand");
+      }
+
+      if (byLineUrl.length == 0) {
+        return "";
+      }
+
+      byLineUrl = byLineUrl[0].href.split("-bin=")[1];
+      byLineUrl = decodeURIComponent(byLineUrl);
+      return byLineUrl;
+    } else {
+      return findValuefromIDSub(key);
+    }
+  };
 
   var observer = new MutationObserver(function (mutations) {
     for (var i = 0; i < mutations.length; i++) {
@@ -23193,13 +23802,48 @@ function main() {
         // deciding if they're the one we're looking for.
         var node = mutations[i].addedNodes[j];
 
-        if (node.nodeType == Node.ELEMENT_NODE && node.id == "productTitle") {
-          var searchTerm = (0, _jquery.default)("#productTitle").text();
-          searchTerm = searchTerm.trim();
-          triggerAPI(searchTerm);
+        for (var _i = 0, _keys = keys; _i < _keys.length; _i++) {
+          var key = _keys[_i];
+
+          if (node.nodeType == Node.ELEMENT_NODE && node.id == key) {
+            searchTerms[key] = findValuefromID(key);
+            boolMap[key] = true;
+          }
+        }
+
+        var isTrigger = true;
+
+        for (var _i2 = 0, _keys2 = keys; _i2 < _keys2.length; _i2++) {
+          var key = _keys2[_i2];
+          isTrigger &= boolMap[key];
+          if (!isTrigger) break;
+        }
+
+        triggered = isTrigger;
+
+        if (triggered) {
           observer.disconnect();
+          triggerAPI(searchTerms);
         }
       }
+    }
+  });
+  (0, _jquery.default)(function () {
+    if (!triggered) {
+      triggered = true;
+
+      for (var _i3 = 0, _keys3 = keys; _i3 < _keys3.length; _i3++) {
+        var key = _keys3[_i3];
+
+        if (!(0, _jquery.default)("#" + key).length) {
+          return;
+        }
+
+        searchTerms[key] = findValuefromID(key);
+      }
+
+      observer.disconnect();
+      triggerAPI(searchTerms);
     }
   });
   observer.observe(document.documentElement, {
@@ -23210,7 +23854,7 @@ function main() {
 
 ;
 main();
-},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","jquery":"../node_modules/jquery/dist/jquery.js","./lib/utils":"lib/utils.js","./lib/label":"lib/label.js","./lib/tooltip":"lib/tooltip.js","./lib/reformat":"lib/reformat.js","./lib/add_to_cart":"lib/add_to_cart.js","./lib/nav_cart":"lib/nav_cart.js","./lib/sort":"lib/sort.js","./lib/price_changer":"lib/price_changer.js","./lib/rating":"lib/rating.js","./lib/ab_test":"lib/ab_test.js","./lib/constants":"lib/constants.js"}],"../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/preact-compat/dist/preact-compat.es.js","react-dom":"../node_modules/preact-compat/dist/preact-compat.es.js","jquery":"../node_modules/jquery/dist/jquery.js","./lib/utils":"lib/utils.js","./lib/label":"lib/label.js","./lib/health_risk_label":"lib/health_risk_label.js","./lib/tooltip":"lib/tooltip.js","./lib/reformat":"lib/reformat.js","./lib/add_to_cart":"lib/add_to_cart.js","./lib/nav_cart":"lib/nav_cart.js","./lib/sort":"lib/sort.js","./lib/price_changer":"lib/price_changer.js","./lib/rating":"lib/rating.js","./lib/ab_test":"lib/ab_test.js","./lib/constants":"lib/constants.js","./lib/shipping":"lib/shipping.js"}],"../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -23232,26 +23876,46 @@ function Module(moduleName) {
 }
 
 module.bundle.Module = Module;
+var checkedAssets, assetsToAccept;
 var parent = module.bundle.parent;
 
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63774" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59408" + '/');
 
   ws.onmessage = function (event) {
+    checkedAssets = {};
+    assetsToAccept = [];
     var data = JSON.parse(event.data);
 
     if (data.type === 'update') {
-      console.clear();
-      data.assets.forEach(function (asset) {
-        hmrApply(global.parcelRequire, asset);
-      });
+      var handled = false;
       data.assets.forEach(function (asset) {
         if (!asset.isNew) {
-          hmrAccept(global.parcelRequire, asset.id);
+          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
+
+          if (didAccept) {
+            handled = true;
+          }
         }
+      }); // Enable HMR for CSS by default.
+
+      handled = handled || data.assets.every(function (asset) {
+        return asset.type === 'css' && asset.generated.js;
       });
+
+      if (handled) {
+        console.clear();
+        data.assets.forEach(function (asset) {
+          hmrApply(global.parcelRequire, asset);
+        });
+        assetsToAccept.forEach(function (v) {
+          hmrAcceptRun(v[0], v[1]);
+        });
+      } else {
+        window.location.reload();
+      }
     }
 
     if (data.type === 'reload') {
@@ -23339,7 +24003,7 @@ function hmrApply(bundle, asset) {
   }
 }
 
-function hmrAccept(bundle, id) {
+function hmrAcceptCheck(bundle, id) {
   var modules = bundle.modules;
 
   if (!modules) {
@@ -23347,9 +24011,27 @@ function hmrAccept(bundle, id) {
   }
 
   if (!modules[id] && bundle.parent) {
-    return hmrAccept(bundle.parent, id);
+    return hmrAcceptCheck(bundle.parent, id);
   }
 
+  if (checkedAssets[id]) {
+    return;
+  }
+
+  checkedAssets[id] = true;
+  var cached = bundle.cache[id];
+  assetsToAccept.push([bundle, id]);
+
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    return true;
+  }
+
+  return getParents(global.parcelRequire, id).some(function (id) {
+    return hmrAcceptCheck(global.parcelRequire, id);
+  });
+}
+
+function hmrAcceptRun(bundle, id) {
   var cached = bundle.cache[id];
   bundle.hotData = {};
 
@@ -23374,10 +24056,6 @@ function hmrAccept(bundle, id) {
 
     return true;
   }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAccept(global.parcelRequire, id);
-  });
 }
 },{}]},{},["../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","controller.js"], null)
-//# sourceMappingURL=controller.map
+//# sourceMappingURL=controller.js.map

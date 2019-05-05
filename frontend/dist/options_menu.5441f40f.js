@@ -5,8 +5,6 @@
 //
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
-
-// eslint-disable-next-line no-global-assign
 parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
@@ -77,8 +75,16 @@ parcelRequire = (function (modules, cache, entry, globalName) {
     }, {}];
   };
 
+  var error;
   for (var i = 0; i < entry.length; i++) {
-    newRequire(entry[i]);
+    try {
+      newRequire(entry[i]);
+    } catch (e) {
+      // Save first error but execute all entries
+      if (!error) {
+        error = e;
+      }
+    }
   }
 
   if (entry.length) {
@@ -103,6 +109,13 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   // Override the current require with this new one
+  parcelRequire = newRequire;
+
+  if (error) {
+    // throw error from earlier, _after updating parcelRequire_
+    throw error;
+  }
+
   return newRequire;
 })({"../node_modules/react-is/cjs/react-is.development.js":[function(require,module,exports) {
 /** @license React v16.8.3
@@ -1964,7 +1977,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.render = render$1;
+exports.hydrate = exports.render = render$1;
 exports.createClass = createClass;
 exports.createPortal = createPortal;
 exports.createFactory = createFactory;
@@ -1982,6 +1995,12 @@ Object.defineProperty(exports, "PropTypes", {
   enumerable: true,
   get: function () {
     return _propTypes.default;
+  }
+});
+Object.defineProperty(exports, "createRef", {
+  enumerable: true,
+  get: function () {
+    return _preact.createRef;
   }
 });
 exports.Children = exports.DOM = exports.version = exports.default = void 0;
@@ -2587,11 +2606,10 @@ function callMethod(ctx, m, args) {
 function multihook(hooks, skipDuplicates) {
   return function () {
     var arguments$1 = arguments;
-    var this$1 = this;
     var ret;
 
     for (var i = 0; i < hooks.length; i++) {
-      var r = callMethod(this$1, hooks[i], arguments$1);
+      var r = callMethod(this, hooks[i], arguments$1);
 
       if (skipDuplicates && r != null) {
         if (!ret) {
@@ -2673,12 +2691,11 @@ extend(Component$1.prototype = new _preact.Component(), {
   constructor: Component$1,
   isReactComponent: {},
   replaceState: function (state, callback) {
-    var this$1 = this;
     this.setState(state, callback);
 
-    for (var i in this$1.state) {
+    for (var i in this.state) {
       if (!(i in state)) {
-        delete this$1.state[i];
+        delete this.state[i];
       }
     }
   },
@@ -2712,11 +2729,13 @@ var index = {
   PropTypes: _propTypes.default,
   Children: Children,
   render: render$1,
+  hydrate: render$1,
   createClass: createClass,
   createPortal: createPortal,
   createFactory: createFactory,
   createElement: createElement,
   cloneElement: cloneElement$1,
+  createRef: _preact.createRef,
   isValidElement: isValidElement,
   findDOMNode: findDOMNode,
   unmountComponentAtNode: unmountComponentAtNode,
@@ -2744,7 +2763,7 @@ function getBundleURL() {
   try {
     throw new Error();
   } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp):\/\/[^)\n]+/g);
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
 
     if (matches) {
       return getBaseURL(matches[0]);
@@ -2755,7 +2774,7 @@ function getBundleURL() {
 }
 
 function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp):\/\/.+)\/[^/]+$/, '$1') + '/';
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
 }
 
 exports.getBundleURL = getBundleURLCached;
@@ -9570,6 +9589,14 @@ function generateConfiguration() {
     restrictive_mode: {
       is_on: false,
       finalized: true
+    },
+    tooltip: {
+      is_on: true,
+      finalized: true
+    },
+    health_risk_label: {
+      is_on: true,
+      finalized: true
     }
   };
   configuration = randomizeConfiguration(configuration);
@@ -9952,26 +9979,46 @@ function Module(moduleName) {
 }
 
 module.bundle.Module = Module;
+var checkedAssets, assetsToAccept;
 var parent = module.bundle.parent;
 
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63774" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59408" + '/');
 
   ws.onmessage = function (event) {
+    checkedAssets = {};
+    assetsToAccept = [];
     var data = JSON.parse(event.data);
 
     if (data.type === 'update') {
-      console.clear();
-      data.assets.forEach(function (asset) {
-        hmrApply(global.parcelRequire, asset);
-      });
+      var handled = false;
       data.assets.forEach(function (asset) {
         if (!asset.isNew) {
-          hmrAccept(global.parcelRequire, asset.id);
+          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
+
+          if (didAccept) {
+            handled = true;
+          }
         }
+      }); // Enable HMR for CSS by default.
+
+      handled = handled || data.assets.every(function (asset) {
+        return asset.type === 'css' && asset.generated.js;
       });
+
+      if (handled) {
+        console.clear();
+        data.assets.forEach(function (asset) {
+          hmrApply(global.parcelRequire, asset);
+        });
+        assetsToAccept.forEach(function (v) {
+          hmrAcceptRun(v[0], v[1]);
+        });
+      } else {
+        window.location.reload();
+      }
     }
 
     if (data.type === 'reload') {
@@ -10059,7 +10106,7 @@ function hmrApply(bundle, asset) {
   }
 }
 
-function hmrAccept(bundle, id) {
+function hmrAcceptCheck(bundle, id) {
   var modules = bundle.modules;
 
   if (!modules) {
@@ -10067,9 +10114,27 @@ function hmrAccept(bundle, id) {
   }
 
   if (!modules[id] && bundle.parent) {
-    return hmrAccept(bundle.parent, id);
+    return hmrAcceptCheck(bundle.parent, id);
   }
 
+  if (checkedAssets[id]) {
+    return;
+  }
+
+  checkedAssets[id] = true;
+  var cached = bundle.cache[id];
+  assetsToAccept.push([bundle, id]);
+
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    return true;
+  }
+
+  return getParents(global.parcelRequire, id).some(function (id) {
+    return hmrAcceptCheck(global.parcelRequire, id);
+  });
+}
+
+function hmrAcceptRun(bundle, id) {
   var cached = bundle.cache[id];
   bundle.hotData = {};
 
@@ -10094,10 +10159,6 @@ function hmrAccept(bundle, id) {
 
     return true;
   }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAccept(global.parcelRequire, id);
-  });
 }
 },{}]},{},["../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","lib/menu/options_menu.js"], null)
-//# sourceMappingURL=options_menu.5441f40f.map
+//# sourceMappingURL=options_menu.5441f40f.js.map

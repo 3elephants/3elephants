@@ -13,8 +13,8 @@ def GetProductClass():
 
     return postProcess(elephantFunctions.getProductClass(event, None))
 
-@application.route('/GetSearchResultsPageCache', methods=['POST'])
-def GetSearchResultsPageCache():
+@application.route('/GetSearchResultsPageCachev2', methods=['POST'])
+def GetSearchResultsPageCachev2():
     event = {}
     event["body"] = json.dumps(request.json)
     return postProcess(elephantFunctions.batchProductClassQuery(event, None))

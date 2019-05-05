@@ -1,7 +1,7 @@
 import json
 import requests
 import time
-
+import os
 headers = {"Content-Type": "application/json"}
 
 
@@ -21,8 +21,8 @@ def indexTemplate(field):
     }
 
 
-baseUrl = "http://localhost:9200/"
-endUrl = "/_mapping?include_type_name=false"
+baseUrl = os.environ.get('ELASTIC_URL')
+endUrl = "/_mapping/_doc"
 indicesToCreate = [{
     "index": "household_nlm",
     "field": "product_name"

@@ -31,11 +31,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="db_download.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="db_download.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/downloaders/good_for_you_data/db_download.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="90" column="64" lean-forward="true" selection-start-line="90" selection-start-column="64" selection-end-line="90" selection-end-column="64" />
+            <state relative-caret-position="1335">
+              <caret line="90" column="64" lean-forward="false" selection-start-line="90" selection-start-column="64" selection-end-line="90" selection-end-column="64" />
               <folding>
                 <element signature="e#141#156#0" expanded="true" />
               </folding>
@@ -46,7 +46,7 @@
       <file leaf-file-name="web_scraper.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/downloaders/nlm_data/web_scraper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
+            <state relative-caret-position="15">
               <caret line="8" column="68" lean-forward="false" selection-start-line="8" selection-start-column="67" selection-end-line="8" selection-end-column="68" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
@@ -58,7 +58,7 @@
       <file leaf-file-name="data_inserter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/downloaders/nlm_data/data_inserter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
+            <state relative-caret-position="435">
               <caret line="31" column="47" lean-forward="false" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -82,7 +82,7 @@
       <file leaf-file-name="data_inserter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/downloaders/green_peace/data_inserter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
+            <state relative-caret-position="330">
               <caret line="22" column="32" lean-forward="false" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
               <folding />
             </state>
@@ -92,26 +92,18 @@
       <file leaf-file-name="config.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="164">
+            <state relative-caret-position="165">
               <caret line="11" column="32" lean-forward="false" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
-              <folding>
-                <marker date="1556583203881" expanded="true" signature="0:783" ph="{...}" />
-                <marker date="1556583203881" expanded="true" signature="18:781" ph="{...}" />
-                <marker date="1556583203881" expanded="true" signature="46:177" ph="{&quot;rename&quot;: &quot;cosm_ewg._doc&quot;...}" />
-                <marker date="1556583203881" expanded="true" signature="205:321" ph="{&quot;rename&quot;: &quot;food_ewg._doc&quot;...}" />
-                <marker date="1556583203881" expanded="true" signature="354:490" ph="{&quot;rename&quot;: &quot;household_nlm._doc&quot;...}" />
-                <marker date="1556583203881" expanded="true" signature="521:630" ph="{&quot;rename&quot;: &quot;fashion_goy._doc&quot;...}" />
-                <marker date="1556583203881" expanded="true" signature="664:777" ph="{&quot;rename&quot;: &quot;electronics_gp._doc&quot;...}" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="create_indices.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="create_indices.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create_indices.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1020">
-              <caret line="68" column="23" lean-forward="false" selection-start-line="68" selection-start-column="23" selection-end-line="68" selection-end-column="23" />
+            <state relative-caret-position="15">
+              <caret line="3" column="9" lean-forward="false" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -122,8 +114,8 @@
       <file leaf-file-name="create_indices.sh" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_indices.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+            <state relative-caret-position="60">
+              <caret line="4" column="122" lean-forward="false" selection-start-line="4" selection-start-column="122" selection-end-line="4" selection-end-column="122" />
               <folding />
             </state>
           </provider>
@@ -154,6 +146,7 @@
       <find>prox</find>
       <find>environment</find>
       <find>.append(</find>
+      <find>extr</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -166,15 +159,15 @@
         <option value="$PROJECT_DIR$/downloaders/good_for_you_data/data_inserter.py" />
         <option value="$PROJECT_DIR$/downloaders/green_peace/data_inserter.py" />
         <option value="$PROJECT_DIR$/config.json" />
-        <option value="$PROJECT_DIR$/create_indices.py" />
-        <option value="$PROJECT_DIR$/create_indices.sh" />
         <option value="$PROJECT_DIR$/downloaders/good_for_you_data/db_download.py" />
+        <option value="$PROJECT_DIR$/create_indices.sh" />
+        <option value="$PROJECT_DIR$/create_indices.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="438" />
-    <option name="y" value="392" />
+    <option name="x" value="420" />
+    <option name="y" value="67" />
     <option name="width" value="1280" />
     <option name="height" value="777" />
   </component>
@@ -193,8 +186,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -217,6 +208,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -253,10 +246,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="438" y="392" width="1280" height="777" extended-state="0" />
-    <editor active="true" />
+    <frame x="420" y="67" width="1280" height="777" extended-state="0" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25767368" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26171243" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -286,6 +278,96 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/downloaders/asin_indexing/db_store.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="8" lean-forward="false" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/downloaders/good_for_you_data/db_download.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1335">
+          <caret line="90" column="64" lean-forward="false" selection-start-line="90" selection-start-column="64" selection-end-line="90" selection-end-column="64" />
+          <folding>
+            <element signature="e#141#156#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/downloaders/ewg_data/db_download.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="115" lean-forward="false" selection-start-line="18" selection-start-column="115" selection-end-line="18" selection-end-column="115" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/downloaders/nlm_data/web_scraper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="8" column="68" lean-forward="false" selection-start-line="8" selection-start-column="67" selection-end-line="8" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/downloaders/nlm_data/data_inserter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="31" column="47" lean-forward="false" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/downloaders/good_for_you_data/data_inserter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="31" lean-forward="false" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/downloaders/green_peace/data_inserter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="32" lean-forward="false" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="32" lean-forward="false" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_indices.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="122" lean-forward="false" selection-start-line="4" selection-start-column="122" selection-end-line="4" selection-end-column="122" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_indices.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="9" lean-forward="false" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/downloaders/asin_indexing/db_store.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -424,7 +506,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/downloaders/nlm_data/data_inserter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
+        <state relative-caret-position="435">
           <caret line="31" column="47" lean-forward="false" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -434,7 +516,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/downloaders/nlm_data/web_scraper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
+        <state relative-caret-position="15">
           <caret line="8" column="68" lean-forward="false" selection-start-line="8" selection-start-column="67" selection-end-line="8" selection-end-column="68" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
@@ -452,42 +534,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/config.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
+        <state relative-caret-position="165">
           <caret line="11" column="32" lean-forward="false" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
-          <folding>
-            <marker date="1556583203881" expanded="true" signature="0:783" ph="{...}" />
-            <marker date="1556583203881" expanded="true" signature="18:781" ph="{...}" />
-            <marker date="1556583203881" expanded="true" signature="46:177" ph="{&quot;rename&quot;: &quot;cosm_ewg._doc&quot;...}" />
-            <marker date="1556583203881" expanded="true" signature="205:321" ph="{&quot;rename&quot;: &quot;food_ewg._doc&quot;...}" />
-            <marker date="1556583203881" expanded="true" signature="354:490" ph="{&quot;rename&quot;: &quot;household_nlm._doc&quot;...}" />
-            <marker date="1556583203881" expanded="true" signature="521:630" ph="{&quot;rename&quot;: &quot;fashion_goy._doc&quot;...}" />
-            <marker date="1556583203881" expanded="true" signature="664:777" ph="{&quot;rename&quot;: &quot;electronics_gp._doc&quot;...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/downloaders/green_peace/data_inserter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
+        <state relative-caret-position="330">
           <caret line="22" column="32" lean-forward="false" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/create_indices.py">
+    <entry file="file://$PROJECT_DIR$/downloaders/good_for_you_data/db_download.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1020">
-          <caret line="68" column="23" lean-forward="false" selection-start-line="68" selection-start-column="23" selection-end-line="68" selection-end-column="23" />
+        <state relative-caret-position="1335">
+          <caret line="90" column="64" lean-forward="false" selection-start-line="90" selection-start-column="64" selection-end-line="90" selection-end-column="64" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#141#156#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/create_indices.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+        <state relative-caret-position="60">
+          <caret line="4" column="122" lean-forward="false" selection-start-line="4" selection-start-column="122" selection-end-line="4" selection-end-column="122" />
           <folding />
         </state>
       </provider>
@@ -502,12 +576,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/downloaders/good_for_you_data/db_download.py">
+    <entry file="file://$PROJECT_DIR$/create_indices.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="90" column="64" lean-forward="true" selection-start-line="90" selection-start-column="64" selection-end-line="90" selection-end-column="64" />
+        <state relative-caret-position="15">
+          <caret line="3" column="9" lean-forward="false" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
           <folding>
-            <element signature="e#141#156#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>

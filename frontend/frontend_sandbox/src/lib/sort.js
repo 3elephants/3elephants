@@ -40,12 +40,17 @@ function getAllTheSortScores(list, b) {
     }
 
   }
+
   console.log(products);
+  let nodeid = $("#departments li")[0].attr('id').split("/")[1];
+  let body = {
+    "products": products,
+    "nodeid": nodeid
+  };
   $.ajax({
     type: "POST",
-    url: constants.getBaseAPIUrl() + "BatchProductClassQuery",
-
-    data: JSON.stringify(products),
+    url: constants.getBaseAPIUrl() + "BatchProductClassQueryv2",
+    data: JSON.stringify(body),
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function(data) {

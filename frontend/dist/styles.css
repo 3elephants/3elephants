@@ -12,6 +12,21 @@
 }
 
 
+#elephants-toggle {
+  position: fixed;
+  z-index: 10000;
+  right:-25px;
+  top: 300px;
+  height: 50px;
+  background-color: transparent;
+  transition: 0.2s;
+
+}
+#elephants-toggle:hover {
+  cursor: pointer;
+  right: 0px;
+}
+
 .elephants-link-no-style:active {
   color: #000000;
   text-decoration: none;
@@ -168,38 +183,149 @@ input:checked+.slider:before {
   visibility: visible;
 }
 
-#elephant-data-tooltip-span:hover  .tooltiptext {
-  visibility: visible;
-  opacity: 1;
 
+#elephants-data-tooltip ul {
+  list-style: none;
+    /* Environmental Workin: */
+  font-size: 16px;
+  color: #3A7DC4;
+  letter-spacing: 0;
+  margin-top: 5px;
 }
-#elephant-data-tooltip-span {
-  position: relative;
-  display: inline-block;
+#elephants-data-tooltip ul a {
 
+  /* Environmental Workin: */
+  font-weight: 600;
+  text-decoration: underline;
+  transition: 0.1s;
 }
-#elephant-data-tooltip-span .tooltiptext {
-  visibility: hidden;
-  width: 200px;
-  opacity: 0;
-  transition: opacity 1s;
-  /* Rectangle 4: */
+#elephants-data-tooltip ul a:hover {
+  /* Environmental Workin: */
+  color: #45C0FE;
+  font-weight: 700;
+  text-decoration: underline;
+}
+#elephants-data-tooltip  li {
+  list-style: none;
+}
 
-  background: #FFFFFF;
-  border: 1px solid #C3C3C3;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.30);
-  text-align: left;
-  border-radius: 2px;
-  padding: 20px 10px;
-  position: absolute;
+#elephants-data-tooltip .elephants-menu-footer-link {
+  text-decoration: none;
+  color: #3A7DC4;
   font-size: 14px;
-  font-weight: lighter;
-  z-index: 1;
-  top: 100%;
-  left: 50%;
-  margin-left: -98px;
-  color: #8C8C8C;
+  font-weight: bold;
 }
+
+#elephants-data-tooltip .elephants-source-text {
+    /* Sources - click the: */
+  font-style: italic;
+
+  font-weight: 100px;
+  font-size: 16px;
+  color: #000000;
+  letter-spacing: 0;
+  margin-top: 20px;
+}
+
+.elephants-speech-bubble-shipping {
+	position: relative;
+	background: #BFEFC1;
+	border-radius: .4em;
+  padding: 10px;
+  padding-left: 15px;
+
+  position: relative;
+  right: -101%;
+  bottom: 75px;
+  font-weight: bold;
+  border: 1px #A5A7A5 solid;
+  width: 150px;
+  z-index: 10000;
+}
+
+.elephants-speech-bubble-shipping:after {
+
+  content: " ";
+  position: absolute;
+  top: 50%;
+  right: 100%; /* To the left of the tooltip */
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #A5A7A5 transparent transparent;
+}
+
+.three-elephants-promotion {
+  font-weight: bold;
+  text-decoration: underline;
+  color: #208014;
+}
+.bad-shipping {
+  background-color: #F6CCC0;
+}
+
+.bad-shipping .a-color-success {
+  color: #C60304;
+}
+
+.good-shipping {
+  background-color: #C3E9C8;
+}
+
+
+.elephants-informational-label {
+    /* Sources - click the: */
+  color: #8C8C8C;
+  font-family: Arial;
+  font-weight: 100px;
+  font-size: 16px;
+  color: #000000;
+  letter-spacing: 0;
+  margin-top: 20px;
+}
+
+#elephants-data-tooltip {
+  position: fixed;
+  padding: 20px;
+  top: 50px;
+  right: 100px;
+  font-size: 20px;
+  z-index: 1000;
+  /* Rectangle: */
+  background-color: #FFFFFF;
+  border: 1px solid #DEDEDE;
+  box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.50);
+  transition: 0.1s;
+  width: 320px;
+
+}
+
+#elephants-data-tooltip .elephants-tooltip-title {
+  /* MIXED credibility: */
+  font-size: 20px;
+
+  letter-spacing: 0;
+}
+
+#elephants-data-tooltip img {
+  height: 40px;
+  width: 40px;
+
+  vertical-align: -60%;
+
+}
+
+
+#elephants-data-tooltip .elephants-tooltip-url {
+  font-size: 20px;
+  color: #3A7DC4;
+  letter-spacing: 0;
+}
+
+#elephant-data-tooltip:hover {
+  box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.6);
+}
+
 
 .icon {
   height: 10px;
@@ -246,7 +372,7 @@ input:checked+.slider:before {
 /*material icons support for info icon*/
 
 .material-icons {
-  
+
   font-weight: 800;
   font-style: normal;
   font-size: 16px;

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Label from './label';
 class Tooltip extends Component {
   constructor(props) {
     super(props);
@@ -11,32 +12,39 @@ class Tooltip extends Component {
 
   render() {
     var dQratingsMap = {
-      2: 'Limited',
-      3: 'Fair',
-      4: 'Good',
-      5: 'Robust'
+      0: {name:'Low', color:'#DDA629'},
+      1: {name:'Mixed', color:'#5F8013'},
+      2: {name:'Reasonable', color:'#7A9200'},
+      3: {name:'High', color:'#0A9A93'}
     };
+
+    var sourceItems = this.result.sources.map((source) =>
+      <li key={source.source}> <a target="_blank" href={source.url}> {source.source} </a> </li>
+    );
+
+    let credFormat = dQratingsMap[Math.round(this.result.data_quality)];
+    this.result.health_risk = 0;
     return (
-      <span>
-        <span>
-          &nbsp;
-          <i className="material-icons icon-colors">&#9432;</i>
-          <span className="tooltiptext">
-            {this.result.data_quality >=2 &&
-              <span>
-            <br/>
-            Based on <span className="tooltiptextemphasis">
-              {dQratingsMap[Math.round(this.result.data_quality)]}
-            </span> amount of data.
-            </span>
-            }
-            <br/>
-            <a  target="_blank" style="font-style: italic;" href="https://3elephants.github.io/website/description.html">
-              See More Information on How We Rate Products
-            </a>
-          </span>
-        </span>
-      </span>
+
+      <div>
+
+
+
+        <div className="elephants-tooltip-title"> <img src={chrome.extension.getURL("assets/images/el-logo.png")}/> <span style={"color:"+credFormat.color}> {credFormat.name.toUpperCase()} </span> Credibility </div>
+      
+
+        <div className="elephants-source-text">  Sources - click the source to
+          see the original data </div>
+
+        <ul className="elephants-sources-list">
+          {sourceItems}
+        </ul>
+        <br/>
+      <a  target="_blank" className="elephants-menu-footer-link" href="https://3elephants.github.io/website/description.html">
+          How Products are Rated
+        </a>
+
+      </div>
     );
   }
 }

@@ -19,6 +19,7 @@ chrome.runtime.onMessage.addListener(
         dataType: "json",
         success: data => sendResponse(data),
         failure: function(errMsg) {
+          
           console.log(errMsg);
         }
       });
