@@ -7,6 +7,7 @@ function shippingModifier(jQueryArray) {
   var goodShippingOption = null;
   var length = jQueryArray.length;
   var goGreenHTML = '<span> <div class="elephants-speech-bubble-shipping"> Help our planet and get cash back by shipping it more <span class="three-elephants-promotion">efficiently.</span> </div> </span>'
+  
   for(var i = 0; i < length; i++) {
       var badShipping = false;
       var text = jQueryArray.eq(i).find(".a-color-secondary").text().trim().toLowerCase();
@@ -33,12 +34,10 @@ function shippingModifier(jQueryArray) {
           $($(goodShippingOption).find(".deliveryPromoDescription")).addClass("three-elephants-promotion");
 
           $(goodShippingOption).after(goGreenHTML);
-          ReactDOM.render( <Label data={params[0]}/> , document.getElementById('elephant-label-span'));
         }
       } else {
         jQueryArray.eq(i).addClass("bad-shipping");
       }
-
   }
 }
 export function create() {

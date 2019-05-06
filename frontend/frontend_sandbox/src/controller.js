@@ -99,7 +99,6 @@ function triggerAPI(searchTerms) {
     var encodedSearchTerm = encodeURIComponent(searchTerm);
     var afterServerUrl =  "GetProductClassv2?mode=" + !result.elephants_feature_settings.restrictive_mode.is_on + endUrl;
 
-    console.log(afterServerUrl)
     chrome.runtime.sendMessage({
       elephantsGetRequest: true,
       afterServerUrl: afterServerUrl
@@ -121,11 +120,11 @@ function triggerAPI(searchTerms) {
 
 //main function
 function main() {
-
+	
   //to turn on sort feature
-  sort.create();
+  //sort.create();
   //to turn on shipping feature
-  shipping.create();
+  //shipping.create();
 
   //we need the product title to trigger the api call thus it needs to be parsed
   //observe the dom to figure out when this is parsed and we can trigger api call
@@ -208,9 +207,11 @@ function main() {
       triggered = true;
       for (var key of keys) {
           if(!($("#" + key).length)) {
-            return;
+            searchTerms[key] = "";
           }
-          searchTerms[key] =  findValuefromID(key);
+          else {
+          	searchTerms[key] =  findValuefromID(key);
+          }
       }
 
       triggerAPI(searchTerms);

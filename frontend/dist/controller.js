@@ -21417,7 +21417,7 @@ function getAllTheSortScores(list, b) {
   }
 
   console.log(products);
-  var nodeid = $("#departments li")[0].attr('id').split("/")[1];
+  var nodeid = $($("#departments li")[0]).attr('id').split("/")[1];
   var body = {
     "products": products,
     "nodeid": nodeid
@@ -23705,10 +23705,6 @@ function shippingModifier(jQueryArray) {
         $($(goodShippingOption).find("input")[0]).attr('checked', true);
         $($(goodShippingOption).find(".deliveryPromoDescription")).addClass("three-elephants-promotion");
         $(goodShippingOption).after(goGreenHTML);
-
-        _reactDom.default.render(_react.default.createElement(Label, {
-          data: params[0]
-        }), document.getElementById('elephant-label-span'));
       }
     } else {
       jQueryArray.eq(i).addClass("bad-shipping");
@@ -23826,7 +23822,6 @@ function triggerAPI(searchTerms) {
 
     var encodedSearchTerm = encodeURIComponent(searchTerm);
     var afterServerUrl = "GetProductClassv2?mode=" + !result.elephants_feature_settings.restrictive_mode.is_on + endUrl;
-    console.log(afterServerUrl);
     chrome.runtime.sendMessage({
       elephantsGetRequest: true,
       afterServerUrl: afterServerUrl
@@ -23840,11 +23835,11 @@ function triggerAPI(searchTerms) {
 
 function main() {
   //to turn on sort feature
-  sort.create(); //to turn on shipping feature
-
-  shipping.create(); //we need the product title to trigger the api call thus it needs to be parsed
+  //sort.create();
+  //to turn on shipping feature
+  //shipping.create();
+  //we need the product title to trigger the api call thus it needs to be parsed
   //observe the dom to figure out when this is parsed and we can trigger api call
-
   var triggered = false;
   var boolMap = {
     "productTitle": false,
@@ -23927,10 +23922,10 @@ function main() {
         var key = _keys3[_i3];
 
         if (!(0, _jquery.default)("#" + key).length) {
-          return;
+          searchTerms[key] = "";
+        } else {
+          searchTerms[key] = findValuefromID(key);
         }
-
-        searchTerms[key] = findValuefromID(key);
       }
 
       triggerAPI(searchTerms);
@@ -23979,7 +23974,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52911" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50690" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -42,7 +42,7 @@ function getAllTheSortScores(list, b) {
   }
 
   console.log(products);
-  let nodeid = $("#departments li")[0].attr('id').split("/")[1];
+  let nodeid = $($("#departments li")[0]).attr('id').split("/")[1];
   let body = {
     "products": products,
     "nodeid": nodeid
