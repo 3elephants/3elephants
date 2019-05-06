@@ -22,7 +22,7 @@ import * as rating from './lib/rating'
 import * as abTest from './lib/ab_test'
 import * as constants from './lib/constants'
 import * as shipping from './lib/shipping';
-
+import * as onboarding from './lib/onboarding';
 
 
 
@@ -219,5 +219,14 @@ function main() {
   });
 
 };
-
+chrome.runtime.onMessage.addListener(function(request, sender, callback) {
+    if (request.action == 'start_onboarding') {
+        var intervalTimer =  setInterval(()=>{
+          if($("#elephants-data-tooltip").length) {
+              onboarding.mainIntro();
+              clearInterval(intervalTimer);
+          }
+        }, 500);
+    }
+});
 main();

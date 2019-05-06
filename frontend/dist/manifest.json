@@ -7,9 +7,9 @@
   "description": "A browser extension that supports environmentally conscious shopping",
   "version": "0.0.8",
   "content_scripts": [{
-    "matches": ["http://www.amazon.com/*", "https://www.amazon.com/*", "https://www.amazon.com/*"],
+    "matches": ["http://www.amazon.com/*", "https://www.amazon.com/*", "https://www.amazon.com/*", "http://smile.amazon.com/*", "https://smile.amazon.com/*"],
     "js": ["controller.js"],
-    "css": ["styles.css"],
+    "css": ["styles.css", "introjs.min.css"],
     "run_at": "document_start"
   }],
   "background": {

@@ -1,6 +1,6 @@
 import * as constants from './constants';
 import * as optionsManager from './menu/options_manager';
-
+import * as onboarding from './onboarding';
 
 
 
@@ -84,6 +84,8 @@ export function create() {
     }
 
 
+
+
     //implements sort feature
     chrome.storage.sync.get(['elephants_feature_settings'], function(result) {
       if (result.elephants_feature_settings == undefined || result.elephants_feature_settings == null)
@@ -103,6 +105,15 @@ export function create() {
           saveOptions);
       }
 
+    });
+    chrome.storage.sync.get(['subIntro'], function(result) {
+
+      if(result.subIntro == undefined || result.subIntro == null) {
+          onboarding.subIntro();
+          chrome.storage.sync.set({
+            subIntro: true
+          }, function() {});
+      }
     });
   });
 }
