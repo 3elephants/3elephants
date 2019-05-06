@@ -4,29 +4,24 @@
   "private": true,
   "dependencies": {
     "chart.js": "^2.8.0",
+    "intro.js": "^2.9.3",
     "jquery": "^3.4.1",
     "label": "^0.2.2",
-    "lib": "^4.0.1",
+    "lib": "^4.0.2",
     "mixpanel-browser": "^2.27.1",
-    "popper.js": "^1.14.7",
+    "popper.js": "^1.15.0",
     "preact": "<10",
     "preact-compat": "^3.18.5",
-    "react": "^0.13.0 || ^0.14.0 || ^15.0.0 || ^16.0.0-0",
-    "react-chartjs-2": "^2.7.4",
-    "react-circular-progressbar": "^1.0.0",
-    "react-dom": "^16.0.0",
+    "react": "^16.8.6",
+    "react-chartjs-2": "^2.7.6",
+    "react-circular-progressbar": "^1.2.1",
+    "react-dom": "^16.8.6",
     "react-rating": "^1.6.2",
-    "react-scripts": "2.1.5",
     "react-share": "^2.4.0",
     "reactstrap": "^7.1.0",
     "utils": "^0.3.1"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
+  "scripts": {},
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -41,6 +36,6 @@
     "react-dom": "preact-compat"
   },
   "devDependencies": {
-    "sass": "^1.19.0"
+    "sass": "^1.20.1"
   }
 }

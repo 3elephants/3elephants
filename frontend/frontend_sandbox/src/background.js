@@ -1,9 +1,12 @@
 import * as abTest from './lib/ab_test'
 import $ from "jquery";
 import * as constants from './lib/constants';
+import * as onboarding from './lib/onboarding';
 
 chrome.runtime.onInstalled.addListener(function() {
+
   abTest.generateConfiguration();
+  onboarding.run();
 });
 chrome.runtime.setUninstallURL("http://3elephants.github.io/website/sorry/");
 
@@ -19,7 +22,7 @@ chrome.runtime.onMessage.addListener(
         dataType: "json",
         success: data => sendResponse(data),
         failure: function(errMsg) {
-          
+
           console.log(errMsg);
         }
       });

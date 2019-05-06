@@ -11,6 +11,7 @@ categoryMapping = {
     "food_ewg":{"Amazon Fresh":10, "Grocery & Gourmet Food": 10, "Prime Pantry": 10}
 }
 def getCategory(nodeid):
+    return ""
     try:
         html = requests.get("https://www.amazon.com/exec/obidos/tg/browse/-/" + nodeid, timeout=0.6)
     except:
