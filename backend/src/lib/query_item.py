@@ -238,7 +238,7 @@ dbs = {
                  "queryNameKey": "name"
                  },
     "household_nlm": {"sourceName": "National Library of Medicine",
-                      "dataQuality": 3,
+                      "dataQuality": 2,
                       "baseUrl": "https://householdproducts.nlm.nih.gov/",
                       "queryNameKey": "product_name",
                       "queryBrandKey": "manufacturer"
@@ -254,7 +254,7 @@ dbs = {
                        "queryBrandKey": "name"
                        },
     "cosm_ewg" : {"sourceName": "Environmental Working Group",
-                       "dataQuality": 2,
+                       "dataQuality": 1.5,
                        "baseUrl": "https://www.ewg.org/skindeep/product/",
                        "queryNameKey": "name",
                         "queryBrandKey":"brand_name"
@@ -282,6 +282,16 @@ def classifier(betaMode, score):
         return 2 #neutral
     else:
         return 0 #eco friendly
+
+def classifierHealth(score):
+
+
+    if score == 1:
+        return 0 #not eco firendly
+    elif score < 0.4:
+        return 1 #health hazard
+    else:
+        return 2 #neutral
 
 
 def calculateIndexSimilarity(productCategory, indexName):
@@ -324,6 +334,7 @@ def postProcessResults(params):
     results = []
     similarities = []
     scores = []
+    healthScores = []
     qualities = []
     for i in range(len(responses)):  #aggregate indices
         response = responses[i]
@@ -331,12 +342,18 @@ def postProcessResults(params):
         currInterface = interfaces[index]
 
         result = currInterface.response(response)
+
         if result != -1:
-            score, quality, row = result
-            results.append(row)
-            similarities.append(currInterface.categorySimilarity)
-            scores.append(score)
-            qualities.append(quality)
+            if index == "household_nlm":
+                score, quality, row = result
+                results.append(row)
+                healthScores.append(score)
+            else:
+                score, quality, row = result
+                results.append(row)
+                similarities.append(currInterface.categorySimilarity)
+                scores.append(score)
+                qualities.append(quality)
 
     if len(results) == 0:
         return {"has_results":False}
@@ -346,20 +363,32 @@ def postProcessResults(params):
         totalScore = 0
         similaritiesSum = sum(similarities)
 
-        if similaritiesSum == 0:
-            resultsLength = len(results)
-            totalScore = sum(scores)/resultsLength
-            totalQuality = sum(qualities)/resultsLength
-        else:
+        hasResults = len(scores) > 0
+        hasHealthResults = len(healthScores) > 0
 
-            totalScore = sum([scores[elIndex] * similarities[elIndex] for elIndex in range(len(results))])  / similaritiesSum
-            totalQuality = sum([qualities[elIndex] * similarities[elIndex] for elIndex in range(len(results))])  / similaritiesSum
+
+
+        # if no non health results - data quality is 2
+        if hasResults:
+            if similaritiesSum == 0:
+                resultsLength = len(scores)
+                totalScore = sum(scores)/resultsLength
+                totalQuality = sum(qualities)/resultsLength
+            else:
+
+                totalScore = sum([scores[elIndex] * similarities[elIndex] for elIndex in range(len(results))])  / similaritiesSum
+                totalQuality = sum([qualities[elIndex] * similarities[elIndex] for elIndex in range(len(results))])  / similaritiesSum
+        else:
+            totalQuality = 2
+            totalScore = 0.6
 
         return {
             "data_quality": totalQuality,
             "score": totalScore,
-            "classification": classifier(betaMode, totalScore),
-            "has_results": True,
+            "classification":classifier(betaMode, totalScore),
+            "health_risk": classifierHealth(sum(healthScores)),
+            "has_results_health":hasHealthResults,
+            "has_results": hasResults,
             "sources": results
         }
 

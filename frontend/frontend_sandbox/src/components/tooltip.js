@@ -13,7 +13,7 @@ class Tooltip extends Component {
   render() {
     var dQratingsMap = {
       0: {name:'Low', color:'#DDA629'},
-      1: {name:'Mixed', color:'#5F8013'},
+      1: {name:'Mixed', color:'#804913'},
       2: {name:'Reasonable', color:'#7A9200'},
       3: {name:'High', color:'#0A9A93'}
     };
@@ -31,7 +31,7 @@ class Tooltip extends Component {
 
 
         <div className="elephants-tooltip-title"> <img src={chrome.extension.getURL("assets/images/el-logo.png")}/> <span style={"color:"+credFormat.color}> {credFormat.name.toUpperCase()} </span> Credibility </div>
-      
+
 
         <div className="elephants-source-text">  Sources - click the source to
           see the original data </div>

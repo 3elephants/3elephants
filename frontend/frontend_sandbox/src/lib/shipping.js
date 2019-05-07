@@ -3,12 +3,15 @@ import ReactDOM from 'react-dom';
 import {jQueryDOMUpdater, exists} from './utils'
 import Shipping from './../components/shipping';
 
-function shippingModifier(jQueryArray) {
+function shippingModifier(selector, userClicked) {
+  var jQueryArray = $(selector)
   var goodShippingOption = null;
   var length = jQueryArray.length;
   var goGreenHTML = '<span> <div class="elephants-speech-bubble-shipping"> Help our planet and get cash back by shipping it more <span class="three-elephants-promotion">efficiently.</span> </div> </span>'
-  
+  var goGreenHTMLStandard = '<span> <div class="elephants-speech-bubble-shipping"> Help our planet by shipping it more <span class="three-elephants-promotion">efficiently.</span> </div> </span>'
+
   for(var i = 0; i < length; i++) {
+
       var badShipping = false;
       var text = jQueryArray.eq(i).find(".a-color-secondary").text().trim().toLowerCase();
 
@@ -25,28 +28,52 @@ function shippingModifier(jQueryArray) {
         }
       }
       if(!badShipping) {
-        if(text.includes("no-rush") || text.includes("standard")) {
+
+        if(text.includes("no-rush")) {
           goodShippingOption = jQueryArray.eq(i);
           $(goodShippingOption).addClass("good-shipping");
 
+          if(!userClicked) {
+            $($(goodShippingOption).find("input")[0]).attr('checked', true);
+          }
 
-          $($(goodShippingOption).find("input")[0]).attr('checked', true);
           $($(goodShippingOption).find(".deliveryPromoDescription")).addClass("three-elephants-promotion");
 
           $(goodShippingOption).after(goGreenHTML);
+        } else if(text.includes("standard")) {
+          goodShippingOption = jQueryArray.eq(i);
+          $(goodShippingOption).addClass("good-shipping");
+
+          if(!userClicked) {
+            $($(goodShippingOption).find("input")[0]).attr('checked', true);
+          }
+          $(goodShippingOption).after(goGreenHTMLStandard);
         }
       } else {
         jQueryArray.eq(i).addClass("bad-shipping");
       }
+      $(jQueryArray.eq(i)).click(function() {
+        var intervalTimer =  setInterval(()=>{
+
+          if($("#loading-spinner-blocker-doc").css("display") == "none" && $(selector).length) {
+
+              clearInterval(intervalTimer);
+              shippingModifier($(selector), true);
+
+          }
+        }, 500);
+      });
   }
 }
 export function create() {
   $(function() {
+
     var updateLogic = (params) => {
-      shippingModifier($(".prime-ship-speed"));
-      shippingModifier($(".shipping-speed.ship-option"));
+      shippingModifier(".prime-ship-speed", false);
+      shippingModifier(".shipping-speed.ship-option", false);
     };
-    updateLogic();
+    setTimeout(()=>updateLogic() ,500);
+
   });
 }
 

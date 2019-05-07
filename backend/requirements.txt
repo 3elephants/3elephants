@@ -3,6 +3,6 @@ enum34==1.1.6
 Flask==1.0.2
 elasticsearch_dsl
 elasticsearch
-urllib3>=1.24.2
+urllib3
 requests
 requests-aws4auth

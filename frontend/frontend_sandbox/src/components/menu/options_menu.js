@@ -40,6 +40,9 @@ class OptionsMenu extends Component {
 
                 </li>
                 <li>
+                <span className="small-elephants"> **The following turns off negative labels; we don't recommend this setting.**</span>
+                </li>
+                <li>
                       <input type="checkbox" id="green-tax"/>
 
 

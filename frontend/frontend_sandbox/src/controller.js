@@ -36,7 +36,10 @@ function updateUICallback(data, configuration) {
 
   if(configuration.label.is_on && (data.has_results || data.has_results_health) &&  !(data.data_quality < 1)) {
 
-
+    if(data.has_results_health) {
+      if(configuration.health_risk_label.is_on)
+        healthRisk.create(data);
+    }
     if(data.has_results) {
       if(configuration.rating.is_on)
         rating.create(data);
@@ -45,10 +48,7 @@ function updateUICallback(data, configuration) {
       if(configuration.label.is_on)
         label.create(data);
     }
-    if(data.has_results_health) {
-      if(configuration.health_risk_label.is_on)
-        healthRisk.create(data);
-    }
+
 
     if(configuration.background_color.is_on)
       reformat.changeBackgroundColor(data);
@@ -84,7 +84,7 @@ function updateUICallback(data, configuration) {
 function triggerAPI(searchTerms) {
 
   chrome.storage.sync.get(['elephants_feature_settings'], function(result) {
-    result.elephants_feature_settings = abTest.generateConfiguration();
+
     if (result.elephants_feature_settings == undefined || result.elephants_feature_settings == null)
       result.elephants_feature_settings = abTest.generateConfiguration();
     let endUrl = "";
@@ -120,11 +120,11 @@ function triggerAPI(searchTerms) {
 
 //main function
 function main() {
-	
+
   //to turn on sort feature
-  //sort.create();
+  sort.create();
   //to turn on shipping feature
-  //shipping.create();
+  shipping.create();
 
   //we need the product title to trigger the api call thus it needs to be parsed
   //observe the dom to figure out when this is parsed and we can trigger api call
@@ -205,13 +205,18 @@ function main() {
   $(function() {
     if (!triggered) {
       triggered = true;
+      var quit = true;
       for (var key of keys) {
           if(!($("#" + key).length)) {
             searchTerms[key] = "";
           }
           else {
           	searchTerms[key] =  findValuefromID(key);
+            quit = false;
           }
+      }
+      if(quit) {
+        return;
       }
 
       triggerAPI(searchTerms);
