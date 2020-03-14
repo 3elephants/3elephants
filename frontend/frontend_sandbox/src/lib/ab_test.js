@@ -184,7 +184,7 @@ export function trackOptionsMenu(ids){
           if (result.elephants_feature_settings == undefined || result.elephants_feature_settings == null)
             result.elephants_feature_settings = generateConfiguration();
 
-          mixpanelInstall();
+          //mixpanelInstall();
           registerSession(result.elephants_feature_settings, []);
 
 

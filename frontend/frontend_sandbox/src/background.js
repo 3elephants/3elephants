@@ -2,11 +2,15 @@ import * as abTest from './lib/ab_test'
 import $ from "jquery";
 import * as constants from './lib/constants';
 import * as onboarding from './lib/onboarding';
-
 chrome.runtime.onInstalled.addListener(function() {
 
-  abTest.generateConfiguration();
-  onboarding.run();
+  chrome.storage.sync.get(['elephants_feature_settings'], function(result) {
+
+    if (result.elephants_feature_settings == undefined || result.elephants_feature_settings == null) {
+      onboarding.run();
+      abTest.generateConfiguration();
+    }
+  });
 });
 chrome.runtime.setUninstallURL("http://3elephants.github.io/website/sorry/");
 

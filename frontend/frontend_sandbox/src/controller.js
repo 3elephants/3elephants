@@ -70,7 +70,7 @@ function updateUICallback(data, configuration) {
 
 
 
-  abTest.mixpanelInstall();
+  //abTest.mixpanelInstall(); -- killing mixpanel dependency to protect user data
   abTest.registerSession(configuration, data);
   abTest.trackingCode();
 };

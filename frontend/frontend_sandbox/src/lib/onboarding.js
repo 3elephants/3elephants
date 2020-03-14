@@ -2,7 +2,7 @@ import introJs from 'intro.js/minified/intro.min.js';
 
 export function run() {
 
-		var redirectedLink= "https://www.amazon.com/gp/product/B01MYFHXRG?pf_rd_p=f3acc539-5d5f-49a3-89ea-768a917d5900&pf_rd_r=2Q6HD0NBCRXB94PK3SB1";
+		var redirectedLink= "https://www.amazon.com/Apple-Watch-GPS-38mm-Silver-Aluminium/dp/B07K37HKT8/ref=sr_1_4?keywords=Apple&qid=1560449297";
 
 		chrome.tabs.create({
 	    url: redirectedLink

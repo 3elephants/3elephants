@@ -40,8 +40,7 @@ function getAllTheSortScores(list, b) {
     }
 
   }
-
-  console.log(products);
+  console.log(list.children);
   let nodeid = $($("#departments li")[0]).attr('id').split("/")[1];
   let body = {
     "products": products,
@@ -77,7 +76,13 @@ export function create() {
       if (document.getElementsByClassName("s-result-list") == undefined) {
         return;
       }
-      list = document.getElementsByClassName("s-result-list")[0]; //for different layout
+      let index = 0;
+      do {
+        list = document.getElementsByClassName("s-result-list")[index]; //for different layout
+        if (list.children == undefined || list.children == null)
+          continue;
+        ++index;
+      } while(list.children.length <= 1);
       if (list==undefined || list==null) {
         return;
       }

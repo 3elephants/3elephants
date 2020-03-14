@@ -12,22 +12,22 @@ function shippingModifier(selector, userClicked) {
 
   for(var i = 0; i < length; i++) {
 
-      var badShipping = false;
+      var fastShipping = false;
       var text = jQueryArray.eq(i).find(".a-color-secondary").text().trim().toLowerCase();
 
       var date = jQueryArray.eq(i).find(".a-color-success").text().trim();
 
       if(date == "Tomorrow") {
-        badShipping = true;
+        fastShipping = true;
       } else {
         var shippingDate = new Date(date + ", " + new Date().getFullYear());
         var timeDiff = Math.abs(shippingDate.getTime() - new Date().getTime());
         var difference = Math.ceil(timeDiff / (1000 * 3600 * 24));
         if(difference <= 3) {
-            badShipping = true;
+            fastShipping = true;
         }
       }
-      if(!badShipping) {
+      if(!fastShipping) {
 
         if(text.includes("no-rush")) {
           goodShippingOption = jQueryArray.eq(i);
@@ -49,8 +49,6 @@ function shippingModifier(selector, userClicked) {
           }
           $(goodShippingOption).after(goGreenHTMLStandard);
         }
-      } else {
-        jQueryArray.eq(i).addClass("bad-shipping");
       }
       $(jQueryArray.eq(i)).click(function() {
         var intervalTimer =  setInterval(()=>{
