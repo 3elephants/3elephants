@@ -33,9 +33,6 @@ export function mainIntro() {
 				element: document.querySelector('#elephants-toggle'),
 				intro: "You can toggle the popup by clicking this button.",
 				position: 'left'
-			},
-			{
-				intro: 'We also modify the page a bit more, at times, to discourage or encourage you from buying a product.'
 			}
 		]
 	});
@@ -62,6 +59,6 @@ export function subIntro(){
 }
 
 function subIntroRedirect() {
-	var redirectedLink = "https://www.amazon.com/s?k=patagonia+hat&crid=3QINJ8J62GIWZ&sprefix=Patagonia%2Caps%2C178&ref=nb_sb_ss_i_1_9";
+	var redirectedLink = "https://www.amazon.com/s?k=vegetable+soup&crid=1NNUE7KRPQPTQ&sprefix=veget%2Caps%2C425&ref=nb_sb_ss_i_3_5";
 	window.location.replace(redirectedLink);
 }

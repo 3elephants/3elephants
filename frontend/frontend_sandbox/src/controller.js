@@ -98,7 +98,6 @@ function triggerAPI(searchTerms) {
 
     var encodedSearchTerm = encodeURIComponent(searchTerm);
     var afterServerUrl =  "GetProductClassv2?mode=" + !result.elephants_feature_settings.restrictive_mode.is_on + endUrl;
-
     chrome.runtime.sendMessage({
       elephantsGetRequest: true,
       afterServerUrl: afterServerUrl
@@ -155,9 +154,11 @@ function main() {
       if(byLineUrl.length == 0) {
         return "";
       }
-      byLineUrl = byLineUrl[0].href.split("-bin=")[1];
-      byLineUrl  = decodeURIComponent(byLineUrl);
-      return byLineUrl;
+      let byLineText = byLineUrl.text().trim();
+      if(byLineText.startsWith("Brand:") && byLineText.length >= 6) {
+        byLineText = byLineText.substring(6);
+      }
+      return byLineText;
     } else {
       return findValuefromIDSub(key);
     }

@@ -13,7 +13,8 @@ function saveOptions() {
 //reorganizes and updates the html
 function sortList(sortOrder, list, b) {
   console.log(sortOrder);
-  var s = sortOrder.reduce((accumulator, orig_pos) => accumulator + b[orig_pos].outerHTML, "");
+  var s = sortOrder.reduce((accumulator, orig_pos_plus_one) => accumulator
+  + b[orig_pos_plus_one + 1].outerHTML, "");
   list.innerHTML = s;
 }
 
