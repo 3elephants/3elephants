@@ -1,6 +1,6 @@
 beautifulsoup4
 enum34==1.1.6
-Flask==1.0.2
+Flask==2.3.2
 elasticsearch_dsl
 elasticsearch
 urllib3
